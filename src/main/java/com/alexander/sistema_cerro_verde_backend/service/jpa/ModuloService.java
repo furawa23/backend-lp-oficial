@@ -19,12 +19,10 @@ public class ModuloService implements IModulosService{
     public Modulos crearModulo(Modulos modulo) {
         return moduloRepository.save(modulo);
     }
-
     
     @Override
     public Modulos obtenerModuloId(Integer idModulo) {
         return moduloRepository.findById(idModulo).orElse(null);
-
     }
 
     @Override

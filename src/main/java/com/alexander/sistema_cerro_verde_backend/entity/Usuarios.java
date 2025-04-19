@@ -23,7 +23,7 @@ public class Usuarios implements UserDetails {
     private Integer idUsuarios;
     private String username; 
     private String password;
-    private String nombres;
+    private String nombre;
     private String apellidos;
     private String email;
     private String telefono;
@@ -57,15 +57,15 @@ public class Usuarios implements UserDetails {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password= password;
     }
 
-    public String getNombres() {
-        return nombres;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getApellidos() {
@@ -145,7 +145,5 @@ public class Usuarios implements UserDetails {
     public String getUsername() {
         return this.username;
     }
-
-
 
 }

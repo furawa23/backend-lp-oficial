@@ -55,7 +55,6 @@ public class RolesController {
                     System.out.println(" -> Permiso ID: " + rp.getPermisos().getIdPermisos());
                 }
             }
-    
             Roles nuevoRol = rolesService.crearRol(rol);
             return new ResponseEntity<>(nuevoRol, HttpStatus.CREATED);
         } catch (Exception e) {

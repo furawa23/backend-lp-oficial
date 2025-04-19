@@ -30,28 +30,28 @@ public class UsuariosService implements IUsuariosService {
             return usuariosRepository.save(usuario);
         }else{
             throw new RuntimeException("Modulo no encontrado");
-        }}
+        }
+    }
         
         
-
+    @Override
     public Usuarios obtenerUsuario(String username) {
         return usuariosRepository.findByUsername(username);
     }
+   
+    @Override
+    public Usuarios obtenerUsuarioPorId(Integer id) throws Exception {
+        return usuariosRepository.findById(id).orElse(null);
+    }
 
+    @Override
     public void eliminarUsuario(Integer id) {
         usuariosRepository.deleteById(id);
     }
 
     @Override
-    public Usuarios actualizarUsuario(Integer id, Usuarios usuarioActualizado) throws Exception {
-        Optional<Usuarios> optional = usuariosRepository.findById(id);
-        
-        if (optional.isPresent()) {
-            Usuarios usuarioExistente = optional.get();
-            return usuariosRepository.save(usuarioExistente);
-        } else {
-            throw new Exception("Usuario no encontrado para actualizar");
-        }
+    public Usuarios actualizarUsuario(Usuarios usuarioActualizado) throws Exception {
+        return usuariosRepository.save(usuarioActualizado);
     }
 
     @Override

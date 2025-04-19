@@ -31,7 +31,6 @@ public class RolesService implements IRolesService {
     
     @Transactional
     public Roles crearRol(Roles rol) {
-        // Guardar solo el rol
         
         System.out.println("Permisos recibidos:");
         for (RolesPermisos rp : rol.getRolesPermisos()) {
@@ -44,6 +43,7 @@ public class RolesService implements IRolesService {
     
         return rolesRepository.save(rol);
     }
+    
     
 
 

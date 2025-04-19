@@ -12,7 +12,7 @@ public class Modulos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idModulo;
-    private String nombreModulo;
+    private String nombre;
 
     public Integer getIdModulo() {
         return idModulo;
@@ -22,11 +22,11 @@ public class Modulos {
         this.idModulo = idModulo;
     }
 
-    public String getNombreModulo() {
-        return nombreModulo;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombreModulo(String nombreModulo) {
-        this.nombreModulo = nombreModulo;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }
