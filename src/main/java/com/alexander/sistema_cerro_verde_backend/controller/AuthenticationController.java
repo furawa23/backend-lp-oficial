@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alexander.sistema_cerro_verde_backend.config.JwtUtils;
@@ -23,6 +24,7 @@ import com.alexander.sistema_cerro_verde_backend.service.UserDetailsServiceImpl;
 
 @RestController
 @CrossOrigin("*")
+@RequestMapping("/cerro-verde")
 public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -33,7 +35,7 @@ public class AuthenticationController {
     @Autowired
     private JwtUtils jwtUtils; 
     
-    @PostMapping("/generate-token")
+    @PostMapping("/generar-token")
     public ResponseEntity<?> generarToken(@RequestBody JwtRequest jwtRequest) throws Exception {
         System.out.println("vamos a generar el token con" + jwtRequest.getUsername());
 

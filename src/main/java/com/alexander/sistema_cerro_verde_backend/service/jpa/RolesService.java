@@ -1,22 +1,51 @@
 package com.alexander.sistema_cerro_verde_backend.service.jpa;
 import java.util.List;
-import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alexander.sistema_cerro_verde_backend.entity.Permisos;
 import com.alexander.sistema_cerro_verde_backend.entity.Roles;
+import com.alexander.sistema_cerro_verde_backend.entity.RolesPermisos;
+import com.alexander.sistema_cerro_verde_backend.repository.PermisosRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.RolesPermisosRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.RolesRepository;
 import com.alexander.sistema_cerro_verde_backend.service.IRolesService;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class RolesService implements IRolesService {
 
     @Autowired
     private RolesRepository rolesRepository;
+    @Autowired
+    private PermisosRepository permisoRepository;
+    
 
-    @Override
+    @Autowired
+    private RolesPermisosRepository rolesPermisosaRepo;
+   
+    @Autowired
+    private RolesPermisosRepository rolesPermisosRepository;
+    
+    @Transactional
     public Roles crearRol(Roles rol) {
+        // Guardar solo el rol
+        
+        System.out.println("Permisos recibidos:");
+        for (RolesPermisos rp : rol.getRolesPermisos()) {
+            if (rp.getPermisos() != null) {
+                System.out.println(" -> ID Permiso: " + rp.getPermisos().getIdPermisos());
+            } else {
+                System.out.println(" -> Permiso nulo");
+            }
+        }
+    
         return rolesRepository.save(rol);
     }
+    
+
 
     @Override
     public Roles actualizarRol(Roles rol){
@@ -24,7 +53,7 @@ public class RolesService implements IRolesService {
     }
 
     @Override
-    public Roles obtenerRolPorId(Long idRol) {
+    public Roles obtenerRolPorId(Integer idRol) {
         return rolesRepository.findById(idRol).get();
     }
 
@@ -33,18 +62,9 @@ public class RolesService implements IRolesService {
         return rolesRepository.findAll();
     }
 
-    @Override 
-    public Roles editarRol(Roles rol) {
-        Optional<Roles> existente = rolesRepository.findById(rol.getIdRol());
-        if (existente.isPresent()) {
-            return rolesRepository.save(rol);
-        } else {
-            throw new RuntimeException("El rol con ID " + rol.getIdRol() + " no existe.");
-        }
-    }
 
     @Override
-    public void eliminarRol(Long idRol) {
+    public void eliminarRol(Integer idRol) {
         if (!rolesRepository.existsById(idRol)) {
             throw new RuntimeException("El rol con ID " + idRol + " no existe");
         }
@@ -53,5 +73,17 @@ public class RolesService implements IRolesService {
 
     public Roles buscarPorNombre(String rol) {
         return rolesRepository.findByNombreRol(rol).orElse(null);
+    }
+
+    @Override
+    public List<Permisos> obtenerPermisosPorRol(Integer idRol) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'obtenerPermisosPorRol'");
+    }
+
+    @Override
+    public Roles asignarPermisosARol(Integer idRol, List<Integer> idPermisos) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'asignarPermisosARol'");
     }
 }

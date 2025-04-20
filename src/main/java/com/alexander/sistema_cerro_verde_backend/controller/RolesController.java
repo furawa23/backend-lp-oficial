@@ -1,8 +1,8 @@
 package com.alexander.sistema_cerro_verde_backend.controller;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,20 +14,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Permisos;
 import com.alexander.sistema_cerro_verde_backend.entity.Roles;
+import com.alexander.sistema_cerro_verde_backend.entity.RolesPermisos;
 import com.alexander.sistema_cerro_verde_backend.service.IRolesService;
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/cerro-verde")
 @CrossOrigin(origins = "*") // Para permitir peticiones desde el frontend (ajusta según sea necesario)
 public class RolesController {
 
     @Autowired
     private IRolesService rolesService;
 
-
-    // Obtener todos los roles
     @GetMapping("/")
   public List<Roles> obtenerTodosLosPermisos() {
         return rolesService.obtenerTodosLosRoles();
@@ -38,9 +36,8 @@ public class RolesController {
         return ResponseEntity.ok(rolesService.actualizarRol(rol));
     }
 
-    // Obtener un rol por su ID
     @GetMapping("/{id}")
-    public ResponseEntity<Roles> obtenerRol(@PathVariable Long id) {
+    public ResponseEntity<Roles> obtenerRol(@PathVariable Integer id) {
         Roles rol = rolesService.obtenerRolPorId(id);
         if (rol == null) {
             return ResponseEntity.notFound().build();
@@ -48,25 +45,28 @@ public class RolesController {
         return ResponseEntity.ok(rol);
     }
 
-    // Crear un nuevo rol
-    @PostMapping("/")
-    public Roles crearRoles(@RequestBody Roles rol) {
-        return rolesService.crearRol(rol);
+    @PostMapping("/roles/")
+    public ResponseEntity<Roles> crearRol(@RequestBody Roles rol) {
+        try {
+            System.out.println("DEBUG: Rol recibido: " + rol.getNombreRol());
+            System.out.println("DEBUG: Permisos recibidos:");
+            for (RolesPermisos rp : rol.getRolesPermisos()) {
+                if (rp.getPermisos() != null) {
+                    System.out.println(" -> Permiso ID: " + rp.getPermisos().getIdPermisos());
+                }
+            }
+    
+            Roles nuevoRol = rolesService.crearRol(rol);
+            return new ResponseEntity<>(nuevoRol, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
-
-    // Actualizar un rol existnte
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Roles> actualizarRol(@PathVariable Long id, @RequestBody Roles rol) {
-        rol.setIdRol(id); // Asegúrate que el ID del path coincida con el del objeto
-        Roles actualizado = rolesService.editarRol(rol);
-        return ResponseEntity.ok(actualizado);
-    }      
-
-
-    // Eliminar un rol
+    
+   
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarRol(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarRol(@PathVariable Integer id) {
         Roles existente = rolesService.obtenerRolPorId(id);
         if (existente == null) {
             return ResponseEntity.notFound().build();

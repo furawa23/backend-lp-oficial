@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(withDefaults()) // Ahora usa la configuración global de CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/generate-token", "/usuarios/").permitAll()
+                        .requestMatchers("/cerro-verde/generar-token", "/cerro-verde/usuarios/").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
