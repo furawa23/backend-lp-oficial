@@ -18,9 +18,9 @@ public class RolesPermisos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer rolesPermisosId;
 
-    @ManyToOne(fetch= FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rol_id")
-    @JsonBackReference
+    @JsonBackReference // Bien aplicado
     private Roles roles;
     
     @ManyToOne(fetch = FetchType.EAGER)
@@ -38,11 +38,11 @@ public class RolesPermisos {
         this.rolesPermisosId = rolesPermisosId;
     }
 
-    public Roles getRol() {
+    public Roles getRoles() {
         return roles;
     }
 
-    public void setRol(Roles rol) {
+    public void setRoles(Roles rol) {
         this.roles = rol;
     }
 

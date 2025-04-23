@@ -19,24 +19,23 @@ import jakarta.persistence.Table;
 public class Permisos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idPermisos;
+    private Integer idPermiso;
     private String nombrePermiso;
     private boolean estado;
 
     @OneToMany(mappedBy = "permisos", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<RolesPermisos> rolesPermisos = new LinkedHashSet<>();
-
-     // Relación con Modulos (clave foránea)
-    @ManyToOne
-    @JoinColumn(name = "idModulo", nullable = false)  // 'idModulo' será la clave foránea
-    private Modulos modulo;
-
-    public Integer getIdPermisos() {
-        return idPermisos;
+     // Relación con Submodulos (clave foránea)
+     @ManyToOne
+     @JoinColumn(name = "idSubModulo", nullable = true)  // La relación con el submódulo es opcional
+     private Submodulo subModulo;
+ 
+    public Integer getIdPermiso() {
+        return idPermiso;
     }
-    public void setIdPermisos(Integer idPermisos) {
-        this.idPermisos = idPermisos;
+    public void setIdPermiso(Integer idPermisos) {
+        this.idPermiso = idPermisos;
     }
     public String getNombrePermiso() {
         return nombrePermiso;
@@ -57,12 +56,11 @@ public class Permisos {
         this.rolesPermisos = rolesPermisos;
     }
     
-    public Modulos getModulo() {
-        return modulo;
+    public Submodulo getSubModulo() {
+        return subModulo;
     }
-
-    public void setModulo(Modulos modulo) {
-        this.modulo = modulo;
+    public void setSubModulo(Submodulo submodulo) {
+        this.subModulo = submodulo;
     }
     
 
