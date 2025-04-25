@@ -20,7 +20,7 @@ public class PasswordResetToken {
     private String token;
 
     @OneToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "id_usaurio", nullable = false)
     private Usuarios usuario;
 
     @Column(nullable = false)

@@ -10,6 +10,7 @@ public interface IRolesService {
     Roles obtenerRolPorId(Integer idRol);
     List<Roles> obtenerTodosLosRoles();
     void eliminarRol(Integer idRol);
+    Roles crearRolSinPermiso(Roles rol);
     List<Permisos> obtenerPermisosPorRol(Integer idRol); 
     Roles asignarPermisosARol(Integer idRol, List<Integer> idPermisos);
 

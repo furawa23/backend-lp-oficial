@@ -2,6 +2,8 @@ package com.alexander.sistema_cerro_verde_backend.entity;
 
 import java.util.Set;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -16,12 +18,12 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="roles")
+@CrossOrigin(origins = "*") // Para permitir peticiones desde el frontend (ajusta según sea necesario)
 public class Roles {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_rol")
     private Integer idRol;
-    @Column(name="nombre")
     private String nombreRol;
     private String descripcion;
     private boolean estado;

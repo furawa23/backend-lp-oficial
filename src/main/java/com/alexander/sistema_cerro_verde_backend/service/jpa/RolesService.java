@@ -92,4 +92,9 @@ public class RolesService implements IRolesService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'asignarPermisosARol'");
     }
+
+    @Override
+    public Roles crearRolSinPermiso(Roles rol) {
+        return rolesRepository.save(rol);
+    }
 }

@@ -16,13 +16,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
+
 @Table(name = "permisos")
 public class Permisos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_permiso")
     private Integer idPermiso;
-    @Column(name="nombre")
     private String nombrePermiso;
     private boolean estado;
 

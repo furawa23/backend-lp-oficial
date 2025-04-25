@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "roles_x_permisos")
+@Table(name = "rolepermisos")
 public class RolesPermisos {
     
     @Id
@@ -21,12 +21,12 @@ public class RolesPermisos {
     private Integer rolesPermisosId;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_rol")
+    @JoinColumn(name = "rol_id")
     @JsonBackReference // Bien aplicado
     private Roles roles;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_permio")
+    @JoinColumn(name = "id_permiso")
     private Permisos permisos;
 
     public RolesPermisos() {}  // Constructor vacío

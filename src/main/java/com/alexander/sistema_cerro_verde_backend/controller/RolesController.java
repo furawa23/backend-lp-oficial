@@ -34,7 +34,7 @@ public class RolesController {
         return ResponseEntity.ok(rolesService.actualizarRol(rol));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/roles/{id}")
     public ResponseEntity<Roles> obtenerRol(@PathVariable Integer id) {
         Roles rol = rolesService.obtenerRolPorId(id);
         if (rol == null) {
@@ -47,6 +47,13 @@ public class RolesController {
     public ResponseEntity<Roles> crearRol(@RequestBody Roles rol) {
         return ResponseEntity.ok(rolesService.crearRol(rol));
     }
+
+    
+    @PostMapping("/roles-sp/")
+    public ResponseEntity<Roles> crearRolSinPermisos(@RequestBody Roles rol) {
+        return ResponseEntity.ok(rolesService.crearRolSinPermiso(rol));
+    }
+    
     
    
     @DeleteMapping("/{id}")
