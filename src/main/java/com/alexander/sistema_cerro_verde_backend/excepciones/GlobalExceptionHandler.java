@@ -12,5 +12,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleCorreoYaRegistrado(CorreoYaRegistradoException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
+    @ExceptionHandler(UsuarioYaRegistradoException.class)
+    public ResponseEntity<String> handleUsuarioYaRegistrado(UsuarioYaRegistradoException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
 
 }

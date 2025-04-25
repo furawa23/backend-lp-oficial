@@ -1,5 +1,7 @@
 package com.alexander.sistema_cerro_verde_backend.entity;
 
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Empresas;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

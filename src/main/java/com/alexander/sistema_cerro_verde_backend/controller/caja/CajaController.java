@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Usuarios;
 import com.alexander.sistema_cerro_verde_backend.entity.caja.Cajas;
-import com.alexander.sistema_cerro_verde_backend.repository.UsuariosRepository;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
+import com.alexander.sistema_cerro_verde_backend.repository.seguridad.UsuariosRepository;
 import com.alexander.sistema_cerro_verde_backend.service.caja.CajasService;
 
 @CrossOrigin("*") 

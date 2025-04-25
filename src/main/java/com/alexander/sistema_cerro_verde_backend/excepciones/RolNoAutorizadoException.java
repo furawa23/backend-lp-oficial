@@ -7,5 +7,6 @@ public class RolNoAutorizadoException  extends Exception{
     public RolNoAutorizadoException(String mensaje){
         super(mensaje);
     }
+    
 
 }

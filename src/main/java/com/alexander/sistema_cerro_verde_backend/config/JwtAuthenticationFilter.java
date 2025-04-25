@@ -7,7 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.alexander.sistema_cerro_verde_backend.service.UserDetailsServiceImpl;
+
+import com.alexander.sistema_cerro_verde_backend.service.seguridad.UserDetailsServiceImpl;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.lang.NonNull; // ✅ Import correcto
 import jakarta.servlet.FilterChain;

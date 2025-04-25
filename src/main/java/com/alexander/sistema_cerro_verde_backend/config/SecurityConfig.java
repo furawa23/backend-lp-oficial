@@ -15,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.alexander.sistema_cerro_verde_backend.service.UserDetailsServiceImpl;
+import com.alexander.sistema_cerro_verde_backend.service.seguridad.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
