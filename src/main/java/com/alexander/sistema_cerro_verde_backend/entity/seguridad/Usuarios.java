@@ -2,10 +2,14 @@ package com.alexander.sistema_cerro_verde_backend.entity.seguridad;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,6 +18,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,7 +27,7 @@ public class Usuarios implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_usuario")
-    private Integer idUsuarios;
+    private Integer idUsuario;
     private String username;
     private String password;
     private String nombre;
@@ -37,7 +42,10 @@ public class Usuarios implements UserDetails {
     @JoinColumn(name = "id_rol", nullable = false)
     private Roles rol; // ahora es un solo rol, no un set
 
-    // MÉTODOS DE SPRING SECURITY
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "usuarios")
+    @JsonManagedReference // Esto es suficiente
+    private List<UsuariosPermisos> usuariosPermisos;
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         HashSet<Authority> authorities = new HashSet<>();
@@ -46,12 +54,22 @@ public class Usuarios implements UserDetails {
     }
 
 
-    public Integer getIdUsuarios() {
-        return idUsuarios;
+    public List<UsuariosPermisos> getUsuariosPermisos() {
+        return usuariosPermisos;
     }
 
-    public void setIdUsuarios(Integer idUsuarios) {
-        this.idUsuarios = idUsuarios;
+
+    public void setUsuariosPermisos(List<UsuariosPermisos> usuariosPermisos) {
+        this.usuariosPermisos = usuariosPermisos;
+    }
+
+
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public void setUsername(String username) {

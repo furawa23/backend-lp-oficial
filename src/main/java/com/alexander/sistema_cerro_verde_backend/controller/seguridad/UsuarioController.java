@@ -57,7 +57,7 @@ public class UsuarioController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Usuarios> actualizarUsuario(@PathVariable Integer id, @RequestBody Usuarios usuarioActualizado)  throws Exception{
-        usuarioActualizado.setIdUsuarios(id);
+        usuarioActualizado.setIdUsuario(id);
         Usuarios actualizado = usuarioService.actualizarUsuario(usuarioActualizado);
         return ResponseEntity.ok(actualizado);
     }

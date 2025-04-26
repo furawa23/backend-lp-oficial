@@ -22,13 +22,16 @@ public class Cajas {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_caja")
     private Integer id;
-    
+    @Column(name = "monto_apertura")
     private Double montoApertura;
+    @Column(name = "monto_cierre")
     private Double montoCierre;
     private Double saldo;
-
+    @Column(name = "fecha_apertura")
     private Date fechaApertura;
+    @Column(name = "fecha_cierre")
     private Date fechaCierre;
+    @Column(name = "estado_caja")
     private String estadoCaja;
 
     @ManyToOne

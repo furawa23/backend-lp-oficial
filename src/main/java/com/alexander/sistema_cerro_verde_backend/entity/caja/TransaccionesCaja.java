@@ -19,7 +19,6 @@ public class TransaccionesCaja {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_transaccion_caja")
     private Integer id;
-
     private Double montoTransaccion;
     private Date fechaHoraTransaccion;
     

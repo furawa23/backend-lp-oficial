@@ -25,9 +25,11 @@ public class RolesController {
     private IRolesService rolesService;
 
     @GetMapping("/roles/")
-    public List<Roles> obtenerTodosLosPermisos() {
-        return rolesService.obtenerTodosLosRoles();
+    public ResponseEntity<List<Roles>> obtenerTodosLosPermisos() {
+        List<Roles> roles = rolesService.obtenerTodosLosRoles();
+        return ResponseEntity.ok(roles);  // Esto debería devolver la lista de roles con el tipo Content-Type: application/json
     }
+    
 
     @PutMapping("/roles/")
     public ResponseEntity<Roles> actualizarPregunta(@RequestBody Roles rol){

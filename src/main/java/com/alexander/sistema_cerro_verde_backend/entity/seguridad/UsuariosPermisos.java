@@ -1,4 +1,5 @@
 package com.alexander.sistema_cerro_verde_backend.entity.seguridad;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -12,40 +13,38 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "roles_permisos")
-public class RolesPermisos {
-    
+@Table(name = "usuarios_permisos")
+public class UsuariosPermisos {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_rol_permiso")
-    private Integer rolesPermisosId;
+    @Column(name="id_usuarios_permisos")
+    private Integer idUsuariosPermisos;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_rol")
-    @JsonBackReference  // Bien aplicado para evitar ciclo de referencia
-    private Roles roles;
+    @JoinColumn(name = "id_usuario")
+    @JsonBackReference  // Bien aplicado
+    private Usuarios usuarios;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_permiso")
     private Permisos permisos;
 
-    public RolesPermisos() {}  // Constructor vacío
 
-
-    public Integer getRolesPermisosId() {
-        return rolesPermisosId;
+    public Integer getIdUsuariosPermisos() {
+        return idUsuariosPermisos;
     }
 
-    public void setRolesPermisosId(Integer rolesPermisosId) {
-        this.rolesPermisosId = rolesPermisosId;
+    public void setIdUsuariosPermisos(Integer idUsuariosPermisos) {
+        this.idUsuariosPermisos = idUsuariosPermisos;
     }
 
-    public Roles getRoles() {
-        return roles;
+    public Usuarios getUsuarios() {
+        return usuarios;
     }
 
-    public void setRoles(Roles rol) {
-        this.roles = rol;
+    public void setUsuarios(Usuarios usuarios) {
+        this.usuarios = usuarios;
     }
 
     public Permisos getPermisos() {
@@ -56,5 +55,4 @@ public class RolesPermisos {
         this.permisos = permisos;
     }
 
-    
 }
