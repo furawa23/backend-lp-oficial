@@ -36,7 +36,6 @@ public class UsuariosService implements IUsuariosService {
     private PermisosRepository permisosRepository; 
 
  
-    
     @Override
     public Usuarios obtenerUsuario(String username) {
         return usuariosRepository.findByUsername(username);
@@ -55,10 +54,51 @@ public class UsuariosService implements IUsuariosService {
         usuariosRepository.deleteById(id);
     }
 
-    @Override
-    public Usuarios actualizarUsuario(Usuarios usuarioActualizado) throws Exception {
-        return usuariosRepository.save(usuarioActualizado);
-    }
+        @Override
+        public Usuarios actualizarUsuario(Usuarios usuario) throws Exception {
+            Usuarios usuarioExistente = usuariosRepository.findById(usuario.getIdUsuario()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+            if (usuario.getEmail() != null && !usuario.getEmail().equals(usuarioExistente.getEmail()) &&
+                usuariosRepository.existsByEmail(usuario.getEmail())) {
+                throw new CorreoYaRegistradoException();
+            }
+        
+            if (usuario.getUsername() != null && !usuario.getUsername().equals(usuarioExistente.getUsername()) &&
+                usuariosRepository.existsByUsername(usuario.getUsername())) {
+                throw new UsuarioYaRegistradoException();
+            }
+        
+            Set<RolesPermisos> permisosDelJson = usuario.getRol().getRolesPermisos();
+            Integer idRol = usuario.getRol().getId();
+            Roles rol = rolesRepository.findById(idRol).orElse(null); 
+            if (rol == null) {
+                throw new RuntimeException("Rol no encontrado");
+            }
+        
+            usuario.setRol(rol);
+            Usuarios usuarioGuardado = usuariosRepository.save(usuario);
+        
+            if (permisosDelJson != null) {
+                Set<RolesPermisos> nuevosPermisos = new HashSet<>();
+        
+                for (RolesPermisos rp : permisosDelJson) {
+                    Permisos permiso = permisosRepository.findById(rp.getPermisos().getId()).orElse(null);
+                    if (permiso != null) {
+                        RolesPermisos nuevo = new RolesPermisos();
+                        nuevo.setRoles(rol);
+                        nuevo.setPermisos(permiso);
+                        nuevosPermisos.add(nuevo);
+                        rolesPermisosRepository.save(nuevo);
+                    }
+                }
+        
+                rol.setRolesPermisos(nuevosPermisos);
+            }
+        
+            return usuarioGuardado;
+        }
+        
+      
 
     @Override
     public List<Usuarios> obtenerTodosUsuarios() {

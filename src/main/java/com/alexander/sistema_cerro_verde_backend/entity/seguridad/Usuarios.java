@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -47,12 +48,12 @@ public class Usuarios implements UserDetails {
     private List<UsuariosPermisos> usuariosPermisos;
     
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         HashSet<Authority> authorities = new HashSet<>();
         authorities.add(new Authority(this.rol.getNombreRol()));
         return authorities;
     }
-
 
     public List<UsuariosPermisos> getUsuariosPermisos() {
         return usuariosPermisos;

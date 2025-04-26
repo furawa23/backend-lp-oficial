@@ -21,7 +21,8 @@ public class TransaccionesCaja {
     private Integer id;
     private Double montoTransaccion;
     private Date fechaHoraTransaccion;
-    
+    private String metodo;
+
     @ManyToOne
     @JoinColumn(name = "id_caja")
     private Cajas caja;
@@ -56,6 +57,14 @@ public class TransaccionesCaja {
         this.fechaHoraTransaccion = fechaHoraTransaccion;
     }
 
+    public String getMetodo() {
+        return metodo;
+    }
+
+    public void setMetodo(String metodo) {
+        this.metodo = metodo;
+    }
+
     public Cajas getCaja() {
         return caja;
     }
@@ -83,8 +92,11 @@ public class TransaccionesCaja {
     @Override
     public String toString() {
         return "TransaccionesCaja [id=" + id + ", montoTransaccion=" + montoTransaccion + ", fechaHoraTransaccion="
-                + fechaHoraTransaccion + ", caja=" + caja + ", tipo=" + tipo + ", estado=" + estado + "]";
+                + fechaHoraTransaccion + ", metodo=" + metodo + ", caja=" + caja + ", tipo=" + tipo + ", estado="
+                + estado + "]";
     }
+
+
 
     
 }

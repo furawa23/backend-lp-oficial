@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
+import com.alexander.sistema_cerro_verde_backend.excepciones.CorreoYaRegistradoException;
+import com.alexander.sistema_cerro_verde_backend.excepciones.UsuarioYaRegistradoException;
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.IUsuariosService;
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.jpa.UsuariosService;
 
@@ -56,10 +58,23 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuarios> actualizarUsuario(@PathVariable Integer id, @RequestBody Usuarios usuarioActualizado)  throws Exception{
-        usuarioActualizado.setIdUsuario(id);
-        Usuarios actualizado = usuarioService.actualizarUsuario(usuarioActualizado);
-        return ResponseEntity.ok(actualizado);
+    public ResponseEntity<?> editarUsuario(@PathVariable Integer id, @RequestBody Usuarios usuario) {
+        try {
+            // Establecer el ID que viene por la URL al objeto usuario
+            usuario.setIdUsuario(id);
+
+            Usuarios usuarioActualizado = usuarioServiceImpl.actualizarUsuario(usuario);
+            return ResponseEntity.ok(usuarioActualizado);
+
+        } catch (CorreoYaRegistradoException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("El correo ya está registrado.");
+        } catch (UsuarioYaRegistradoException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("El nombre de usuario ya está registrado.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al editar el usuario.");
+        }
     }
   
     @DeleteMapping("/{usuarioId}")
