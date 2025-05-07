@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alexander.sistema_cerro_verde_backend.entity.caja.ArqueosCaja;
+import com.alexander.sistema_cerro_verde_backend.entity.caja.DetalleArqueo;
 import com.alexander.sistema_cerro_verde_backend.repository.caja.ArqueosCajaRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.caja.DetalleArqueoRepository;
 import com.alexander.sistema_cerro_verde_backend.service.caja.ArqueosCajaService;
 
 @Service
@@ -16,6 +18,9 @@ public class ArqueosCajaServiceImpl implements ArqueosCajaService {
 
     @Autowired
     private ArqueosCajaRepository repository;
+
+    @Autowired
+    private DetalleArqueoRepository detalleArqueoRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -26,9 +31,18 @@ public class ArqueosCajaServiceImpl implements ArqueosCajaService {
     @Override
     @Transactional
     public ArqueosCaja guardar(ArqueosCaja arqueo) {
-        return repository.save(arqueo);
+        // Primero guardamos el arqueo principal
+        ArqueosCaja arqueoGuardado = repository.save(arqueo);
+    
+        // Luego asociamos y guardamos los detalles
+        for (DetalleArqueo detalle : arqueo.getDetalles()) {
+            detalle.setArqueo(arqueoGuardado);
+            detalleArqueoRepository.save(detalle);
+        }
+    
+        return arqueoGuardado;
     }
-
+    
     @Override
     @Transactional(readOnly = true)
     public Optional<ArqueosCaja> buscarId(Integer id) {
