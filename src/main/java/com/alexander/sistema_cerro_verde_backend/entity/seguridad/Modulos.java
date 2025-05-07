@@ -1,12 +1,10 @@
 package com.alexander.sistema_cerro_verde_backend.entity.seguridad;
 
-import java.util.List;
+import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,9 +21,9 @@ public class Modulos {
     private Integer idModulo;
     private String nombre;
     private String icon;
-    @OneToMany(mappedBy = "modulo", fetch = FetchType.EAGER)
-    @JsonIgnore
-    private List<Submodulo> submodulos;  // Lista de submodulos asociados a este módulo
+
+    @OneToMany(mappedBy = "modulo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Permisos> permisos;
 
     public Integer getIdModulo() {
         return idModulo;
@@ -43,19 +41,19 @@ public class Modulos {
         this.nombre = nombre;
     }
 
-    public List<Submodulo> getSubmodulos() {
-        return submodulos;
-    }
-
-    public void setSubmodulos(List<Submodulo> submodulos) {
-        this.submodulos = submodulos;
-    }
-
     public String getIcon() {
         return icon;
     }
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public Set<Permisos> getPermisos() {
+        return permisos;
+    }
+
+    public void setPermisos(Set<Permisos> permisos) {
+        this.permisos = permisos;
     }
 }

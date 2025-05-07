@@ -10,6 +10,6 @@ import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Permisos;
 @Repository
 public interface PermisosRepository extends JpaRepository<Permisos,Integer>{
     Optional<Permisos> findByNombrePermiso(String nombrePermiso);
-    List<Permisos> findBySubModulo_Modulo_IdModulo(Integer id);
+    List<Permisos> findByModulo_IdModulo(Integer idModulo);
 
 } 

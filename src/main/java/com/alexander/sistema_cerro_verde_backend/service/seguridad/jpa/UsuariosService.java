@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Permisos;
@@ -28,6 +29,10 @@ public class UsuariosService implements IUsuariosService {
 
     @Autowired
     private RolesRepository rolesRepository; 
+
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder; 
 
     @Autowired
     private RolesPermisosRepository rolesPermisosRepository; 
@@ -109,19 +114,19 @@ public class UsuariosService implements IUsuariosService {
     public boolean existeUsuario(String username) {
         return usuariosRepository.findByUsername(username) != null;
     }
-
     @Override
     public void cambiarContraseña(Integer id, String nuevaContraseña) throws Exception {
         Optional<Usuarios> optional = usuariosRepository.findById(id);
         if (optional.isPresent()) {
             Usuarios usuario = optional.get();
-            usuario.setPassword(nuevaContraseña);
+            String contraseñaEncriptada = passwordEncoder.encode(nuevaContraseña);
+            usuario.setPassword(contraseñaEncriptada);
             usuariosRepository.save(usuario);
         } else {
             throw new Exception("Usuario no encontrado para cambiar contraseña");
         }
     }
-
+    
 
     @Override
     public Usuarios guardarUsuarioConPermisos(Usuarios usuario) throws Exception {
@@ -187,6 +192,10 @@ public class UsuariosService implements IUsuariosService {
     @Override
     public List<String> obtenerPermisosPorUsuarioId(Integer id) throws Exception {
         return usuariosRepository.obtenerPermisosPorUsuarioId(id);
+    }
+    
+    public UsuariosRepository getUsuariosRepository() {
+        return this.usuariosRepository;
     }
     
 }    

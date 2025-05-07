@@ -6,17 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Permisos;
-import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Submodulo;
 import com.alexander.sistema_cerro_verde_backend.repository.seguridad.PermisosRepository;
-import com.alexander.sistema_cerro_verde_backend.repository.seguridad.SubModuloRepository;
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.IPermisosService;
 
 @Service
 public class PermisosService implements IPermisosService{
 
-    @Autowired
-    private SubModuloRepository subModuloRepository;
-
+   
     @Autowired
     private PermisosRepository permisosRepository;
     
@@ -38,10 +34,9 @@ public class PermisosService implements IPermisosService{
 
     @Override
     public Permisos crearPermiso(Permisos permiso) {
-        Integer idModulo = permiso.getSubModulo().getIdSubModulo();
-        Submodulo modulo = subModuloRepository.findById(idModulo).orElse(null);
+        Integer idPermiso = permiso.getId();
+        Permisos modulo = permisosRepository.findById(idPermiso).orElse(null);
         if (modulo != null) {
-            permiso.setSubModulo(modulo);// Asocia el Modulo completo
             return permisosRepository.save(permiso);
         } else {
             throw new RuntimeException("Sub modulo no encontrado");
@@ -54,9 +49,9 @@ public class PermisosService implements IPermisosService{
         permisos.setId(idPermiso);
         permisosRepository.delete(permisos);
     }
-
     @Override
     public List<Permisos> obtenerPermisosPorModulo(Integer idModulo) {
-        return permisosRepository.findBySubModulo_Modulo_IdModulo(idModulo);
+        return permisosRepository.findByModulo_IdModulo(idModulo);
     }
+  
 }

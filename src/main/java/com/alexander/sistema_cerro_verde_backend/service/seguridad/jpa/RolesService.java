@@ -1,6 +1,7 @@
 package com.alexander.sistema_cerro_verde_backend.service.seguridad.jpa;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Permisos;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Roles;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.RolesPermisos;
+import com.alexander.sistema_cerro_verde_backend.excepciones.NombreRolYaExisteException;
 import com.alexander.sistema_cerro_verde_backend.repository.seguridad.PermisosRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.seguridad.RolesPermisosRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.seguridad.RolesRepository;
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.IRolesService;
 
@@ -19,44 +22,50 @@ public class RolesService implements IRolesService {
     @Autowired
     private RolesRepository rolesRepository;
     @Autowired
+    private RolesPermisosRepository rolesPermisosRepo;
+    @Autowired
     private PermisosRepository permisosRepository;
     
-    @Override
-    public Roles crearRol(Roles rol) {
-        System.out.println("Lista completa de rolesPermisos:");
-        System.out.println(rol.getRolesPermisos());
+   @Override
+   public Roles crearRol(Roles rol) throws Exception {
+    // Verificar si el rol ya existe
+    Optional<Roles> existingRole = rolesRepository.findByNombreRol(rol.getNombreRol());
+    if (existingRole.isPresent()) {
+        throw new NombreRolYaExisteException("El rol con el nombre " + rol.getNombreRol() + " ya existe en el sistema");
+    }
 
-        Set<RolesPermisos> rolesPermisosSet = new HashSet<>();
-    
-        System.out.println("Permisos recibidos:");
-        for (RolesPermisos rp : rol.getRolesPermisos()) {
-            if (rp.getPermisos() != null) {
-                Integer idPermiso = rp.getPermisos().getId();
-                Permisos permiso = permisosRepository.findById(idPermiso).orElse(null);
-    
-                if (permiso != null) {
-                    rp.setPermisos(permiso);
-                    rp.setRoles(rol); // Establecer la relación inversa
-                    rolesPermisosSet.add(rp);
-                    System.out.println(" -> ID Permiso: " + permiso.getId());
-                } else {
-                    System.out.println(" -> Permiso con ID " + idPermiso + " no encontrado");
-                    throw new RuntimeException("Permiso con ID " + idPermiso + " no encontrado");
-                }
-            } else {
-                System.out.println(" -> Permiso nulo");
-                throw new RuntimeException("Permiso nulo recibido en rolesPermisos");
-            }
+    return rolesRepository.save(rol);
+}
+@Override
+public Roles actualizarRol(Roles rol) {
+    // Verificar que el rol exista antes de actualizar
+    Roles rolExistente = rolesRepository.findById(rol.getId())
+        .orElseThrow(() -> new RuntimeException("Rol con ID " + rol.getId() + " no encontrado"));
+
+    System.out.println("Actualizando rolesPermisos para el rol ID: " + rol.getId());
+    rolesPermisosRepo.deleteByRolId(rol.getId());
+    Set<RolesPermisos> rolesPermisosSet = new HashSet<>();
+
+    for (RolesPermisos rp : rol.getRolesPermisos()) {
+        if (rp.getPermisos() != null) {
+            Integer idPermiso = rp.getPermisos().getId();
+            Permisos permiso = permisosRepository.findById(idPermiso)
+                .orElseThrow(() -> new RuntimeException("Permiso con ID " + idPermiso + " no encontrado"));
+
+            rp.setPermisos(permiso);
+            rp.setRoles(rol); // Relación inversa
+            rolesPermisosSet.add(rp);
+        } else {
+            throw new RuntimeException("Permiso nulo recibido en rolesPermisos");
         }
-    
-        rol.setRolesPermisos(rolesPermisosSet);
-        return rolesRepository.save(rol);
     }
-    
-    @Override
-    public Roles actualizarRol(Roles rol){
-        return rolesRepository.save(rol);
-    }
+
+    // Establecemos los permisos actualizados en el rol
+    rol.setRolesPermisos(rolesPermisosSet);
+
+    // Guardamos el rol con los nuevos permisos
+    return rolesRepository.save(rol);
+}
 
     @Override
     public Roles obtenerRolPorId(Integer idRol) {
@@ -94,7 +103,12 @@ public class RolesService implements IRolesService {
     }
 
     @Override
-    public Roles crearRolSinPermiso(Roles rol) {
+    public Roles crearRolSinPermiso(Roles rol) throws Exception {
+        Optional<Roles> existingRole = rolesRepository.findByNombreRol(rol.getNombreRol());
+        if (existingRole.isPresent()) {
+            throw new NombreRolYaExisteException("El rol con el nombre " + rol.getNombreRol() + " ya existe en el sistema");
+        }
         return rolesRepository.save(rol);
     }
+    
 }

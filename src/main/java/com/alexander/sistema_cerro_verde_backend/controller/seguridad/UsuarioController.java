@@ -1,6 +1,7 @@
 package com.alexander.sistema_cerro_verde_backend.controller.seguridad;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -92,4 +93,24 @@ public class UsuarioController {
         }
     }
 
+    @PutMapping("/{id}/cambiar-password")
+    public ResponseEntity<?> cambiarPassword(@PathVariable Integer id, @RequestBody String nuevaPassword) {
+        try {
+            Optional<Usuarios> optional = usuarioServiceImpl.getUsuariosRepository().findById(id);
+    
+            if (optional.isPresent()) {
+                Usuarios usuario = optional.get();
+                String passwordEncriptada = bCryptPasswordEncoder.encode(nuevaPassword.replace("\"", ""));
+                usuario.setPassword(passwordEncriptada);
+                usuarioServiceImpl.getUsuariosRepository().save(usuario);
+    
+                return ResponseEntity.ok("Contraseña actualizada correctamente.");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al cambiar la contraseña.");
+        }
+    }
+    
 }

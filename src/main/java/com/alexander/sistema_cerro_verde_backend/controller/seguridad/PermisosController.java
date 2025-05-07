@@ -52,9 +52,6 @@ public class PermisosController {
         permisosService.eliminarPermiso(id);
     }
 
-    @GetMapping("/permisos/modulo/{idModulo}")
-    public List<Permisos> obtenerPermisosPorModulo(@PathVariable Integer idModulo) {
-        return permisosService.obtenerPermisosPorModulo(idModulo);
-    }
+  
 
 }

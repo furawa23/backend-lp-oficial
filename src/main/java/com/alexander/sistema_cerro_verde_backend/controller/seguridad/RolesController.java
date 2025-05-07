@@ -1,7 +1,9 @@
 package com.alexander.sistema_cerro_verde_backend.controller.seguridad;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Roles;
+import com.alexander.sistema_cerro_verde_backend.repository.seguridad.RolesRepository;
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.IRolesService;
 
 @RestController
@@ -23,6 +26,9 @@ public class RolesController {
 
     @Autowired
     private IRolesService rolesService;
+    
+    @Autowired
+    private RolesRepository rolesRepository;
 
     @GetMapping("/roles/")
     public ResponseEntity<List<Roles>> obtenerTodosLosPermisos() {
@@ -31,10 +37,33 @@ public class RolesController {
     }
     
 
-    @PutMapping("/roles/")
-    public ResponseEntity<Roles> actualizarPregunta(@RequestBody Roles rol){
-        return ResponseEntity.ok(rolesService.actualizarRol(rol));
+@PutMapping("/roles/")
+public ResponseEntity<?> actualizarRol(@RequestBody Roles rol) {
+    try {
+        // Validar que el rol existe por ID
+        Optional<Roles> rolExistenteOpt = rolesRepository.findById(rol.getId());
+        if (!rolExistenteOpt.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Rol con ID " + rol.getId() + " no encontrado");
+        }
+
+        // Validar que el nombre del rol no esté siendo usado por otro (evita duplicados)
+        Optional<Roles> rolConMismoNombre = rolesRepository.findByNombreRol(rol.getNombreRol());
+        if (rolConMismoNombre.isPresent() && !rolConMismoNombre.get().getId().equals(rol.getId())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Ya existe otro rol con el nombre " + rol.getNombreRol());
+        }
+
+        // Procesar la actualización
+        Roles rolActualizado = rolesService.actualizarRol(rol);
+        return ResponseEntity.ok(rolActualizado);
+
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al actualizar el rol: " + e.getMessage());
     }
+}
+
 
     @GetMapping("/roles/{id}")
     public ResponseEntity<Roles> obtenerRol(@PathVariable Integer id) {
@@ -46,14 +75,14 @@ public class RolesController {
     }
 
     @PostMapping("/roles/")
-    public ResponseEntity<Roles> crearRol(@RequestBody Roles rol) {
+    public ResponseEntity<Roles> crearRol(@RequestBody Roles rol) throws Exception {
         return ResponseEntity.ok(rolesService.crearRol(rol));
     }
 
     
     @PostMapping("/roles-sp/")
-    public ResponseEntity<Roles> crearRolSinPermisos(@RequestBody Roles rol) {
-        return ResponseEntity.ok(rolesService.crearRolSinPermiso(rol));
+    public ResponseEntity<Roles> crearRolSinPermisos(@RequestBody Roles rol) throws Exception {
+        return ResponseEntity.ok(rolesService.crearRol(rol));
     }
     
     

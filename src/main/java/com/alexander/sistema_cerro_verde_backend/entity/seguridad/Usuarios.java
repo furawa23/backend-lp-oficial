@@ -2,15 +2,12 @@ package com.alexander.sistema_cerro_verde_backend.entity.seguridad;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,7 +16,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -43,10 +39,7 @@ public class Usuarios implements UserDetails {
     @JoinColumn(name = "id_rol", nullable = false)
     private Roles rol; // ahora es un solo rol, no un set
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "usuarios")
-    @JsonManagedReference // Esto es suficiente
-    private List<UsuariosPermisos> usuariosPermisos;
-    
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -55,14 +48,6 @@ public class Usuarios implements UserDetails {
         return authorities;
     }
 
-    public List<UsuariosPermisos> getUsuariosPermisos() {
-        return usuariosPermisos;
-    }
-
-
-    public void setUsuariosPermisos(List<UsuariosPermisos> usuariosPermisos) {
-        this.usuariosPermisos = usuariosPermisos;
-    }
 
 
     public Integer getIdUsuario() {

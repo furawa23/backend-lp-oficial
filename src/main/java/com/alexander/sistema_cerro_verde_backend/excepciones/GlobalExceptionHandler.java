@@ -16,5 +16,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleUsuarioYaRegistrado(UsuarioYaRegistradoException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
-
+    @ExceptionHandler(NombreRolYaExisteException.class)
+    public ResponseEntity<String> handleNombreRolYaExiste(NombreRolYaExisteException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
 }

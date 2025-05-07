@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Modulos;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Permisos;
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.IModulosService;
 
     @RestController
@@ -49,5 +50,10 @@ import com.alexander.sistema_cerro_verde_backend.service.seguridad.IModulosServi
         @DeleteMapping("/modulos/{id}")
         public void eliminarPermiso(@PathVariable("id") Integer id) {
             moduloService.eliminarModulo(id);
+        }
+        
+        @GetMapping("/modulos/{idModulo}/permisos")
+        public List<Permisos> obtenerPermisosPorModulo(@PathVariable Integer idModulo) {
+            return moduloService.obtenerPermisosPorModulo(idModulo);
         }
     }

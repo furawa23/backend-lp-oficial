@@ -1,5 +1,6 @@
 package com.alexander.sistema_cerro_verde_backend.entity.seguridad;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,7 +33,7 @@ public class Roles {
     
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "roles")
     @JsonManagedReference // Esto es suficiente
-    private Set<RolesPermisos> rolesPermisos;
+    private Set<RolesPermisos> rolesPermisos = new HashSet<>();  // Inicialización del Set
 
   
     public String getNombreRol() {
