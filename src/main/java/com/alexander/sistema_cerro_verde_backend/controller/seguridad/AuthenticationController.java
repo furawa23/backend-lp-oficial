@@ -20,6 +20,7 @@ import com.alexander.sistema_cerro_verde_backend.config.JwtUtils;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.JwtRequest;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.JwtResponse;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
+import com.alexander.sistema_cerro_verde_backend.excepciones.UsuarioDeshabilitadoException;
 import com.alexander.sistema_cerro_verde_backend.excepciones.UsuarioFoundException;
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.UserDetailsServiceImpl;
 
@@ -47,29 +48,25 @@ public class AuthenticationController {
             exception.printStackTrace();
             throw new Exception("Usuario no encontrado");
         }
-    
-        UserDetails userDetails = this.userxDetailsServiceImpl.loadUserByUsername(jwtRequest.getUsername());
-        
+        UserDetails userDetails = this.userxDetailsServiceImpl.loadUserByUsername(jwtRequest.getUsername()); 
         System.out.println("Usuario autenticado correctamente: " + userDetails.getUsername());
-    
         String token = this.jwtUtils.generateToken(userDetails);
-        
         System.out.println("Token generado: " + token); // <-- Esto te dirá si el token realmente se generó
-    
         return ResponseEntity.ok(new JwtResponse(token));
     }
     
-
-    private void autenticar(String username,String password) throws Exception {
-        try{
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
-        }catch (DisabledException exception){
-            throw  new Exception("USUARIO DESHABILITADO " + exception.getMessage());
-        }catch (BadCredentialsException e){
-            throw  new Exception("Credenciales invalidas " + e.getMessage());
+  
+    private void autenticar(String username, String password) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException exception) {
+            throw new UsuarioDeshabilitadoException("El usuario está deshabilitado.");
+        } catch (BadCredentialsException e) {
+            throw new Exception("Credenciales inválidas " + e.getMessage());
         }
     }
-
+    
+    
 
     @GetMapping("/usuario-actual")
     public Usuarios  obtenerUsuarioActual(Principal principal){

@@ -35,7 +35,6 @@ public class Permisos {
     @JsonIgnore
     private Modulos modulo;
 
-
     @OneToMany(mappedBy = "permisos", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<RolesPermisos> rolesPermisos = new LinkedHashSet<>();
