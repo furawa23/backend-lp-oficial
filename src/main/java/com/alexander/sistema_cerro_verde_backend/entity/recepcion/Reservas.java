@@ -3,7 +3,8 @@ package com.alexander.sistema_cerro_verde_backend.entity.recepcion;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Clientes;
+import com.alexander.sistema_cerro_verde_backend.entity.reservas.Clientes;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -36,6 +37,7 @@ public class Reservas {
     private List<HabitacionesXReserva> habitacionesXReserva;
 
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<SalonesXReserva> salonesXReserva;
 
 

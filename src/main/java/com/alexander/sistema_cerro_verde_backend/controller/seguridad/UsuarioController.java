@@ -100,6 +100,7 @@ public class UsuarioController {
     
             if (optional.isPresent()) {
                 Usuarios usuario = optional.get();
+                // Si estás recibiendo con comillas, límpialo
                 String passwordEncriptada = bCryptPasswordEncoder.encode(nuevaPassword.replace("\"", ""));
                 usuario.setPassword(passwordEncriptada);
                 usuarioServiceImpl.getUsuariosRepository().save(usuario);
@@ -112,5 +113,6 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al cambiar la contraseña.");
         }
     }
+
     
 }

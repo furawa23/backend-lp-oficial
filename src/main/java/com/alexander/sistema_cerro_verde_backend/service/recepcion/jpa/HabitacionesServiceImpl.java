@@ -8,7 +8,6 @@ import jakarta.persistence.EntityNotFoundException;
 
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +36,7 @@ private TipoHabitacionService tipoHabitacionService;
     public List<Habitaciones> buscarTodos() {
         return repository.findAll();
     }
-
+    
     @Override
     @Transactional
     public Habitaciones guardar(Habitaciones habitacion) {
@@ -96,4 +95,6 @@ private TipoHabitacionService tipoHabitacionService;
             "Habitación no encontrada con ID: " + habitacion.getId_habitacion()
         ));
     }
+
+    
 }

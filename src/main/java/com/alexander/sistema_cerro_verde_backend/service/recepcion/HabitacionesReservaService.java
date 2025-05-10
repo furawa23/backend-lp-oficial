@@ -16,4 +16,9 @@ public interface HabitacionesReservaService {
     HabitacionesXReserva modificar(HabitacionesXReserva habreserva);
     
     void eliminar(Integer id);
+
+    void deleteByReservaId(Integer idReserva);
+
+    void actualizarEstado(Integer idHabitacion, Integer idReserva, Integer estado);
+
 }

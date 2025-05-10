@@ -1,11 +1,17 @@
 package com.alexander.sistema_cerro_verde_backend.entity.caja;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -23,6 +29,10 @@ public class ArqueosCaja {
     @OneToOne
     @JoinColumn(name = "id_caja")
     private Cajas caja;
+
+    @OneToMany(mappedBy = "arqueo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<DetalleArqueo> detalles;
 
     public Integer getId() {
         return id;
@@ -48,9 +58,18 @@ public class ArqueosCaja {
         this.caja = caja;
     }
 
+    public List<DetalleArqueo> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetalleArqueo> detalles) {
+        this.detalles = detalles;
+    }
+
     @Override
     public String toString() {
-        return "ArqueosCaja [id=" + id + ", observaciones=" + observaciones + ", caja=" + caja + "]";
+        return "ArqueosCaja [id=" + id + ", observaciones=" + observaciones + ", caja=" + caja + ", detalles="
+                + detalles + "]";
     }
 
     

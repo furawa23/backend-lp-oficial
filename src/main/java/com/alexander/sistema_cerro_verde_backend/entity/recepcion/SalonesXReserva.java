@@ -1,5 +1,7 @@
 package com.alexander.sistema_cerro_verde_backend.entity.recepcion;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +23,7 @@ public class SalonesXReserva {
 
     @ManyToOne
     @JoinColumn(name = "id_reserva")
+    @JsonBackReference
     private Reservas reserva;
 
     private Integer estado;
