@@ -19,6 +19,7 @@ public class Recojo {
     private Integer id_recojo;
     private String destino;
     private LocalDateTime fecha_hora;
+    private Integer estado;
 
     @ManyToOne
     @JoinColumn(name = "id_reserva")
@@ -46,6 +47,26 @@ public class Recojo {
     public void setFecha_hora(LocalDateTime fecha_hora) {
         this.fecha_hora = fecha_hora;
     }
+    public Reservas getReserva() {
+        return reserva;
+    }
+    public void setReserva(Reservas reserva) {
+        this.reserva = reserva;
+    }
+    public Conductores getConductor() {
+        return conductor;
+    }
+    public void setConductor(Conductores conductor) {
+        this.conductor = conductor;
+    }
+    public Integer getEstado() {
+        return estado;
+    }
+    public void setEstado(Integer estado) {
+        this.estado = estado;
+    }
+    
+    
 
     
 

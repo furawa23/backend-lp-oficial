@@ -1,7 +1,5 @@
 package com.alexander.sistema_cerro_verde_backend.entity.ventas;
 
-import com.alexander.sistema_cerro_verde_backend.entity.reservas.Clientes;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

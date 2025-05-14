@@ -16,6 +16,7 @@ public class Conductores {
     private String dni;
     private String placa;
     private String modelo_vehiculo;
+    private Integer estado;
 
     public Integer getId_conductor() {
         return id_conductor;
@@ -47,6 +48,14 @@ public class Conductores {
     public void setModelo_vehiculo(String modelo_vehiculo) {
         this.modelo_vehiculo = modelo_vehiculo;
     }
+    public Integer getEstado() {
+        return estado;
+    }
+    public void setEstado(Integer estado) {
+        this.estado = estado;
+    }
+
+    
 
     
 

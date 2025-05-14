@@ -1,11 +1,9 @@
-package com.alexander.sistema_cerro_verde_backend.entity.reservas;
+package com.alexander.sistema_cerro_verde_backend.entity.ventas;
 
 import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
-import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
@@ -18,7 +16,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name="clientes")
 @SQLDelete(sql="UPDATE Clientes SET estado = 0 WHERE id_cliente=?")
-@SQLRestriction("estado = 1")
 public class Clientes {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

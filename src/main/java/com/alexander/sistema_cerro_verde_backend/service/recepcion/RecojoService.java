@@ -13,5 +13,7 @@ public interface RecojoService {
 
     Optional<Recojo> buscarId(Integer id);
 
-    void eliminarId(Integer id);
+    Recojo modificar(Recojo recojo);
+
+    void eliminar(Integer id);
 }

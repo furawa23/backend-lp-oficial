@@ -1,4 +1,4 @@
-package com.alexander.sistema_cerro_verde_backend.service;
+package com.alexander.sistema_cerro_verde_backend.service.ventas;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

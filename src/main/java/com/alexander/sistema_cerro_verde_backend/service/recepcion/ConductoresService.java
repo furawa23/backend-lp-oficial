@@ -13,5 +13,7 @@ public interface ConductoresService {
 
     Optional<Conductores> buscarId(Integer id);
 
-    void eliminarId(Integer id);
+    Conductores modificar(Conductores conductor);
+
+    void eliminar(Integer id);
 }
