@@ -66,9 +66,9 @@ public class ConductoresController {
     }
 
     @DeleteMapping("/conductores/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id){
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         conductorService.eliminar(id);
-        return "Conductor eliminado";
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
 
     

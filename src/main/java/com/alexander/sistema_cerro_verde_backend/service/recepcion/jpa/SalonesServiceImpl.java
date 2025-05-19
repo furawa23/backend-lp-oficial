@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Salones;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.SalonesRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.recepcion.SalonesReservaRepository;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.SalonesService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -18,6 +21,9 @@ public class SalonesServiceImpl implements SalonesService{
 
     @Autowired
     private SalonesRepository repository;
+
+    @Autowired
+    private SalonesReservaRepository reservaRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -69,7 +75,14 @@ public class SalonesServiceImpl implements SalonesService{
         Salones salon = repository.findById(id)
         .orElseThrow(() -> new RuntimeException("Salón no encontrado"));
     
-        salon.setEstado(0); // 0 representa inactivo/eliminado lógico
+        Integer reservasActivas = reservaRepository.contarReservasActivasPorSalon(id);
+        if (reservasActivas != null && reservasActivas > 0) {
+        throw new ResponseStatusException(
+            HttpStatus.CONFLICT, "No se puede eliminar: el salón tiene reservas activas."
+        );
+        }
+
+        salon.setEstado(0);
         repository.save(salon);
     }
 }

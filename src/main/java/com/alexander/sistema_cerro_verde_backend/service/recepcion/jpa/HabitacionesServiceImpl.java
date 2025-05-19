@@ -7,13 +7,16 @@ import com.alexander.sistema_cerro_verde_backend.service.recepcion.TipoHabitacio
 import jakarta.persistence.EntityNotFoundException;
 
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesReservaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
@@ -27,6 +30,9 @@ private HabitacionesRepository repository;
 
 @Autowired
 private SucursalesService sucursalService;
+
+@Autowired
+private HabitacionesReservaRepository reservaRepository;
 
 @Autowired
 private TipoHabitacionService tipoHabitacionService;
@@ -65,11 +71,19 @@ private TipoHabitacionService tipoHabitacionService;
     @Transactional
     public void eliminar(Integer id) {
         Habitaciones habitacion = repository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
-    
-        habitacion.setEstado(0); // 0 representa inactivo/eliminado lógico
+            .orElseThrow(() -> new RuntimeException("Habitación no encontrada"));
+
+        Integer reservasActivas = reservaRepository.contarReservasActivasPorHabitacion(id);
+        if (reservasActivas != null && reservasActivas > 0) {
+        throw new ResponseStatusException(
+            HttpStatus.CONFLICT, "No se puede eliminar: la habitación tiene reservas activas."
+        );
+        }
+        
+        habitacion.setEstado(0); // baja lógica
         repository.save(habitacion);
     }
+
 
     @Override
     public Habitaciones modificar(Habitaciones habitacion) {

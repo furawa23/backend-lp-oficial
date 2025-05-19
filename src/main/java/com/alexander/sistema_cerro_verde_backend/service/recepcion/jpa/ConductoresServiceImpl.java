@@ -5,20 +5,26 @@ import com.alexander.sistema_cerro_verde_backend.service.recepcion.ConductoresSe
 import jakarta.persistence.EntityNotFoundException;
 
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ConductoresRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.recepcion.RecojoRepository;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Conductores;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ConductoresServiceImpl implements ConductoresService {
 
     @Autowired
     private ConductoresRepository repository;
+
+    @Autowired
+    private RecojoRepository recojoRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -63,9 +69,17 @@ public class ConductoresServiceImpl implements ConductoresService {
 
     
     @Override
+    @Transactional
     public void eliminar(Integer id) {
         Conductores conductor = repository.findById(id)
             .orElseThrow(() -> new RuntimeException("Conductor no encontrado"));
+
+        Integer recojosActivos = recojoRepository.contarRecojosActivosPorConductor(id);
+        if (Optional.ofNullable(recojosActivos).orElse(0) > 0){
+        throw new ResponseStatusException(
+            HttpStatus.CONFLICT, "No se puede eliminar: el conductor tiene recojos activos."
+        );
+        }
 
         conductor.setEstado(0); 
         repository.save(conductor);

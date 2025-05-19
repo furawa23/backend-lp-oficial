@@ -21,5 +21,7 @@ public interface HabitacionesReservaRepository extends JpaRepository<Habitacione
     @Query("SELECT hxr FROM HabitacionesXReserva hxr WHERE hxr.habitacion.id = :id_habitacion AND hxr.reserva.id = :id_reserva")
     Optional<HabitacionesXReserva> findByHabitacionAndReserva(@Param("id_habitacion") Integer id_habitacion, @Param("id_reserva") Integer id_reserva);
 
-    
+    @Query("SELECT COALESCE(COUNT(hr), 0) FROM HabitacionesXReserva hr WHERE hr.habitacion.id_habitacion = :idHabitacion AND hr.reserva.estado = 1")
+    Integer contarReservasActivasPorHabitacion(@Param("idHabitacion") Integer idHabitacion);
+
 }

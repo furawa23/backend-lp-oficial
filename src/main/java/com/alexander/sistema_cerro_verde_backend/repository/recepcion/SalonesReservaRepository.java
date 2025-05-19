@@ -21,4 +21,7 @@ public interface SalonesReservaRepository extends JpaRepository<SalonesXReserva,
     @Query("SELECT hxr FROM SalonesXReserva hxr WHERE hxr.salon.id = :id_salon AND hxr.reserva.id = :id_reserva")
     Optional<SalonesXReserva> findBySalonAndReserva(@Param("id_salon") Integer id_salon, @Param("id_reserva") Integer id_reserva);
 
+    @Query("SELECT COALESCE(COUNT(hr), 0) FROM SalonesXReserva hr WHERE hr.salon.id_salon = :idSalon AND hr.reserva.estado = 1")
+    Integer contarReservasActivasPorSalon(@Param("idSalon") Integer idSalon);
+
 }
