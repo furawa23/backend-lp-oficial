@@ -103,6 +103,7 @@ public Reservas guardar(Reservas reserva) {
             existente.setFecha_inicio(reserva.getFecha_inicio());
             existente.setFecha_fin(reserva.getFecha_fin());
             existente.setCliente(reserva.getCliente());
+            existente.setEstado_reserva(reserva.getEstado_reserva());
             return repository.save(existente);
         })
         .orElseThrow(() -> new EntityNotFoundException(
