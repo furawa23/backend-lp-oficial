@@ -15,5 +15,7 @@ public interface SalonesReservaService {
 
     SalonesXReserva modificar(SalonesXReserva habreserva);
 
+    void deleteByReservaId(Integer idReserva);
+
     void eliminar(Integer id);
 }

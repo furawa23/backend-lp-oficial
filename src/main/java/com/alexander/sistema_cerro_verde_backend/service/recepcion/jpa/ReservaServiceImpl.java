@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Clientes;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Reservas;
+import com.alexander.sistema_cerro_verde_backend.entity.reservas.Clientes;
+import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesReservaRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ReservasRepository;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.ClientesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.ReservasService;
@@ -20,6 +21,9 @@ public class ReservaServiceImpl implements ReservasService {
 
     @Autowired
     private ReservasRepository repository;
+
+    @Autowired
+    private HabitacionesReservaRepository habitacionesReservaRepository;
 
     @Autowired
     private ClientesService clientesService;
@@ -56,12 +60,29 @@ public Reservas guardar(Reservas reserva) {
     @Override
     @Transactional
     public void eliminar(Integer id) {
-        Reservas reserva = repository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
-    
-        reserva.setEstado(0); 
-        repository.save(reserva);
+        try {
+            // Buscar la reserva en la base de datos
+            Reservas reserva = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+            // Eliminar las relaciones de habitaciones asociadas a la reserva
+            try {
+                habitacionesReservaRepository.deleteByReservaId(id);
+            } catch (Exception e) {
+                throw new RuntimeException("Error al eliminar las relaciones: " + e.getMessage());
+            }
+
+            // Cambiar el estado de la reserva a 0 (eliminación lógica)
+            reserva.setEstado(0);
+
+            // Guardar la reserva con el nuevo estado
+            repository.save(reserva);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al eliminar la reserva: " + e.getMessage());
+        }
     }
+
+
 
     @Override
     public Reservas modificar(Reservas reserva) {
@@ -88,6 +109,5 @@ public Reservas guardar(Reservas reserva) {
             "Salón no encontrado con ID: " + reserva.getId_reserva()
         ));
     }
-
 
 }

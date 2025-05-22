@@ -69,5 +69,9 @@ public class SalonesReservaServiceImpl implements SalonesReservaService {
         salreserva.setEstado(0); // 0 representa inactivo/eliminado lógico
         repository.save(salreserva);
     }
+
+    public void deleteByReservaId(Integer idReserva) {
+        repository.deleteByReservaId(idReserva);
+    }
 }
 

@@ -1,35 +1,81 @@
 package com.alexander.sistema_cerro_verde_backend.entity.ventas;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Clientes;
+import java.util.List;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
+import com.alexander.sistema_cerro_verde_backend.entity.reservas.Clientes;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="ventas")
+@Table(name = "ventas")
+@SQLDelete(sql = "UPDATE ventas SET estado = 0 WHERE id_venta = ?")
+@SQLRestriction("estado = 1")
 public class Ventas {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idVenta;
     private String fecha;
     private Double total;
     private Double descuento;
     private Double cargo;
+    private Double igv;
+    private Integer estado = 1;
 
     //Relación de muchos a uno con Usuario
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuarios usuario;
 
     //Relación de muchos a uno con Cliente
     @ManyToOne
-    @JoinColumn(name="id_cliente")
+    @JoinColumn(name = "id_cliente")
     private Clientes cliente;
 
     //Relación de Uno a Muchos con MovimientosInventario
+    //Relación de Uno a Muchos con DetalleVenta
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value="venta")
+    private List<DetalleVenta> detalleVenta;
 
+    //Relación de Uno a Uno con ComprobantePago
+    @OneToOne(mappedBy = "venta", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private ComprobantePago comprobantePago;
+
+    //Relación de Uno a Muchos con VentasXReservas
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value="venta")
+    private List<VentasXReservas> ventaXReserva;
+
+    //Relación de Uno a Muchos con VentaHabitacion
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value="venta")
+    private List<VentaHabitacion> ventaHabitacion;
+
+    //Relación de Uno a Muchos con VentaSalon
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value="venta")
+    private List<VentaSalon> ventaSalon;
+
+    //Relación de Uno a Muchos con VentaMetodoPago
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value="venta")
+    private List<VentaMetodoPago> ventaMetodoPago;
 
     public String getFecha() {
         return fecha;
@@ -77,5 +123,78 @@ public class Ventas {
 
     public void setIdVenta(Integer idVenta) {
         this.idVenta = idVenta;
+    }
+
+    public List<DetalleVenta> getDetalleVenta() {
+        return detalleVenta;
+    }
+
+    public void setDetalleVenta(List<DetalleVenta> detalleVenta) {
+        this.detalleVenta = detalleVenta;
+    }
+
+    public Usuarios getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuarios usuario) {
+        this.usuario = usuario;
+    }
+
+    public Integer getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Integer estado) {
+        this.estado = estado;
+    }
+
+    public ComprobantePago getComprobantePago() {
+        return comprobantePago;
+    }
+
+    public void setComprobantePago(ComprobantePago comprobantePago) {
+        this.comprobantePago = comprobantePago;
+        comprobantePago.setVenta(this);
+    }
+
+    public Double getIgv() {
+        return igv;
+    }
+
+    public void setIgv(Double igv) {
+        this.igv = igv;
+    }
+
+    public List<VentasXReservas> getVentaXReserva() {
+        return ventaXReserva;
+    }
+
+    public void setVentaXReserva(List<VentasXReservas> ventaXReserva) {
+        this.ventaXReserva = ventaXReserva;
+    }
+
+    public List<VentaHabitacion> getVentaHabitacion() {
+        return ventaHabitacion;
+    }
+
+    public void setVentaHabitacion(List<VentaHabitacion> ventaHabitacion) {
+        this.ventaHabitacion = ventaHabitacion;
+    }
+
+    public List<VentaSalon> getVentaSalon() {
+        return ventaSalon;
+    }
+
+    public void setVentaSalon(List<VentaSalon> ventaSalon) {
+        this.ventaSalon = ventaSalon;
+    }
+
+    public List<VentaMetodoPago> getVentaMetodoPago() {
+        return ventaMetodoPago;
+    }
+
+    public void setVentaMetodoPago(List<VentaMetodoPago> ventaMetodoPago) {
+        this.ventaMetodoPago = ventaMetodoPago;
     }
 }

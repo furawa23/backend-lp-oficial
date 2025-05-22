@@ -1,7 +1,12 @@
 package com.alexander.sistema_cerro_verde_backend.entity.recepcion;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
+import java.util.List;
 
+import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
+import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentaHabitacion;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -30,6 +36,11 @@ public class Habitaciones {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tipo_habitacion")
     private TipoHabitacion tipo_habitacion;
+
+    //Relacion de Uno a Muchos con VenntaHabitacion
+    @OneToMany(mappedBy="habitacion", cascade=CascadeType.ALL)
+    @JsonIgnore
+    private List<VentaHabitacion> ventaHabitacion;
 
     public Integer getId_habitacion() {
         return id_habitacion;
@@ -91,8 +102,13 @@ public class Habitaciones {
         this.piso = piso;
     }
 
+    public List<VentaHabitacion> getVentaHabitacion() {
+        return ventaHabitacion;
+    }
 
-
+    public void setVentaHabitacion(List<VentaHabitacion> ventaHabitacion) {
+        this.ventaHabitacion = ventaHabitacion;
+    }
     
 }
 

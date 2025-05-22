@@ -3,11 +3,14 @@ package com.alexander.sistema_cerro_verde_backend.service.recepcion;
 import java.util.List;
 import java.util.Optional;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Clientes;
+import com.alexander.sistema_cerro_verde_backend.entity.reservas.Clientes;
+
 
 public interface ClientesService {
 
     List<Clientes> buscarTodos(); //Listar todos los clientes
+
+    List<Clientes> buscarActivos(); //Listar categorias activos
 
     Optional<Clientes> buscarPorId(Integer id); //Buscar cliente por Id
 

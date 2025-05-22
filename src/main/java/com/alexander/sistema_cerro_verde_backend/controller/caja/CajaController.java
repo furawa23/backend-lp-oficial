@@ -1,7 +1,9 @@
 package com.alexander.sistema_cerro_verde_backend.controller.caja;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,10 +42,23 @@ public class CajaController {
         if (cajaAbierta.isPresent()) {
             return ResponseEntity.ok(cajaAbierta.get());
         } else {
-            return ResponseEntity.ok("no_aperturada");
+            Map<String, String> response = new HashMap<>();
+            response.put("estadoCaja", "Caja cerrada");
+            return ResponseEntity.ok(response); 
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerCajaPorId(@PathVariable Integer id) {
+    Optional<Cajas> caja = serviceCaja.buscarId(id);
+
+    if (caja.isPresent()) {
+        return ResponseEntity.ok(caja.get());
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Caja no encontrada");
+    }
+}
+    
     @GetMapping("/aperturada")
     public ResponseEntity<?> obtenerCajaAperturada() {
         return serviceCaja.buscarCajaAperturada()

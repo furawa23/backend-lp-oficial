@@ -1,0 +1,108 @@
+package com.alexander.sistema_cerro_verde_backend.controller.recepcion;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Salones;
+import com.alexander.sistema_cerro_verde_backend.entity.recepcion.SalonesXImagenes;
+import com.alexander.sistema_cerro_verde_backend.service.recepcion.SalonesImagenesService;
+import com.alexander.sistema_cerro_verde_backend.service.recepcion.SalonesService;
+
+import jakarta.persistence.EntityNotFoundException;
+
+
+@CrossOrigin("*") 
+@RestController
+@RequestMapping("/cerro-verde/recepcion")
+public class SalonesController {
+
+    @Autowired
+    private SalonesService salonesService;
+
+    @Autowired
+    private SalonesImagenesService salimgService;
+
+    @GetMapping("/salones")
+    public List<Salones> buscarTodos() {
+        return salonesService.buscarTodos();
+    }
+
+    @PostMapping("/salones")
+    public Salones guardar(@RequestBody Salones salon) {   
+        salonesService.guardar(salon);     
+        return salon;
+    }
+
+    
+    @PutMapping("/salones/{id}")
+    public ResponseEntity<?> modificar(
+        @PathVariable Integer id,
+        @RequestBody Salones salon) {
+    
+    try {
+        salon.setId_salon(id); // Asegura que use el ID de la URL
+        Salones actualizada = salonesService.modificar(salon);
+        return ResponseEntity.ok(actualizada);
+        
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (EntityNotFoundException e) {
+        return ResponseEntity.notFound().build();
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError().body("Error al actualizar");
+    }
+    }
+
+    @GetMapping("/salones/{id}")
+    public Optional<Salones> buscarId(@PathVariable("id") Integer id) {
+        return salonesService.buscarId(id);
+    }
+
+    @DeleteMapping("/salones/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id){
+        salonesService.eliminar(id);
+        return "Salón eliminado";
+    }
+
+    @GetMapping("/salones/imagenes")
+    public List<SalonesXImagenes> buscarImagen() {
+        return salimgService.buscarTodos();
+    }
+
+    @PostMapping("/salones/imagenes")
+    public SalonesXImagenes guardarImagen(@RequestBody SalonesXImagenes salimg) {   
+        salimgService.guardar(salimg);     
+        return salimg;
+    }
+
+    
+    /*@PutMapping("/salones/imagenes")
+    public HabitacionesXImagenes modificar(@RequestBody HabitacionesXImagenes habimg) {   
+        salimgService.modificar(habimg);
+        return habimg;
+    }
+
+    @GetMapping("/habitaciones/imagenes/{id}")
+    public Optional<HabitacionesXImagenes> buscarIdImagen(@PathVariable("id") Integer id) {
+        return habimgService.buscarId(id);
+    }
+
+    @DeleteMapping("/habitaciones/imagenes/{id}")
+    public String eliminarImagen(@PathVariable Integer id){
+        habimgService.eliminar(id);
+        return "Imagen de habitacion eliminada";
+    }*/
+
+    
+}

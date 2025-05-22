@@ -70,4 +70,21 @@ public class HabitacionesReservaServiceImpl implements HabitacionesReservaServic
         habreserva.setEstado(0); // 0 representa inactivo/eliminado lógico
         repository.save(habreserva);
     }
+
+    public void deleteByReservaId(Integer idReserva) {
+        repository.deleteByReservaId(idReserva);
+    }
+
+    // En HabitacionesReservaServiceImpl.java
+    @Override
+    public void actualizarEstado(Integer idHabitacion, Integer idReserva, Integer estado) {
+        HabitacionesXReserva relacion = repository.findByHabitacionAndReserva(idHabitacion, idReserva)
+            .orElseThrow(() -> new EntityNotFoundException("Relación no encontrada"));
+
+        relacion.setEstado(estado);
+        repository.save(relacion);
+    }
+
+
+    
 }
