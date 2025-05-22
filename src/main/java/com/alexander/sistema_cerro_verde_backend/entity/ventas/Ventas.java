@@ -5,7 +5,6 @@ import java.util.List;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-import com.alexander.sistema_cerro_verde_backend.entity.reservas.Clientes;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 

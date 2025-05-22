@@ -72,16 +72,16 @@ public class TipoHabitacionServiceImpl implements TipoHabitacionService {
 
 
     @Override
-public void eliminar(Integer id) {
-    TipoHabitacion tipo = repository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Tipo no encontrado"));
+    public void eliminar(Integer id) {
+        TipoHabitacion tipo = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Tipo no encontrado"));
 
-    Integer cantidadHabitaciones = habitacionesRepository.contarPorTipoHabitacion(id);
-    if (cantidadHabitaciones != null && cantidadHabitaciones > 0) {
-        throw new IllegalStateException("No se puede eliminar el tipo porque está asignado a habitaciones.");
+            Integer activas = habitacionesRepository.contarPorTipoHabitacion(id);
+            if (activas != null && activas > 0) {
+                throw new IllegalStateException("No se puede eliminar: hay habitaciones activas de este tipo.");
+            }
+            
+        tipo.setEstado(0); 
+        repository.save(tipo);
     }
-
-    tipo.setEstado(0); 
-    repository.save(tipo);
-}
 }

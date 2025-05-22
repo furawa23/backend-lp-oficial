@@ -1,13 +1,5 @@
 package com.alexander.sistema_cerro_verde_backend.service.recepcion.jpa;
 
-import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
-import com.alexander.sistema_cerro_verde_backend.service.recepcion.HabitacionesService;
-import com.alexander.sistema_cerro_verde_backend.service.recepcion.TipoHabitacionService;
-
-import jakarta.persistence.EntityNotFoundException;
-
-import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.TipoHabitacion;
+import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesReservaRepository;
+import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
+import com.alexander.sistema_cerro_verde_backend.service.recepcion.HabitacionesService;
+import com.alexander.sistema_cerro_verde_backend.service.recepcion.TipoHabitacionService;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class HabitacionesServiceImpl implements HabitacionesService {
@@ -27,6 +26,9 @@ private HabitacionesRepository repository;
 
 @Autowired
 private SucursalesService sucursalService;
+
+@Autowired
+private HabitacionesReservaRepository reservaRepository;
 
 @Autowired
 private TipoHabitacionService tipoHabitacionService;
@@ -70,6 +72,7 @@ private TipoHabitacionService tipoHabitacionService;
         habitacion.setEstado(0); // 0 representa inactivo/eliminado lógico
         repository.save(habitacion);
     }
+
 
     @Override
     public Habitaciones modificar(Habitaciones habitacion) {

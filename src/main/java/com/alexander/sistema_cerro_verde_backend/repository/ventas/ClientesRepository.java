@@ -1,4 +1,4 @@
-package com.alexander.sistema_cerro_verde_backend.repository.recepcion;
+package com.alexander.sistema_cerro_verde_backend.repository.ventas;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.alexander.sistema_cerro_verde_backend.controller.reservas;
+package com.alexander.sistema_cerro_verde_backend.controller.ventas;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Clientes;
-import com.alexander.sistema_cerro_verde_backend.service.ApiCliente;
+import com.alexander.sistema_cerro_verde_backend.service.ventas.ApiCliente;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.ClientesService;
 
 

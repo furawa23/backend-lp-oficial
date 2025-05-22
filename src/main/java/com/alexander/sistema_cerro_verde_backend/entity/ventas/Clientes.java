@@ -1,10 +1,9 @@
-package com.alexander.sistema_cerro_verde_backend.entity.reservas;
+package com.alexander.sistema_cerro_verde_backend.entity.ventas;
 
 import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
 
-import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;

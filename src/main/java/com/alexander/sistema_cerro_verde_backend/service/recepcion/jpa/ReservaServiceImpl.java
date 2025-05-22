@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Reservas;
-import com.alexander.sistema_cerro_verde_backend.entity.reservas.Clientes;
+import com.alexander.sistema_cerro_verde_backend.entity.ventas.Clientes;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesReservaRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ReservasRepository;
-import com.alexander.sistema_cerro_verde_backend.service.recepcion.ClientesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.ReservasService;
+import com.alexander.sistema_cerro_verde_backend.service.ventas.ClientesService;
 
 import jakarta.persistence.EntityNotFoundException;
 

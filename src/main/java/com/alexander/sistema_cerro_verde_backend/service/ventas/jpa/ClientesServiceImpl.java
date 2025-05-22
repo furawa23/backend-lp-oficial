@@ -1,4 +1,4 @@
-package com.alexander.sistema_cerro_verde_backend.service.recepcion.jpa;
+package com.alexander.sistema_cerro_verde_backend.service.ventas.jpa;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Clientes;
-import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ClientesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ReservasRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.ventas.ClientesRepository;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.ClientesService;
 
 import jakarta.persistence.EntityManager;
