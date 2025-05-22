@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
-import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ClientesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.ventas.ClientesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.VentasRepository;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.IVentaService;
 
