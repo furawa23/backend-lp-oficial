@@ -9,13 +9,12 @@ import org.springframework.data.repository.query.Param;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
 
 public interface HabitacionesRepository extends JpaRepository<Habitaciones, Integer> {
-@Query("SELECT COUNT(h) FROM Habitaciones h WHERE h.tipo_habitacion.id_tipo_habitacion = :idTipo AND h.estado=1")
-    Integer contarActivasPorTipoHabitacion(@Param("idTipo") Integer idTipoHabitacion);
+@Query("SELECT COUNT(h) FROM Habitaciones h WHERE h.tipo_habitacion.id_tipo_habitacion = :idTipo")
+    Integer contarPorTipoHabitacion(@Param("idTipo") Integer idTipoHabitacion);
 
 
 @Query("SELECT hxr.habitacion FROM HabitacionesXReserva hxr WHERE hxr.estado = 1")
-List<Habitaciones> findHabitacionesActivasEnReservas();
-    
+    List<Habitaciones> findHabitacionesActivasEnReservas();
 }
 
 

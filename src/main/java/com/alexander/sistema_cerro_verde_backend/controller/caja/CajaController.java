@@ -1,7 +1,9 @@
 package com.alexander.sistema_cerro_verde_backend.controller.caja;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,9 @@ public class CajaController {
         if (cajaAbierta.isPresent()) {
             return ResponseEntity.ok(cajaAbierta.get());
         } else {
-            return ResponseEntity.ok("no_aperturada");
+            Map<String, String> response = new HashMap<>();
+            response.put("estadoCaja", "Caja cerrada");
+            return ResponseEntity.ok(response); 
         }
     }
 

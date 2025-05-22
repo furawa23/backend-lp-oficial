@@ -38,7 +38,7 @@ public class Compras {
     @ManyToOne
     @JoinColumn(name = "ruc_proveedor")
     private Proveedores proveedor;
-    @OneToMany(mappedBy = "compra", cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "compra", cascade=CascadeType.ALL, orphanRemoval=true)
     @JsonManagedReference
     private List<DetallesCompra> detallecompra;
     @OneToMany(mappedBy = "compra")

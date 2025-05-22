@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.HabitacionesXImagenes;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.HabitacionesImagenesService;
@@ -72,9 +71,9 @@ public class HabitacionController {
     }
 
     @DeleteMapping("/habitaciones/eliminar/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+    public String eliminar(@PathVariable Integer id){
         habitacionesService.eliminar(id);
-        return ResponseEntity.noContent().build(); // 204 No Content
+        return "Habitacion eliminada";
     }
 
     @GetMapping("/habitaciones/imagenes")

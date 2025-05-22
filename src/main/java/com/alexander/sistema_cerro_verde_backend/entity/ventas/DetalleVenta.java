@@ -1,9 +1,14 @@
 package com.alexander.sistema_cerro_verde_backend.entity.ventas;
 
+import com.alexander.sistema_cerro_verde_backend.entity.compras.Productos;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,10 +23,15 @@ public class DetalleVenta {
     private Integer estado = 1;
     
     //Relación de muchos a uno con Productos
+    @ManyToOne
+    @JoinColumn(name="id_producto")
+    private Productos producto;
 
     //Relación de muchos a uno con Ventas
-
-    //Relación de muchos a uno con MetodosPago
+    @ManyToOne
+    @JoinColumn(name="id_venta")
+    @JsonBackReference(value="venta")
+    private Ventas venta;
 
     public Integer getIdDetalleVenta() {
         return idDetalleVenta;
@@ -62,4 +72,21 @@ public class DetalleVenta {
     public void setEstado(Integer estado) {
         this.estado = estado;
     }
+
+    public Productos getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Productos producto) {
+        this.producto = producto;
+    }
+
+    public Ventas getVenta() {
+        return venta;
+    }
+
+    public void setVenta(Ventas venta) {
+        this.venta = venta;
+    }
+
 }

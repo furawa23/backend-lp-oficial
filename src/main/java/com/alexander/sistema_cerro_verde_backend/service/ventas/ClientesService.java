@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Clientes;
 
-
 public interface ClientesService {
 
     List<Clientes> buscarTodos(); //Listar todos los clientes

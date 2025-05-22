@@ -76,7 +76,7 @@ public class TipoHabitacionServiceImpl implements TipoHabitacionService {
         TipoHabitacion tipo = repository.findById(id)
             .orElseThrow(() -> new RuntimeException("Tipo no encontrado"));
 
-            Integer activas = habitacionesRepository.contarActivasPorTipoHabitacion(id);
+            Integer activas = habitacionesRepository.contarPorTipoHabitacion(id);
             if (activas != null && activas > 0) {
                 throw new IllegalStateException("No se puede eliminar: hay habitaciones activas de este tipo.");
             }

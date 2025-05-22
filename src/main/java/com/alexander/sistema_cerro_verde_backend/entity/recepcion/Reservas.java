@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Clientes;
+import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentasXReservas;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -39,6 +41,10 @@ public class Reservas {
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<SalonesXReserva> salonesXReserva;
+
+    @OneToMany(mappedBy="reserva", cascade=CascadeType.ALL)
+    @JsonIgnore
+    private List<VentasXReservas> ventaXReserva;
 
 
     public Integer getId_reserva() {
@@ -119,6 +125,14 @@ public class Reservas {
 
     public void setSalonesXReserva(List<SalonesXReserva> salonesXReserva) {
         this.salonesXReserva = salonesXReserva;
+    }
+
+    public List<VentasXReservas> getVentaXReserva() {
+        return ventaXReserva;
+    }
+
+    public void setVentaXReserva(List<VentasXReservas> ventaXReserva) {
+        this.ventaXReserva = ventaXReserva;
     }
     
     

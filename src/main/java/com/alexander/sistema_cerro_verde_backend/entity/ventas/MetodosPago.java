@@ -1,10 +1,16 @@
 package com.alexander.sistema_cerro_verde_backend.entity.ventas;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,8 +23,10 @@ public class MetodosPago {
     private String nombre;
     private Integer estado = 1;
 
-    //Relación uno a Muchos con DetalleVentas
-    
+    //Relación uno a Muchos con VentaMetodoPago
+    @OneToMany(mappedBy="metodoPago", cascade=CascadeType.ALL)
+    @JsonIgnore
+    private List<VentaMetodoPago> ventaMetodoPago;
 
     public Integer getIdMetodoPago() {
         return idMetodoPago;
@@ -42,5 +50,13 @@ public class MetodosPago {
 
     public void setEstado(Integer estado) {
         this.estado = estado;
+    }
+
+    public List<VentaMetodoPago> getVentaMetodoPago() {
+        return ventaMetodoPago;
+    }
+
+    public void setVentaMetodoPago(List<VentaMetodoPago> ventaMetodoPago) {
+        this.ventaMetodoPago = ventaMetodoPago;
     }
 }

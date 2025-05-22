@@ -12,6 +12,6 @@ import jakarta.transaction.Transactional;
 public interface DetallesCompraRepository extends JpaRepository<DetallesCompra, Integer> {
     @Modifying
     @Transactional
-    @Query("DELETE FROM DetallesCompra d WHERE d.compra.id = :idCompra")
+    @Query("DELETE FROM DetallesCompra d WHERE d.compra.id_compra = :idCompra")
     void eliminarPorIdCompra(@Param("idCompra") Integer idCompra);
 }

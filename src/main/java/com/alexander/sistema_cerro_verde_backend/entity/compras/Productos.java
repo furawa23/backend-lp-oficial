@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
 
+import com.alexander.sistema_cerro_verde_backend.entity.ventas.DetalleVenta;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,6 +41,9 @@ public class Productos {
     @ManyToOne
     @JoinColumn(name="id_unidad")
     private UnidadMedida unidad;
+    @OneToMany(mappedBy="producto", cascade=CascadeType.ALL)
+    @JsonIgnore
+    private List<DetalleVenta> detalleVenta;
 
     public Integer getId_producto() {
         return this.id_producto;
@@ -131,5 +136,13 @@ public class Productos {
 
     public void setUnidad(UnidadMedida unidad) {
         this.unidad = unidad;
+    }
+
+    public List<DetalleVenta> getDetalleVenta() {
+        return detalleVenta;
+    }
+
+    public void setDetalleVenta(List<DetalleVenta> detalleVenta) {
+        this.detalleVenta = detalleVenta;
     }
 }

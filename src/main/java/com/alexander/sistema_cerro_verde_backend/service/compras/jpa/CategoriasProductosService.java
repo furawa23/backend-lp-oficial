@@ -43,7 +43,7 @@ public class CategoriasProductosService implements ICategoriasProductosService{
                 cp.setNombre(categoriaproducto.getNombre());
                 entityManager.merge(cp);
             } else {
-                throw new RuntimeException("La categoria ya está registrado y activo");
+                repoCategoriasProductos.save(categoriaproducto);
             }
         } else {
             categoriaproducto.setEstado(1);
