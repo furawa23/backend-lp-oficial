@@ -100,6 +100,7 @@ private TipoHabitacionService tipoHabitacionService;
     // 3. Comprobar si existe antes de actualizar
     return repository.findById(habitacion.getId_habitacion())
         .map(existente -> {
+            existente.setPiso(habitacion.getPiso());
             existente.setNumero(habitacion.getNumero());
             existente.setTipo_habitacion(habitacion.getTipo_habitacion());
             existente.setEstado_habitacion(habitacion.getEstado_habitacion());

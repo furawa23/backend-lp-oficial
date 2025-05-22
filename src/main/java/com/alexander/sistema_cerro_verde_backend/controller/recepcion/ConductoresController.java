@@ -1,6 +1,7 @@
 package com.alexander.sistema_cerro_verde_backend.controller.recepcion;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Conductores;
+import com.alexander.sistema_cerro_verde_backend.service.PlacaService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.ConductoresService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -28,6 +30,9 @@ public class ConductoresController {
 
     @Autowired
     private ConductoresService conductorService;
+
+    @Autowired
+    private PlacaService placaService;
 
     @GetMapping("/conductores")
     public List<Conductores> buscarTodos() {
@@ -71,5 +76,9 @@ public class ConductoresController {
         return ResponseEntity.noContent().build(); // 204 No Content
     }
 
-    
+    @GetMapping("/conductores/buscarplaca/{placa}")
+    public ResponseEntity<String> buscarPorPlaca(@PathVariable String placa) {
+        String resultado = placaService.consultarPlaca(placa);
+        return ResponseEntity.ok(resultado);
+    }
 }

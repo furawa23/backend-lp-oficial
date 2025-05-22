@@ -73,6 +73,7 @@ public class RecojoServiceImpl implements RecojoService{
             existente.setFecha_hora(recojo.getFecha_hora());
             existente.setReserva(recojo.getReserva());
             existente.setConductor(recojo.getConductor());
+            existente.setEstado_recojo(recojo.getEstado_recojo());
             return repository.save(existente);
         })
         .orElseThrow(() -> new EntityNotFoundException(

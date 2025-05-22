@@ -66,9 +66,9 @@ public class RecojoController {
     }
 
     @DeleteMapping("/recojos/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id){
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         recojoService.eliminar(id);
-        return "Recojo eliminado";
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
 
     
