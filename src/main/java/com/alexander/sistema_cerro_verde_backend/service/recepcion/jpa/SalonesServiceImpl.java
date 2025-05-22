@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Salones;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.SalonesRepository;
@@ -75,14 +73,7 @@ public class SalonesServiceImpl implements SalonesService{
         Salones salon = repository.findById(id)
         .orElseThrow(() -> new RuntimeException("Salón no encontrado"));
     
-        Integer reservasActivas = reservaRepository.contarReservasActivasPorSalon(id);
-        if (reservasActivas != null && reservasActivas > 0) {
-        throw new ResponseStatusException(
-            HttpStatus.CONFLICT, "No se puede eliminar: el salón tiene reservas activas."
-        );
-        }
-
-        salon.setEstado(0);
+        salon.setEstado(0); // 0 representa inactivo/eliminado lógico
         repository.save(salon);
     }
 }
