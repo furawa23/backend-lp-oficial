@@ -3,6 +3,8 @@ package com.alexander.sistema_cerro_verde_backend.entity.recepcion;
 import java.util.List;
 
 import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
+import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.Incidencias;
+import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.Limpiezas;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentaHabitacion;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -42,6 +44,12 @@ public class Habitaciones {
     @JsonIgnore
     private List<VentaHabitacion> ventaHabitacion;
 
+    @OneToMany(mappedBy = "habitacion")
+    private List<Incidencias> incidencias;
+
+    @OneToMany(mappedBy = "habitacion")
+    private List<Limpiezas> limpiezas;
+    
     public Integer getId_habitacion() {
         return id_habitacion;
     }
@@ -76,7 +84,6 @@ public class Habitaciones {
         this.estado = estado;
     }
 
- 
 
     public Sucursales getSucursal() {
         return sucursal;
@@ -109,6 +116,24 @@ public class Habitaciones {
     public void setVentaHabitacion(List<VentaHabitacion> ventaHabitacion) {
         this.ventaHabitacion = ventaHabitacion;
     }
+
+    public List<Incidencias> getIncidencias() {
+        return incidencias;
+    }
+
+    public void setIncidencias(List<Incidencias> incidencias) {
+        this.incidencias = incidencias;
+    }
+
+    public List<Limpiezas> getLimpiezas() {
+        return limpiezas;
+    }
+
+    public void setLimpiezas(List<Limpiezas> limpiezas) {
+        this.limpiezas = limpiezas;
+    }
     
-}
+} 
+
+
 

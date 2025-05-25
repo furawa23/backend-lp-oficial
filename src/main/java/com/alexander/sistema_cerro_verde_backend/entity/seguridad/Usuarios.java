@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.Incidencias;
+import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.Limpiezas;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -47,6 +49,12 @@ public class Usuarios implements UserDetails {
     @JsonIgnore
     private List<Ventas> venta;
 
+    @OneToMany(mappedBy = "usuario")
+    private List<Incidencias> incidencias;
+
+    @OneToMany(mappedBy ="usuario")
+    private List<Limpiezas> limpiezas;
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -57,6 +65,7 @@ public class Usuarios implements UserDetails {
 
 
 
+    
     public Integer getIdUsuario() {
         return idUsuario;
     }
@@ -167,4 +176,23 @@ public class Usuarios implements UserDetails {
         this.venta = venta;
     }
 
+    public List<Incidencias> getIncidencias() {
+        return incidencias;
+    }
+
+    public void setIncidencias(List<Incidencias> incidencias) {
+        this.incidencias = incidencias;
+    }
+
+
+    public List<Limpiezas> getLimpiezas() {
+        return limpiezas;
+    }
+
+
+    public void setLimpiezas(List<Limpiezas> limpiezas) {
+        this.limpiezas = limpiezas;
+    }
+
 }
+

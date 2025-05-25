@@ -1,5 +1,8 @@
 package com.alexander.sistema_cerro_verde_backend.entity;
 
+import java.util.List;
+
+import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.AreasHotel;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Empresas;
 
 import jakarta.persistence.Column;
@@ -9,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,6 +31,9 @@ public class Sucursales {
     @JoinColumn(name = "id_empresa")
     private Empresas empresa;
 
+    @OneToMany(mappedBy = "sucursal")
+    private List<AreasHotel> areasHotel;
+    
     public Integer getId() {
         return id;
     }
@@ -63,6 +70,14 @@ public class Sucursales {
     public String toString() {
         return "Sucursales [id=" + id + ", ciudad=" + ciudad + ", direccion=" + direccion + ", empresa=" + empresa
                 + "]";
+    }
+
+    public List<AreasHotel> getAreasHotel() {
+        return areasHotel;
+    }
+
+    public void setAreasHotel(List<AreasHotel> areasHotel) {
+        this.areasHotel = areasHotel;
     }
 
     
