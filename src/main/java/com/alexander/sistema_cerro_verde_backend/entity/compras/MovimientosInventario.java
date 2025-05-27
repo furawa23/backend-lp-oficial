@@ -3,6 +3,8 @@ package com.alexander.sistema_cerro_verde_backend.entity.compras;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,6 +31,9 @@ public class MovimientosInventario {
     @ManyToOne
     @JoinColumn(name = "id_producto")
     private Productos producto;
+    @ManyToOne
+    @JoinColumn(name = "id_venta")
+    private Ventas venta;
 
     public Integer getId_movimiento_inventario() {
         return this.id_movimiento_inventario;
@@ -86,6 +91,14 @@ public class MovimientosInventario {
         this.producto = producto;
     }
 
+    public Ventas getVenta() {
+        return this.venta;
+    }
+
+    public void setVenta(Ventas venta) {
+        this.venta = venta;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -96,6 +109,7 @@ public class MovimientosInventario {
             ", estado='" + getEstado() + "'" +
             ", compra='" + getCompra() + "'" +
             ", producto='" + getProducto() + "'" +
+            ", venta='" + getVenta() + "'" +
             "}";
     }
 }

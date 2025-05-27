@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import com.alexander.sistema_cerro_verde_backend.entity.compras.MovimientosInventario;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -47,6 +48,9 @@ public class Ventas {
     private Clientes cliente;
 
     //Relación de Uno a Muchos con MovimientosInventario
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
+    private List<MovimientosInventario> movimientoInventario;
+
     //Relación de Uno a Muchos con DetalleVenta
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value="venta")

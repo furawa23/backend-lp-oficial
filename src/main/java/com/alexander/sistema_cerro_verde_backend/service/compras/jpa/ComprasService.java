@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.alexander.sistema_cerro_verde_backend.entity.compras.Compras;
 import com.alexander.sistema_cerro_verde_backend.entity.compras.DetallesCompra;
+import com.alexander.sistema_cerro_verde_backend.entity.compras.MovimientosInventario;
 import com.alexander.sistema_cerro_verde_backend.entity.compras.Productos;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.ComprasRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.DetallesCompraRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.compras.MovimientosInventarioRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.ProductosRepository;
 import com.alexander.sistema_cerro_verde_backend.service.compras.IComprasService;
 
@@ -29,6 +31,9 @@ public class ComprasService implements IComprasService {
     @Autowired
     private DetallesCompraRepository repoDetalle;
 
+    @Autowired
+    private MovimientosInventarioRepository repoMovimientosInventario;
+
     @Override
     public List<Compras> buscarTodos() {
         return repoCompras.findAll();
@@ -43,10 +48,18 @@ public class ComprasService implements IComprasService {
             Integer prodId = det.getProducto().getId_producto();
             var producto = repoProductos.findById(prodId)
                     .orElseThrow(() -> new EntityNotFoundException("Producto no existe: " + prodId));
+            MovimientosInventario movimiento = new MovimientosInventario();
+            movimiento.setProducto(producto);
+            movimiento.setTipo_movimiento("Entrada");            
+            movimiento.setFecha(compra.getFecha_compra());
+            movimiento.setCompra(compraGuardada);
+
+            repoMovimientosInventario.save(movimiento);
 
             // si tu unidad tiene equivalencia:
             int equi = producto.getUnidad().getEquivalencia();
             int incremento = (int) (det.getCantidad() * equi);
+            movimiento.setCantidad(incremento);
 
             producto.setStock(producto.getStock() + incremento);
             repoProductos.save(producto);

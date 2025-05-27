@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/cerro-verde")
 public class MovimientosInventarioController {
     @Autowired
     private IMovimientosInventarioService serviceMovimientosInventario;
