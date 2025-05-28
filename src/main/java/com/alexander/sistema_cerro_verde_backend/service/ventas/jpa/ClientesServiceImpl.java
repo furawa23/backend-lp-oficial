@@ -71,8 +71,8 @@ public class ClientesServiceImpl implements ClientesService{
 
     @Override
     public void eliminar(Integer id){
-        if (repoReservas.existsReservasPendientesOConfirmadas(id)) {
-            throw new IllegalStateException("No se puede eliminar: el cliente tiene reservas pendientes o confirmadas.");
+        if (repoReservas.existsReservas(id)) {
+            throw new IllegalStateException("El cliente tiene reservas o venta registradas");
         }
 
         repoClientes.deleteById(id);

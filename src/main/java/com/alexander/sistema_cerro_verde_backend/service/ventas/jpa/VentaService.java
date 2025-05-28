@@ -6,13 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.alexander.sistema_cerro_verde_backend.entity.compras.Compras;
 import com.alexander.sistema_cerro_verde_backend.entity.compras.MovimientosInventario;
-import com.alexander.sistema_cerro_verde_backend.entity.compras.Productos;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.MovimientosInventarioRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.ProductosRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ReservasRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.ClientesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.VentasRepository;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.IVentaService;
@@ -35,7 +34,11 @@ public class VentaService implements IVentaService {
     private ProductosRepository repoProductos;
 
     @Autowired
+    private ReservasRepository repoReservas;
+
+    @Autowired
     private MovimientosInventarioRepository repoMovimientosInventario;
+    
 
     @Override
     public List<Ventas> buscarTodos() {
@@ -57,7 +60,7 @@ public class VentaService implements IVentaService {
                     .orElseThrow(() -> new EntityNotFoundException("Producto no existe: " + prodId));
             MovimientosInventario movimiento = new MovimientosInventario();
             movimiento.setProducto(producto);
-            movimiento.setTipo_movimiento("Salida");            
+            movimiento.setTipo_movimiento("Salida");
             movimiento.setFecha(venta.getFecha());
             movimiento.setVenta(ventaGuardada);
 
@@ -70,6 +73,18 @@ public class VentaService implements IVentaService {
             producto.setStock(producto.getStock() - incremento);
             repoProductos.save(producto);
         });
+
+        ventaGuardada.getVentaXReserva().forEach(r -> {
+            Integer idReserva = r.getReserva().getId_reserva();
+            var reserva = repoReservas.findById(idReserva).orElseThrow(() -> new EntityNotFoundException("RESERVAAAAAAASDASDASDASDASDAS: " + idReserva));
+            reserva.setEstado_reserva("Completada");
+            repoReservas.save(reserva);
+        });
+
+        // ventaGuardada.getVentaMetodoPago().forEach(m -> {
+        //     Integer idMetodoPago = m.getMetodoPago().getIdMetodoPago();
+        //     var metodoPago = 
+        // });
     }
 
     @Override
