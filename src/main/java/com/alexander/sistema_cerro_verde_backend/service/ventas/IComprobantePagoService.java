@@ -17,5 +17,5 @@ public interface IComprobantePagoService {
 
     void eliminar(Integer id);
 
-     ComprobantePago guardarConSerie(ComprobantePago comprobantePago, String tipoComprobante);
+    String generarSiguienteCorrelativo(String serie);
 }

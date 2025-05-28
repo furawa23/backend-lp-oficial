@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.ComprobantePago;
@@ -44,39 +42,34 @@ public class ComprobantePagoService implements IComprobantePagoService {
     }
 
     @Override
-    public ComprobantePago guardarConSerie(ComprobantePago comprobante, String tipoComprobante) {
-        String serie;
-        String nuevoCorrelativo;
+    public String generarSiguienteCorrelativo(String tipo) {
+        ComprobantePago ultimo = null;
+        String correlativo = null;
+        int nuevoNumero = 1;
 
-        if (tipoComprobante.equalsIgnoreCase("BOLETA")) {
-            serie = "B001";
-        } else if (tipoComprobante.equalsIgnoreCase("FACTURA")) {
-            serie = "F001";
-        } else {
-            throw new RuntimeException("Tipo de comprobante inválido");
+        if ("Boleta".equals(tipo)) {
+            // Busca el último comprobante con numComprobante "B001"
+            ultimo = repoComprobante.findTopByNumComprobanteOrderByIdVentaDesc("B001").orElse(null);
+            if (ultimo != null && ultimo.getNumSerieBoleta() != null) {
+                correlativo = ultimo.getNumSerieBoleta();
+            }
+        } else if ("Factura".equals(tipo)) {
+            // Busca el último comprobante con numComprobante "F001"
+            ultimo = repoComprobante.findTopByNumComprobanteOrderByIdVentaDesc("F001").orElse(null);
+            if (ultimo != null && ultimo.getNumSerieFactura() != null) {
+                correlativo = ultimo.getNumSerieFactura();
+            }
         }
 
-        Pageable topOne = PageRequest.of(0, 1);
-        List<ComprobantePago> ultimo = repoComprobante.findUltimoPorSerie(serie, topOne);
-
-        int ultimoCorrelativo = 0;
-        if (!ultimo.isEmpty()) {
-            String serieAnterior = tipoComprobante.equals("BOLETA")
-                    ? ultimo.get(0).getNumSerieBoleta()
-                    : ultimo.get(0).getNumSerieFactura();
-            ultimoCorrelativo = Integer.parseInt(serieAnterior);
+        if (correlativo != null) {
+            try {
+                nuevoNumero = Integer.parseInt(correlativo) + 1;
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Número inválido en el correlativo: " + correlativo);
+            }
         }
 
-        int nuevo = ultimoCorrelativo + 1;
-        nuevoCorrelativo = String.format("%08d", nuevo);
-
-        comprobante.setNumComprobante(serie);
-        if (tipoComprobante.equals("BOLETA")) {
-            comprobante.setNumSerieBoleta(nuevoCorrelativo);
-        } else {
-            comprobante.setNumSerieFactura(nuevoCorrelativo);
-        }
-
-        return repoComprobante.save(comprobante);
+        // Devuelve siempre 8 dígitos con ceros a la izquierda
+        return String.format("%08d", nuevoNumero);
     }
 }

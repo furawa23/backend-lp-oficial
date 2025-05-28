@@ -16,14 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.ComprobantePago;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.IComprobantePagoService;
-
-
-
-
 
 @RestController
 @RequestMapping("/cerro-verde")
@@ -42,7 +39,7 @@ public class ComprobantePagoController {
     public Optional<ComprobantePago> buscarPorId(@PathVariable Integer id) {
         return comprobantePagoService.buscarPorId(id);
     }
-    
+
     @PostMapping("/comprobante")
     public ComprobantePago guardar(@RequestBody ComprobantePago comprobante) {
         comprobantePagoService.guardar(comprobante);
@@ -56,7 +53,7 @@ public class ComprobantePagoController {
     }
 
     @DeleteMapping("/comprobante/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Integer id){
+    public ResponseEntity<?> eliminar(@PathVariable Integer id) {
         try {
             comprobantePagoService.eliminar(id);
             Map<String, String> response = new HashMap<>();
@@ -68,5 +65,14 @@ public class ComprobantePagoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-    
+
+    @GetMapping("/venta/siguientecorrelativo")
+    public ResponseEntity<Map<String, String>> obtenerCorrelativo(@RequestParam String tipo) {
+        String correlativo = comprobantePagoService.generarSiguienteCorrelativo(tipo);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("correlativo", correlativo); // solo "000123"
+
+        return ResponseEntity.ok(response);
+    }
 }
