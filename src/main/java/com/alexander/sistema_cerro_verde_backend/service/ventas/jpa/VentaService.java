@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.alexander.sistema_cerro_verde_backend.entity.compras.MovimientosInventario;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
+import com.alexander.sistema_cerro_verde_backend.repository.caja.CajasRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.MovimientosInventarioRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.ProductosRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ReservasRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.ClientesRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.ventas.MetodoPagoRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.VentasRepository;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.IVentaService;
 
@@ -38,6 +40,12 @@ public class VentaService implements IVentaService {
 
     @Autowired
     private MovimientosInventarioRepository repoMovimientosInventario;
+
+    @Autowired
+    private MetodoPagoRepository repoMetodo;
+
+    @Autowired
+    private CajasRepository repoCaja;
     
 
     @Override
@@ -81,10 +89,16 @@ public class VentaService implements IVentaService {
             repoReservas.save(reserva);
         });
 
-        // ventaGuardada.getVentaMetodoPago().forEach(m -> {
-        //     Integer idMetodoPago = m.getMetodoPago().getIdMetodoPago();
-        //     var metodoPago = 
-        // });
+        var caja = repoCaja.findByEstadoCaja("abierta").orElseThrow(() -> new RuntimeException("Caja no encontrada"));;
+
+        ventaGuardada.getVentaMetodoPago().forEach(m -> {
+            Integer idMetodoPago = m.getMetodoPago().getIdMetodoPago();
+            var metodoPago = repoMetodo.findById(idMetodoPago).orElseThrow(() -> new EntityNotFoundException("METODO DE PAGO: " + idMetodoPago));
+            if(metodoPago.getNombre().equals("Efectivo")){
+                caja.setSaldo(caja.getSaldo() + m.getPago());
+                repoCaja.save(caja);
+            }
+        });
     }
 
     @Override
