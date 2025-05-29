@@ -50,7 +50,7 @@ public class ComprasService implements IComprasService {
                     .orElseThrow(() -> new EntityNotFoundException("Producto no existe: " + prodId));
             MovimientosInventario movimiento = new MovimientosInventario();
             movimiento.setProducto(producto);
-            movimiento.setTipo_movimiento("Entrada");            
+            movimiento.setTipo_movimiento("Entrada");
             movimiento.setFecha(compra.getFecha_compra());
             movimiento.setCompra(compraGuardada);
 
@@ -107,5 +107,19 @@ public class ComprasService implements IComprasService {
     @Override
     public void eliminar(Integer id_compra) {
         repoCompras.deleteById(id_compra);
+    }
+
+    @Override
+    public String obtenerProximoCorrelativo() {
+        String ultimoCorrelativo = repoCompras.obtenerUltimaCompra()
+                .map(Compras::getCorrelativo)
+                .orElse("00000000");  // Si no hay registros
+
+        // Convertir a número, sumar 1
+        int correlativoNumero = Integer.parseInt(ultimoCorrelativo);
+        correlativoNumero++;
+
+        // Formatear a 8 dígitos con ceros a la izquierda
+        return String.format("%08d", correlativoNumero);
     }
 }

@@ -27,6 +27,7 @@ public class Compras {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_compra;
     private String numeroDoc;
+    private String correlativo;
     private Double total;
     private Double flete;
     private Double descuento;
@@ -147,5 +148,13 @@ public class Compras {
 
     public void setIgv(Double igv) {
         this.igv = igv;
+    }
+
+    public String getCorrelativo() {
+        return correlativo;
+    }
+
+    public void setCorrelativo(String correlativo) {
+        this.correlativo = correlativo;
     }
 }

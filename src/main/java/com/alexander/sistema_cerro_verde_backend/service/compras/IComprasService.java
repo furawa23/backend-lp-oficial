@@ -15,4 +15,6 @@ public interface IComprasService {
     Optional<Compras> buscarId(Integer id_compra);
 
     void eliminar(Integer id_compra);
+
+    String obtenerProximoCorrelativo();
 }
