@@ -16,4 +16,8 @@ public interface IVentaService {
     void modificar (Ventas venta); //Modificar venta
 
     void eliminar (Integer id); //Eliminar venta
+
+    String generarComprobante(Integer id); //Generar comprobante
+
+    byte[] generarPdf(Integer id);
 }

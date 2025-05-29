@@ -6,10 +6,14 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,12 +34,12 @@ public class VentaController {
 
     @RequestMapping("/venta")
     public List<Ventas> buscarTodos() {
-        return ventaService.buscarTodos();        
+        return ventaService.buscarTodos();
     }
-    
+
     @RequestMapping("/venta/{id}")
     public Optional<Ventas> buscarPorId(@PathVariable Integer id) {
-        return ventaService.buscarPorId(id);        
+        return ventaService.buscarPorId(id);
     }
 
     @PostMapping("/venta")
@@ -51,7 +55,7 @@ public class VentaController {
     }
 
     @DeleteMapping("/venta/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Integer id){
+    public ResponseEntity<?> eliminar(@PathVariable Integer id) {
         try {
             ventaService.eliminar(id);
             Map<String, String> response = new HashMap<>();
@@ -63,5 +67,24 @@ public class VentaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-    
+
+    @GetMapping("/pdf/{id}")
+    public ResponseEntity<byte[]> descargarComprobante(@PathVariable Integer id) {
+        // Generar el PDF como arreglo de bytes
+        byte[] pdfBytes = ventaService.generarPdf(id);
+
+        // Configurar cabeceras HTTP
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+
+        // Nombre del archivo dinámico según tipo
+        String nombreArchivo = "comprobante_" + id + ".pdf";
+
+        headers.setContentDisposition(ContentDisposition.attachment().filename(nombreArchivo).build());
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
+    }
+
 }
