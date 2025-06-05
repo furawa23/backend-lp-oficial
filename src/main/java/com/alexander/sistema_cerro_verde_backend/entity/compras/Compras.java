@@ -31,8 +31,8 @@ public class Compras {
     private Double total;
     private Double flete;
     private Double descuento;
-    private String fecha_compra;  
-    private Double igv;  
+    private String fecha_compra;
+    private Double igv;
     private Integer estado = 1;
     private Integer id_usuario;
     private Integer id_sucursal;
