@@ -14,7 +14,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.reportes.SalonVentasDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.VentaResumenDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 
-public interface VentasRepository extends JpaRepository<Ventas, Integer>{   
+public interface VentasRepository extends JpaRepository<Ventas, Integer>{  
     
     // ——— Productos Más Vendidos
     @Query(value = """

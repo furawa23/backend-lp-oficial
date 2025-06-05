@@ -40,10 +40,6 @@ public class ReportesVentasService {
         this.ventasRepo = ventasRepo;
     }
 
-    // ------------------------------------------------------------
-    //   MÉTODOS PARA OBTENER JSON (listas de DTOs)
-    // ------------------------------------------------------------
-
     /**
      * Retorna la lista de productos más vendidos en el rango [desde, hasta].
      * @param desde Fecha de inicio en formato "YYYY-MM-DD"
@@ -90,19 +86,6 @@ public class ReportesVentasService {
     }
 
 
-    // ------------------------------------------------------------
-    //   MÉTODO PRIVADO PARA OBTENER DATOS GENÉRICOS DE RESUMEN
-    // ------------------------------------------------------------
-
-    /**
-     * Según el parámetro 'tipo', invoca al repositorio correspondiente que
-     * devuelve List<VentaResumenDTO> para generar PDF/Excel:
-     *   - "productos"  → findProductosMasVendidosResumen
-     *   - "salones"    → findSalonesMasVendidosResumen
-     *   - "habitaciones" → findHabitacionesMasVendidasResumen
-     *   - "clientes"   → findClientesFrecuentesResumen
-     *   - "metodoPago" → findMetodosPagoResumen
-     */
     private List<VentaResumenDTO> obtenerDatosResumen(String tipo, String desde, String hasta) {
         switch (tipo) {
             case "productos":
@@ -119,11 +102,6 @@ public class ReportesVentasService {
                 throw new IllegalArgumentException("Tipo de reporte inválido: " + tipo);
         }
     }
-
-
-    // ------------------------------------------------------------
-    //   GENERAR PDF (con iText)
-    // ------------------------------------------------------------
 
     /**
      * Genera un PDF en memoria (byte[]) con el reporte del 'tipo' especificado
