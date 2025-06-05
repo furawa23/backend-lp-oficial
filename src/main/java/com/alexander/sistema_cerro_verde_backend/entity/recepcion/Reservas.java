@@ -28,6 +28,7 @@ public class Reservas {
     private LocalDateTime fecha_fin;
     private String estado_reserva;
     private String comentarios;
+    private Integer nro_persona;
     private Integer estado;
     private String tipo;
 
@@ -133,6 +134,14 @@ public class Reservas {
 
     public void setVentaXReserva(List<VentasXReservas> ventaXReserva) {
         this.ventaXReserva = ventaXReserva;
+    }
+
+    public Integer getNro_persona() {
+        return nro_persona;
+    }
+
+    public void setNro_persona(Integer nro_persona) {
+        this.nro_persona = nro_persona;
     }
     
     

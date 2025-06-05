@@ -6,4 +6,5 @@ import com.alexander.sistema_cerro_verde_backend.entity.recepcion.CheckinCheckou
 
 public interface CheckinCheckoutRepository extends JpaRepository<CheckinCheckout, Integer>{
 
+    
 }

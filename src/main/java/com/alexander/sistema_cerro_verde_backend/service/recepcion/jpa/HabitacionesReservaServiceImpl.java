@@ -39,17 +39,15 @@ public class HabitacionesReservaServiceImpl implements HabitacionesReservaServic
 
     @Override
     public HabitacionesXReserva modificar(HabitacionesXReserva habreserva) {
-    // 1. Validar que la habitación no sea nula
+
     if (habreserva == null) {
         throw new IllegalArgumentException("La habitación no puede ser nula");
     }
 
-    // 2. Verificar que el ID existe
     if (habreserva.getId_hab_reserv() == null) {
         throw new IllegalArgumentException("El ID de la habitación es requerido");
     }
 
-    // 3. Comprobar si existe antes de actualizar
     return repository.findById(habreserva.getId_hab_reserv())
         .map(existente -> {
             existente.setHabitacion(habreserva.getHabitacion());

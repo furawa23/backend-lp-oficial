@@ -13,5 +13,7 @@ public interface CheckinCheckoutService {
 
     Optional<CheckinCheckout> buscarId(Integer id);
 
-    void eliminarId(Integer id);
+    CheckinCheckout modificar(CheckinCheckout check);
+
+    void eliminar(Integer id);
 }
