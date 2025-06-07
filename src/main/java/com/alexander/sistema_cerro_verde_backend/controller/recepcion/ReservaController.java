@@ -66,7 +66,7 @@ public class ReservaController {
     }
 
     @DeleteMapping("/reservas/eliminar/{id}")
-public ResponseEntity<String> eliminar(@PathVariable Integer id) {
+    public ResponseEntity<String> eliminar(@PathVariable Integer id) {
     try {
         // Llamar al servicio para eliminar la reserva (logicamente)
         reservaService.eliminar(id);

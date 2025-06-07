@@ -101,7 +101,7 @@ public class VentaService implements IVentaService {
         ventaGuardada.getVentaXReserva().forEach(r -> {
             Integer idReserva = r.getReserva().getId_reserva();
             var reserva = repoReservas.findById(idReserva).orElseThrow(() -> new EntityNotFoundException("RESERVAAAAAAASDASDASDASDASDAS: " + idReserva));
-            reserva.setEstado_reserva("Completada");
+            reserva.setEstado_reserva("Pagada");
             repoReservas.save(reserva);
         });
 

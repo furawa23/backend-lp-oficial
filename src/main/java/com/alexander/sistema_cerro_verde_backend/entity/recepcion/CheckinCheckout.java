@@ -18,10 +18,11 @@ public class CheckinCheckout {
     private Integer id_check;
     private LocalDateTime fecha_checkin;
     private LocalDateTime fecha_checkout;
+    private Integer estado;
 
     @ManyToOne
     @JoinColumn(name = "id_reserva")
-    private HabitacionesXReserva habreserva;
+    private Reservas reserva;
 
     public Integer getId_check() {
         return id_check;
@@ -41,7 +42,18 @@ public class CheckinCheckout {
     public void setFecha_checkout(LocalDateTime fecha_checkout) {
         this.fecha_checkout = fecha_checkout;
     }
-    
+    public Reservas getReserva() {
+        return reserva;
+    }
+    public void setReserva(Reservas reserva) {
+        this.reserva = reserva;
+    }
+    public Integer getEstado() {
+        return estado;
+    }
+    public void setEstado(Integer estado) {
+        this.estado = estado;
+    }
     
     
 }

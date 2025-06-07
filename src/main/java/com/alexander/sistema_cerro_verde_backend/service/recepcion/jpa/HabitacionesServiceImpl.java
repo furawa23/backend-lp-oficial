@@ -11,7 +11,6 @@ import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.TipoHabitacion;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
-import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesReservaRepository;
 import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.HabitacionesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.TipoHabitacionService;
@@ -26,9 +25,6 @@ private HabitacionesRepository repository;
 
 @Autowired
 private SucursalesService sucursalService;
-
-@Autowired
-private HabitacionesReservaRepository reservaRepository;
 
 @Autowired
 private TipoHabitacionService tipoHabitacionService;

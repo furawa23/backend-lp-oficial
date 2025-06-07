@@ -1,5 +1,6 @@
 package com.alexander.sistema_cerro_verde_backend.repository.recepcion;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,9 +14,14 @@ import jakarta.transaction.Transactional;
 
 public interface SalonesReservaRepository extends JpaRepository<SalonesXReserva, Integer> {
 
+
+    @Query("SELECT s FROM SalonesXReserva s WHERE s.reserva.id_reserva = :idReserva")
+    List<SalonesXReserva> findByReservaId(@Param("idReserva") Integer idReserva);
+
+
     @Modifying
     @Transactional
-    @Query("DELETE FROM SalonesXReserva hr WHERE hr.reserva.id_reserva = :idReserva")
+    @Query("UPDATE SalonesXReserva hr SET hr.estado = 0 WHERE hr.reserva.id_reserva = :idReserva")
     void deleteByReservaId(@Param("idReserva") Integer idReserva);
 
     @Query("SELECT hxr FROM SalonesXReserva hxr WHERE hxr.salon.id = :id_salon AND hxr.reserva.id = :id_reserva")
