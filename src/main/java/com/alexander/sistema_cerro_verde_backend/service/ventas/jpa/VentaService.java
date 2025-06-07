@@ -105,16 +105,16 @@ public class VentaService implements IVentaService {
             repoReservas.save(reserva);
         });
 
-        // var caja = repoCaja.findByEstadoCaja("abierta").orElseThrow(() -> new RuntimeException("Caja no encontrada"));;
+        var caja = repoCaja.findByEstadoCaja("abierta").orElseThrow(() -> new RuntimeException("Caja no encontrada"));;
 
-        // ventaGuardada.getVentaMetodoPago().forEach(m -> {
-        //     Integer idMetodoPago = m.getMetodoPago().getIdMetodoPago();
-        //     var metodoPago = repoMetodo.findById(idMetodoPago).orElseThrow(() -> new EntityNotFoundException("METODO DE PAGO: " + idMetodoPago));
-        //     if (metodoPago.getNombre().equals("Efectivo")) {
-        //         caja.setSaldo(caja.getSaldo() + m.getPago());
-        //         repoCaja.save(caja);
-        //     }
-        // });
+        ventaGuardada.getVentaMetodoPago().forEach(m -> {
+            Integer idMetodoPago = m.getMetodoPago().getIdMetodoPago();
+            var metodoPago = repoMetodo.findById(idMetodoPago).orElseThrow(() -> new EntityNotFoundException("METODO DE PAGO: " + idMetodoPago));
+            if (!metodoPago.getNombre().equals("Efectivo")) {
+                caja.setSaldoTotal(caja.getSaldoTotal() + m.getPago());
+                repoCaja.save(caja);
+            }
+        });
     }
 
     @Override
