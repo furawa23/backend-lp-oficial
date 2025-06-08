@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.MetodosPago;
@@ -19,11 +20,6 @@ public class MetodoPagoService implements IMetodoPagoService {
     @Override
     public List<MetodosPago> buscarTodos() { //Listar todos los métodos de pago
         return repoMetodo.findAll();
-    }
-
-    @Override
-    public List<MetodosPago> buscarActivos() { //Listar los métodos de pago activos
-        return repoMetodo.findActive();
     }
 
     @Override
@@ -43,6 +39,10 @@ public class MetodoPagoService implements IMetodoPagoService {
 
     @Override
     public void eliminar(Integer id) { //Eliminar el método de pago por el ID
+        System.out.println("XDXASXASXASXASX: " + repoMetodo.countVentasByMetodoPagoId(id));
+        if(repoMetodo.countVentasByMetodoPagoId(id) > 0) {
+            throw new DataIntegrityViolationException("El método de pago está relacionado con una o muchas ventas");
+        }
         repoMetodo.deleteById(id);
     }
 }

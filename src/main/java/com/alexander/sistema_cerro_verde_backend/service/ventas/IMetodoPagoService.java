@@ -9,8 +9,6 @@ public interface IMetodoPagoService {
 
     List<MetodosPago> buscarTodos (); //Listar todos los métodos de pago
 
-    List<MetodosPago> buscarActivos (); //Listar los métodos de pago activos
-
     Optional<MetodosPago> buscarPorId (Integer id); //Buscar método de pago por el ID
 
     void registrar (MetodosPago metodo); //Registrar método de pago
