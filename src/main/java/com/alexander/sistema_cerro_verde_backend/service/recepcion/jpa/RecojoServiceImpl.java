@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Conductores;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Recojo;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Reservas;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.RecojoRepository;
+import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.ConductoresService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.RecojoService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.ReservasService;
@@ -29,6 +31,9 @@ public class RecojoServiceImpl implements RecojoService{
     @Autowired
     private ReservasService reservaService;
 
+    @Autowired
+    private SucursalesService sucursalService;
+
     @Override
     @Transactional(readOnly = true)
     public List<Recojo> buscarTodos() {
@@ -38,12 +43,17 @@ public class RecojoServiceImpl implements RecojoService{
     @Override
     @Transactional
     public Recojo guardar(Recojo recojo) {
+        if (recojo.getSucursal() != null && recojo.getSucursal().getId() != null) {
+        Sucursales sucursal = sucursalService.buscarId(recojo.getSucursal().getId()).orElse(null);
+        recojo.setSucursal(sucursal);
+        }
+        
         if (recojo.getConductor() != null && recojo.getConductor().getId_conductor() != null) {
             Conductores conductor = conductorService.buscarId(recojo.getConductor().getId_conductor()).orElse(null);
             recojo.setConductor(conductor);
         }
 
-        if (recojo.getReserva() != null && recojo.getReserva().getId_reserva() != null) {
+        if (recojo.getReserva() != null && recojo.getReserva().getId_reserva() != null ||  recojo.getEstado() == 1) {
             Reservas reserva = reservaService.buscarId(recojo.getReserva().getId_reserva()).orElse(null);
             recojo.setReserva(reserva);
         }

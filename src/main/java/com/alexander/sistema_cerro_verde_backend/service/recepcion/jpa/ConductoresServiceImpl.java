@@ -1,11 +1,13 @@
 package com.alexander.sistema_cerro_verde_backend.service.recepcion.jpa;
 
+import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.ConductoresService;
 
 import jakarta.persistence.EntityNotFoundException;
 
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ConductoresRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.RecojoRepository;
+import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Conductores;
 
 import java.util.List;
@@ -26,6 +28,9 @@ public class ConductoresServiceImpl implements ConductoresService {
     @Autowired
     private RecojoRepository recojoRepository;
 
+    @Autowired
+    private SucursalesService sucursalService;
+
     @Override
     @Transactional(readOnly = true)
     public List<Conductores> buscarTodos() {
@@ -35,6 +40,11 @@ public class ConductoresServiceImpl implements ConductoresService {
     @Override
     @Transactional
     public Conductores guardar(Conductores conductor) {
+        if (conductor.getSucursal() != null && conductor.getSucursal().getId() != null) {
+        Sucursales sucursal = sucursalService.buscarId(conductor.getSucursal().getId()).orElse(null);
+        conductor.setSucursal(sucursal);
+    }
+
         return repository.save(conductor);
     }
 

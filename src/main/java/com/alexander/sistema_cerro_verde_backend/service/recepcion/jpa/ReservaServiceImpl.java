@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.HabitacionesXReserva;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Reservas;
@@ -19,6 +20,8 @@ import com.alexander.sistema_cerro_verde_backend.repository.recepcion.Habitacion
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ReservasRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.SalonesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.SalonesReservaRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.ventas.ClientesRepository;
+import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.ReservasService;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.ClientesService;
 
@@ -46,15 +49,38 @@ public class ReservaServiceImpl implements ReservasService {
     @Autowired
     private ClientesService clientesService;
 
+    @Autowired
+    private ClientesRepository clientesRepository;
+
+    @Autowired
+    private SucursalesService sucursalService;
+
     @Override
     @Transactional(readOnly = true)
     public List<Reservas> buscarTodos() {
-        return repository.findAll();
+        List<Reservas> reservas = repository.findAll();
+    
+        // Filtrar solo habitacionesXReserva activas
+        for (Reservas r : reservas) {
+            List<HabitacionesXReserva> activas = r.getHabitacionesXReserva().stream()
+                .filter(hxr -> hxr.getEstado() == 1)
+                .toList();
+            r.setHabitacionesXReserva(activas);
+        }
+    
+        return reservas;
     }
+    
 
     @Override
     @Transactional
     public Reservas guardar(Reservas reserva) {
+
+        if (reserva.getSucursal() != null && reserva.getSucursal().getId() != null) {
+        Sucursales sucursal = sucursalService.buscarId(reserva.getSucursal().getId()).orElse(null);
+        reserva.setSucursal(sucursal);
+    }
+
         if (reserva.getCliente() != null && reserva.getCliente().getIdCliente() != null) {
         Clientes cliente = clientesService.buscarPorId(reserva.getCliente().getIdCliente()).orElse(null);
         reserva.setCliente(cliente);
@@ -140,25 +166,35 @@ public class ReservaServiceImpl implements ReservasService {
     @Override
     @Transactional
     public Reservas modificar(Reservas reserva) {
-        if (reserva == null || reserva.getId_reserva() == null) {
-            throw new IllegalArgumentException("La reserva no puede ser nula ni tener ID nulo");
-        }
-    
-        return repository.findById(reserva.getId_reserva())
-            .map(existente -> {
-                // Actualiza campos simples
-                existente.setComentarios(reserva.getComentarios());
-                existente.setFecha_inicio(reserva.getFecha_inicio());
-                existente.setFecha_fin(reserva.getFecha_fin());
-                existente.setCliente(reserva.getCliente());
-                existente.setEstado_reserva(reserva.getEstado_reserva());
-                existente.setNro_persona(reserva.getNro_persona());
-    
-                return repository.save(existente);
-            })
-            .orElseThrow(() -> new EntityNotFoundException(
-                "Reserva no encontrada con ID: " + reserva.getId_reserva()
-            ));
+    if (reserva == null || reserva.getId_reserva() == null) {
+        throw new IllegalArgumentException("La reserva no puede ser nula ni tener ID nulo");
     }
+
+    return repository.findById(reserva.getId_reserva())
+        .map(existente -> {
+            // Obtener cliente existente
+            Integer idCliente = reserva.getCliente() != null ? reserva.getCliente().getIdCliente() : null;
+            if (idCliente == null) {
+                throw new IllegalArgumentException("La reserva debe tener un cliente válido");
+            }
+
+            Clientes clienteExistente = clientesRepository.findById(idCliente)
+                .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado con ID: " + idCliente));
+
+            // Actualizar campos simples
+            existente.setComentarios(reserva.getComentarios());
+            existente.setFecha_inicio(reserva.getFecha_inicio());
+            existente.setFecha_fin(reserva.getFecha_fin());
+            existente.setCliente(clienteExistente); // Usa el cliente cargado de DB
+            existente.setEstado_reserva(reserva.getEstado_reserva());
+            existente.setNro_persona(reserva.getNro_persona());
+
+            return repository.save(existente);
+        })
+        .orElseThrow(() -> new EntityNotFoundException(
+            "Reserva no encontrada con ID: " + reserva.getId_reserva()
+        ));
+    }
+
     
 }
