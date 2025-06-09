@@ -39,8 +39,7 @@ public class MetodoPagoService implements IMetodoPagoService {
 
     @Override
     public void eliminar(Integer id) { //Eliminar el método de pago por el ID
-        System.out.println("XDXASXASXASXASX: " + repoMetodo.countVentasByMetodoPagoId(id));
-        if(repoMetodo.countVentasByMetodoPagoId(id) > 0) {
+        if (repoMetodo.countVentasByMetodoPagoId(id) > 0) {
             throw new DataIntegrityViolationException("El método de pago está relacionado con una o muchas ventas");
         }
         repoMetodo.deleteById(id);
