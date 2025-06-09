@@ -20,7 +20,7 @@ import com.alexander.sistema_cerro_verde_backend.repository.seguridad.RolesRepos
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.IRolesService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin(origins = "*") // Para permitir peticiones desde el frontend (ajusta según sea necesario)
 public class RolesController {
 

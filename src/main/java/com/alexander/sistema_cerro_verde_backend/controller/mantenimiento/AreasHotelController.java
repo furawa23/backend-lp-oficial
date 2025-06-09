@@ -17,7 +17,7 @@ import com.alexander.sistema_cerro_verde_backend.service.mantenimiento.jpa.Areas
 
 
 @RestController
-@RequestMapping("/cerro-verde/areashotel")
+@RequestMapping("/hoteleria/areashotel")
 public class AreasHotelController {
     @Autowired
     private AreasHotelService serviceAreasHotel;

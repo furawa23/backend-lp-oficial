@@ -24,7 +24,7 @@ import com.alexander.sistema_cerro_verde_backend.service.seguridad.IUsuariosServ
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.jpa.UsuariosService;
 
 @RestController
-@RequestMapping("/cerro-verde/usuarios")
+@RequestMapping("/hoteleria/usuarios")
 @CrossOrigin("*")
 public class UsuarioController {
 

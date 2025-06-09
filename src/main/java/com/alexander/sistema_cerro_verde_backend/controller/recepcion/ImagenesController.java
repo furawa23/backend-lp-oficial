@@ -19,7 +19,7 @@ import com.alexander.sistema_cerro_verde_backend.service.recepcion.ImagenesServi
 
 @CrossOrigin("*") 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 public class ImagenesController {
 
     @Autowired
