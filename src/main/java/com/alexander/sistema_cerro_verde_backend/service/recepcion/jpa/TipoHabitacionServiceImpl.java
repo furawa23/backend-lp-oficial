@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.TipoHabitacion;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.TipoHabitacionRepository;
+import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.TipoHabitacionService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -22,6 +24,9 @@ public class TipoHabitacionServiceImpl implements TipoHabitacionService {
 
     @Autowired
     private HabitacionesRepository habitacionesRepository;
+
+    @Autowired
+    private SucursalesService sucursalService;
 
     @Override
     @Transactional(readOnly = true)
@@ -39,6 +44,11 @@ public class TipoHabitacionServiceImpl implements TipoHabitacionService {
     @Override
     @Transactional
     public TipoHabitacion guardar(TipoHabitacion tipo) {
+        if (tipo.getSucursal() != null && tipo.getSucursal().getId() != null) {
+        Sucursales sucursal = sucursalService.buscarId(tipo.getSucursal().getId()).orElse(null);
+        tipo.setSucursal(sucursal);
+    }
+
         return repository.save(tipo);
     }
 

@@ -29,7 +29,7 @@ public class Habitaciones {
     private Integer numero;
     private Integer piso;
     private String estado_habitacion;
-    private Integer estado;
+    private Integer estado = 1;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_sucursal")
@@ -45,9 +45,11 @@ public class Habitaciones {
     private List<VentaHabitacion> ventaHabitacion;
 
     @OneToMany(mappedBy = "habitacion")
+    @JsonIgnore
     private List<Incidencias> incidencias;
 
     @OneToMany(mappedBy = "habitacion")
+    @JsonIgnore
     private List<Limpiezas> limpiezas;
     
     public Integer getId_habitacion() {

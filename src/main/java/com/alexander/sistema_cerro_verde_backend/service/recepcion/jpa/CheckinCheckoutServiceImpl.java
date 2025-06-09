@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.CheckinCheckout;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.HabitacionesXReserva;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.SalonesXReserva;
@@ -16,6 +17,7 @@ import com.alexander.sistema_cerro_verde_backend.repository.recepcion.Habitacion
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ReservasRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.SalonesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.SalonesReservaRepository;
+import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.CheckinCheckoutService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -41,6 +43,9 @@ public class CheckinCheckoutServiceImpl implements CheckinCheckoutService {
     @Autowired
     private ReservasRepository reservaRepository;
 
+    @Autowired
+    private SucursalesService sucursalService;
+
     @Override
     @Transactional(readOnly = true)
     public List<CheckinCheckout> buscarTodos() {
@@ -50,6 +55,11 @@ public class CheckinCheckoutServiceImpl implements CheckinCheckoutService {
     @Override
     @Transactional
     public CheckinCheckout guardar(CheckinCheckout check) {
+        if (check.getSucursal() != null && check.getSucursal().getId() != null) {
+        Sucursales sucursal = sucursalService.buscarId(check.getSucursal().getId()).orElse(null);
+        check.setSucursal(sucursal);
+    }
+
         if (check == null || check.getReserva() == null) {
             throw new IllegalArgumentException("Datos incompletos para guardar el check-in");
         }
