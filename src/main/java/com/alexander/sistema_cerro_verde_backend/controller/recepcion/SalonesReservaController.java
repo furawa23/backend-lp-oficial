@@ -68,13 +68,7 @@ public class SalonesReservaController {
     @DeleteMapping("/salonreservas/eliminar/{id}")
     public String eliminar(@PathVariable Integer id){
         salreservaService.eliminar(id);
-        return "Habitación relacionada a la reserva eliminada";
-    }
-
-    @DeleteMapping("/reserva/salon/{id_reserva}")
-    public ResponseEntity<Void> deleteByReserva(@PathVariable Integer id_reserva) {
-    salreservaService.deleteByReservaId(id_reserva);
-    return ResponseEntity.noContent().build();
+        return "Salón relacionado a la reserva eliminada";
     }
     
 }

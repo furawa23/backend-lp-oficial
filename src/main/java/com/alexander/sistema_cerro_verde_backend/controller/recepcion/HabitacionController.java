@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
-import com.alexander.sistema_cerro_verde_backend.entity.recepcion.HabitacionesXImagenes;
-import com.alexander.sistema_cerro_verde_backend.service.recepcion.HabitacionesImagenesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.HabitacionesService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -31,8 +29,6 @@ public class HabitacionController {
     @Autowired
     private HabitacionesService habitacionesService;
 
-    @Autowired
-    private HabitacionesImagenesService habimgService;
 
     @GetMapping("/habitaciones")
     public List<Habitaciones> buscarTodos() {
@@ -74,35 +70,6 @@ public class HabitacionController {
     public String eliminar(@PathVariable Integer id){
         habitacionesService.eliminar(id);
         return "Habitacion eliminada";
-    }
-
-    @GetMapping("/habitaciones/imagenes")
-    public List<HabitacionesXImagenes> buscarImagen() {
-        return habimgService.buscarTodos();
-    }
-
-    @PostMapping("/habitaciones/imagenes")
-    public HabitacionesXImagenes guardarImagen(@RequestBody HabitacionesXImagenes habimg) {   
-        habimgService.guardar(habimg);     
-        return habimg;
-    }
-
-    
-    @PutMapping("/habitaciones/imagenes")
-    public HabitacionesXImagenes modificar(@RequestBody HabitacionesXImagenes habimg) {   
-        habimgService.modificar(habimg);
-        return habimg;
-    }
-
-    @GetMapping("/habitaciones/imagenes/{id}")
-    public Optional<HabitacionesXImagenes> buscarIdImagen(@PathVariable("id") Integer id) {
-        return habimgService.buscarId(id);
-    }
-
-    @DeleteMapping("/habitaciones/imagenes/{id}")
-    public String eliminarImagen(@PathVariable Integer id){
-        habimgService.eliminar(id);
-        return "Imagen de habitacion eliminada";
     }
 
     
