@@ -23,6 +23,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
 import com.alexander.sistema_cerro_verde_backend.excepciones.UsuarioDeshabilitadoException;
 import com.alexander.sistema_cerro_verde_backend.excepciones.UsuarioFoundException;
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.UserDetailsServiceImpl;
+import com.alexander.sistema_cerro_verde_backend.service.seguridad.IUsuariosService;
 
 @RestController
 @CrossOrigin("*")
@@ -32,6 +33,8 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserDetailsServiceImpl userxDetailsServiceImpl; 
+    @Autowired
+    private IUsuariosService usuarioServiceImpl;
 
 
     @Autowired
@@ -39,21 +42,28 @@ public class AuthenticationController {
     
     @PostMapping("/generar-token")
     public ResponseEntity<?> generarToken(@RequestBody JwtRequest jwtRequest) throws Exception {
-        System.out.println("vamos a generar el token con" + jwtRequest.getUsername());
-
+        System.out.println("Intentando autenticar al usuario: " + jwtRequest.getUsername());
+    
         try {
-            System.out.println("Intentando autenticar al usuario: " + jwtRequest.getUsername());
             autenticar(jwtRequest.getUsername(), jwtRequest.getPassword());
         } catch (UsuarioFoundException exception) {
             exception.printStackTrace();
             throw new Exception("Usuario no encontrado");
         }
-        UserDetails userDetails = this.userxDetailsServiceImpl.loadUserByUsername(jwtRequest.getUsername()); 
-        System.out.println("Usuario autenticado correctamente: " + userDetails.getUsername());
+    
+        UserDetails userDetails = this.userxDetailsServiceImpl.loadUserByUsername(jwtRequest.getUsername());
         String token = this.jwtUtils.generateToken(userDetails);
-        System.out.println("Token generado: " + token); // <-- Esto te dirá si el token realmente se generó
+    
+        // Obtener usuario real para guardar el token en su campo
+        Usuarios usuario = this.usuarioServiceImpl.obtenerUsuario(jwtRequest.getUsername()); // <-- Usa tu método propio
+        usuario.setJwtToken(token);
+        usuarioServiceImpl.actualizarUsuario(usuario); // <-- Guarda el cambio
+    
+        System.out.println("Token generado y guardado en usuario: " + token);
+    
         return ResponseEntity.ok(new JwtResponse(token));
     }
+    
     
   
     private void autenticar(String username, String password) throws Exception {
