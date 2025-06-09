@@ -5,11 +5,13 @@ import java.util.List;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,8 +36,11 @@ public class Compras {
     private String fecha_compra;
     private Double igv;
     private Integer estado = 1;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_sucursal")
+    private Sucursales sucursal;
     private Integer id_usuario;
-    private Integer id_sucursal;
     @ManyToOne
     @JoinColumn(name = "ruc_proveedor")
     private Proveedores proveedor;
@@ -78,13 +83,7 @@ public class Compras {
         this.id_usuario = id_usuario;
     }
 
-    public Integer getId_sucursal() {
-        return this.id_sucursal;
-    }
-
-    public void setId_sucursal(Integer id_sucursal) {
-        this.id_sucursal = id_sucursal;
-    }
+    
 
     public Proveedores getProveedor() {
         return this.proveedor;
@@ -156,5 +155,13 @@ public class Compras {
 
     public void setCorrelativo(String correlativo) {
         this.correlativo = correlativo;
+    }
+
+    public Sucursales getSucursal() {
+        return sucursal;
+    }
+
+    public void setSucursal(Sucursales sucursal) {
+        this.sucursal = sucursal;
     }
 }

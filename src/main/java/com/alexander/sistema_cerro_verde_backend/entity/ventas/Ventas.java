@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.compras.MovimientosInventario;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -36,6 +37,10 @@ public class Ventas {
     private Double cargo;
     private Double igv;
     private Integer estado = 1;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_sucursal")
+    private Sucursales sucursal;
 
     //Relación de muchos a uno con Usuario
     @ManyToOne
@@ -199,6 +204,14 @@ public class Ventas {
 
     public void setVentaMetodoPago(List<VentaMetodoPago> ventaMetodoPago) {
         this.ventaMetodoPago = ventaMetodoPago;
+    }
+
+    public Sucursales getSucursal() {
+        return sucursal;
+    }
+
+    public void setSucursal(Sucursales sucursal) {
+        this.sucursal = sucursal;
     }
 
     public List<MovimientosInventario> getMovimientoInventario() {
