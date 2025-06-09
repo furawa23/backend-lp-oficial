@@ -8,8 +8,6 @@ import com.alexander.sistema_cerro_verde_backend.entity.compras.UnidadMedida;
 public interface IUnidadMedidaService {
     List<UnidadMedida> buscarTodos(); //Listar todas las unidades de medida
 
-    List<UnidadMedida> buscarActivos(); //Listar las unidades de medidas activos, estado = 1
-
     void guardar(UnidadMedida unidad); //Guardar unidad de medida
 
     void modificar(UnidadMedida unidad); //Modificar unidad de medida

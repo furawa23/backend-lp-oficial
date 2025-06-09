@@ -10,14 +10,8 @@ import com.alexander.sistema_cerro_verde_backend.entity.compras.CategoriasProduc
 import com.alexander.sistema_cerro_verde_backend.repository.compras.CategoriasProductosRepository;
 import com.alexander.sistema_cerro_verde_backend.service.compras.ICategoriasProductosService;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
-
 @Service
 public class CategoriasProductosService implements ICategoriasProductosService{
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Autowired
     private CategoriasProductosRepository repoCategoriasProductos;
@@ -28,27 +22,8 @@ public class CategoriasProductosService implements ICategoriasProductosService{
     }
 
     @Override
-    public List<CategoriasProductos> buscarActivos(){ //Buscar las categorias con estado = 1
-        return repoCategoriasProductos.findActive();
-    }
-
-    @Override
-    @Transactional
     public void guardar (CategoriasProductos categoriaproducto){ //Guardar categoria
-        Optional<CategoriasProductos> existente = repoCategoriasProductos.findByNombreIgnoreCase(categoriaproducto.getNombre());
-        if(existente.isPresent()){
-            CategoriasProductos cp = existente.get();
-            if(cp.getEstado() == 0){
-                cp.setEstado(1);
-                cp.setNombre(categoriaproducto.getNombre());
-                entityManager.merge(cp);
-            } else {
-                repoCategoriasProductos.save(categoriaproducto);
-            }
-        } else {
-            categoriaproducto.setEstado(1);
-            repoCategoriasProductos.save(categoriaproducto);
-        }
+        repoCategoriasProductos.save(categoriaproducto);
     }
 
     @Override

@@ -7,8 +7,6 @@ import com.alexander.sistema_cerro_verde_backend.entity.compras.Productos;
 
 public interface IProductosService {
     List<Productos> buscarTodos(); //Buscar todos los Productos
- 
-    List<Productos> buscarActivos(); //Buscas los productos activos, estado = 1
 
     void guardar(Productos producto); //Guardar producto
 

@@ -22,7 +22,7 @@ import com.alexander.sistema_cerro_verde_backend.service.compras.jpa.UnidadMedid
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class UnidadMedidaController {
 @Autowired
@@ -31,11 +31,6 @@ public class UnidadMedidaController {
     @GetMapping("/unidadmedida")
     public List<UnidadMedida> buscarTodos() {
         return serviceUnidad.buscarTodos(); //findAll
-    }
-
-    @GetMapping("/unidadmedidaactivo")
-    public List<UnidadMedida> buscarActivos() {
-        return serviceUnidad.buscarActivos(); 
     }
 
     @PostMapping("/unidadmedida")

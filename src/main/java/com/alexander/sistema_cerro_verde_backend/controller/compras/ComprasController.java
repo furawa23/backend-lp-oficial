@@ -22,7 +22,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.compras.Compras;
 import com.alexander.sistema_cerro_verde_backend.service.compras.IComprasService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class ComprasController {
 

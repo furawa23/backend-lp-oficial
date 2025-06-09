@@ -22,7 +22,7 @@ import com.alexander.sistema_cerro_verde_backend.service.compras.jpa.CategoriasP
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class CategoriasProductosController {
 
@@ -32,11 +32,6 @@ public class CategoriasProductosController {
     @GetMapping("/categoriasproductos")
     public List<CategoriasProductos> buscarTodos(){
         return serviceCategoriasProductos.buscarTodos(); //findAll
-    }
-
-    @GetMapping("/categoriasproductosactivos")
-    public List<CategoriasProductos> buscarActivos() {
-        return serviceCategoriasProductos.buscarActivos();
     }
 
     @PostMapping("/categoriasproductos")
