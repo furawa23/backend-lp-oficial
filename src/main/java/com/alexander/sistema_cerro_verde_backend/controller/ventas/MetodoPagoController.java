@@ -23,7 +23,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.ventas.MetodosPago;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.IMetodoPagoService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class MetodoPagoController {
 

@@ -17,7 +17,7 @@ import com.alexander.sistema_cerro_verde_backend.service.mantenimiento.jpa.Limpi
 
 
 @RestController
-@RequestMapping("/cerro-verde/limpiezas")
+@RequestMapping("/hoteleria/limpiezas")
 public class LimpiezasController {
     @Autowired
     private LimpiezasService serviceLimpiezas;

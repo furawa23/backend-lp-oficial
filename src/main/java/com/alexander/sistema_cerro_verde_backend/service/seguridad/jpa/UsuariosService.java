@@ -51,9 +51,6 @@ public class UsuariosService implements IUsuariosService {
         return usuariosRepository.findById(id).orElse(null);
     }
 
-
-
-
     @Override
     public void eliminarUsuario(Integer id) {
         usuariosRepository.deleteById(id);

@@ -22,7 +22,7 @@ import com.alexander.sistema_cerro_verde_backend.service.reportes.jpa.ReportesEx
 
 
 @RestController
-@RequestMapping("/cerro-verde/reportes")
+@RequestMapping("/hoteleria/reportes")
 @CrossOrigin("*")
 public class ReportesController {
 
