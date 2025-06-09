@@ -23,6 +23,10 @@ public class TipoIncidencia {
     private String nombre;
     private Integer estado = 1;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_sucursal")
+    private Sucursales sucursal;
+
     @OneToMany(mappedBy = "tipoIncidencia")
     private List<Incidencias> incidencias;
 

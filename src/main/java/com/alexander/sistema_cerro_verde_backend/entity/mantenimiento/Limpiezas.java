@@ -23,7 +23,11 @@ public class Limpiezas {
     private Integer id_limpieza;
     private String fecha_hora_limpieza;
     private String observaciones;
-    private Integer estado = 1; 
+    private Integer estado = 1;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_sucursal")
+    private Sucursales sucursal; 
 
     @ManyToOne
     @JoinColumn(name ="id_usuario")

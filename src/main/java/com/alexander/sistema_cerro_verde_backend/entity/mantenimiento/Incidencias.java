@@ -27,6 +27,10 @@ public class Incidencias {
     private String descripcion;
     private Integer estado = 1;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_sucursal")
+    private Sucursales sucursal;
+
     @ManyToOne
     @JoinColumn(name = "id_habitacion")
     private Habitaciones habitacion;

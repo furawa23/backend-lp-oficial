@@ -25,7 +25,11 @@ public class AreasHotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_area;
     private String nombre;
-    private Integer estado = 1;  // Estado activo por defecto
+    private Integer estado = 1;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_sucursal")
+    private Sucursales sucursal;  // Estado activo por defecto
 
     @OneToMany(mappedBy = "area")
     private List<Incidencias> incidencias;
