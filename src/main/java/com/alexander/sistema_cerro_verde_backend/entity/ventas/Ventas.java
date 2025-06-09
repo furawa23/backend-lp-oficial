@@ -7,7 +7,6 @@ import org.hibernate.annotations.SQLRestriction;
 
 import com.alexander.sistema_cerro_verde_backend.entity.compras.MovimientosInventario;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -50,7 +49,6 @@ public class Ventas {
 
     //Relación de Uno a Muchos con MovimientosInventario
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<MovimientosInventario> movimientoInventario;
 
     //Relación de Uno a Muchos con DetalleVenta

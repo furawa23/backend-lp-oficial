@@ -2,7 +2,6 @@ package com.alexander.sistema_cerro_verde_backend.entity.ventas;
 
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Reservas;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,7 +27,6 @@ public class VentasXReservas {
     //Relación de Muchos a Uno con Reservas
     @ManyToOne
     @JoinColumn(name="id_reserva")
-    @JsonIgnore
     private Reservas reserva;
 
     public Integer getIdVentaReserva() {

@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alexander.sistema_cerro_verde_backend.dto.ventas.VentaDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.compras.MovimientosInventario;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.DetalleVenta;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentaHabitacion;
@@ -65,13 +66,35 @@ public class VentaService implements IVentaService {
     private VentaSalonRepository repoVentaSalon;
 
     @Override
-    public List<Ventas> buscarTodos() {
-        return repoVenta.findAll();
+    public List<VentaDTO> buscarTodos() {
+        return repoVenta.findAll().stream().map(this::convertirDTO).toList();
     }
 
     @Override
-    public Optional<Ventas> buscarPorId(Integer id) {
-        return repoVenta.findById(id);
+    public Optional<VentaDTO> buscarPorId(Integer id) {
+        return repoVenta.findById(id).map(venta -> convertirDTO(venta));
+    }
+
+    @Override
+    public VentaDTO convertirDTO(Ventas venta){
+        VentaDTO dto = new VentaDTO();
+        dto.setIdVenta(venta.getIdVenta());
+        dto.setNumComprobante(venta.getComprobantePago().getNumComprobante());
+        dto.setNumSerieBoleta(venta.getComprobantePago().getNumSerieBoleta());
+        dto.setNumSerieFactura(venta.getComprobantePago().getNumSerieFactura());
+        dto.setDniRucCliente(venta.getCliente().getDniRuc());
+        dto.setCliente(venta.getCliente().getNombre());
+        dto.setFecha(venta.getFecha());
+        dto.setTotal(venta.getTotal());
+        dto.setDescuento(venta.getDescuento());
+        dto.setCargo(venta.getCargo());
+        dto.setIgv(venta.getIgv());
+        dto.setDetalleVenta(venta.getDetalleVenta());
+        dto.setDetalleHabitacion(venta.getVentaHabitacion());
+        dto.setDetalleSalon(venta.getVentaSalon());
+        dto.setMetodosPago(venta.getVentaMetodoPago());
+
+        return dto;
     }
 
     @Override
