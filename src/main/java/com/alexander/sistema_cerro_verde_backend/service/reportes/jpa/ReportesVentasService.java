@@ -1,35 +1,52 @@
 package com.alexander.sistema_cerro_verde_backend.service.reportes.jpa;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.commons.io.IOUtils;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtils;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.ClienteFrecuenteDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.HabitacionVentasDTO;
+import com.alexander.sistema_cerro_verde_backend.entity.reportes.HabitacionVentasDetalladoDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.PagoVentasDTO;
+import com.alexander.sistema_cerro_verde_backend.entity.reportes.PagoVentasDetalladoDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.ProductoVentasDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.SalonVentasDTO;
+import com.alexander.sistema_cerro_verde_backend.entity.reportes.SalonVentasDetalladoDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.VentaResumenDTO;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.VentasRepository;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.ColorConstants;
-import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.Style;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 @Service
 public class ReportesVentasService {
@@ -40,230 +57,450 @@ public class ReportesVentasService {
         this.ventasRepo = ventasRepo;
     }
 
-    /**
-     * Retorna la lista de productos más vendidos en el rango [desde, hasta].
-     * @param desde Fecha de inicio en formato "YYYY-MM-DD"
-     * @param hasta Fecha de fin en formato "YYYY-MM-DD"
-     */
+    /** Carga el logo desde el classpath */
+    private byte[] loadLogoBytes() {
+        try {
+            ClassPathResource res = new ClassPathResource("static/img/logo-cerroverde2.png");
+            if (!res.exists()) return null;
+            return IOUtils.toByteArray(res.getInputStream());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    // ----- Métodos de obtención de datos -----
     public List<ProductoVentasDTO> obtenerProductosMasVendidos(String desde, String hasta) {
         return ventasRepo.findProductosMasVendidos(desde, hasta);
     }
-
-    /**
-     * Retorna la lista de clientes más frecuentes en el rango [desde, hasta].
-     * @param desde Fecha de inicio en formato "YYYY-MM-DD"
-     * @param hasta Fecha de fin en formato "YYYY-MM-DD"
-     */
     public List<ClienteFrecuenteDTO> obtenerClientesFrecuentes(String desde, String hasta) {
         return ventasRepo.findClientesFrecuentes(desde, hasta);
     }
-
-    /**
-     * Retorna la lista de habitaciones más vendidas en el rango [desde, hasta].
-     * @param desde Fecha de inicio en formato "YYYY-MM-DD"
-     * @param hasta Fecha de fin en formato "YYYY-MM-DD"
-     */
     public List<HabitacionVentasDTO> obtenerHabitacionesMasVendidas(String desde, String hasta) {
         return ventasRepo.findHabitacionesMasVendidas(desde, hasta);
     }
-
-    /**
-     * Retorna la lista de salones más vendidos (o alquilados) en el rango [desde, hasta].
-     * @param desde Fecha de inicio en formato "YYYY-MM-DD"
-     * @param hasta Fecha de fin en formato "YYYY-MM-DD"
-     */
     public List<SalonVentasDTO> obtenerSalonesMasVendidos(String desde, String hasta) {
         return ventasRepo.findSalonesMasVendidos(desde, hasta);
     }
-
-    /**
-     * Retorna la lista de métodos de pago más usados en el rango [desde, hasta].
-     * @param desde Fecha de inicio en formato "YYYY-MM-DD"
-     * @param hasta Fecha de fin en formato "YYYY-MM-DD"
-     */
     public List<PagoVentasDTO> obtenerMetodosPago(String desde, String hasta) {
         return ventasRepo.findMetodosPago(desde, hasta);
     }
 
+    // ----- Métodos detallados -----
+    public List<SalonVentasDetalladoDTO> obtenerSalonesDetallado(String desde, String hasta) {
+        return ventasRepo.findSalonesDetallado(desde, hasta);
+    }
+    public List<HabitacionVentasDetalladoDTO> obtenerHabitacionesDetallado(String desde, String hasta) {
+        return ventasRepo.findHabitacionesDetallado(desde, hasta);
+    }
+    public List<PagoVentasDetalladoDTO> obtenerMetodosPagoDetallado(String desde, String hasta) {
+        return ventasRepo.findMetodosPagoDetallado(desde, hasta);
+    }
 
-    private List<VentaResumenDTO> obtenerDatosResumen(String tipo, String desde, String hasta) {
+    // Generación de PDF resumen con logo, gráfico y tabla
+    public byte[] generarPdfResumen(String tipo, String desde, String hasta) {
+        List<VentaResumenDTO> lista;
         switch (tipo) {
-            case "productos":
-                return ventasRepo.findProductosMasVendidosResumen(desde, hasta);
-            case "salones":
-                return ventasRepo.findSalonesMasVendidosResumen(desde, hasta);
-            case "habitaciones":
-                return ventasRepo.findHabitacionesMasVendidasResumen(desde, hasta);
-            case "clientes":
-                return ventasRepo.findClientesFrecuentesResumen(desde, hasta);
-            case "metodoPago":
-                return ventasRepo.findMetodosPagoResumen(desde, hasta);
-            default:
-                throw new IllegalArgumentException("Tipo de reporte inválido: " + tipo);
+            case "productos": lista = ventasRepo.findProductosMasVendidosResumen(desde, hasta); break;
+            case "clientes": lista = ventasRepo.findClientesFrecuentesResumen(desde, hasta); break;
+            case "habitaciones": lista = ventasRepo.findHabitacionesMasVendidasResumen(desde, hasta); break;
+            case "salones": lista = ventasRepo.findSalonesMasVendidosResumen(desde, hasta); break;
+            default: lista = ventasRepo.findMetodosPagoResumen(desde, hasta); break;
+        }
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PdfWriter writer = new PdfWriter(baos);
+            PdfDocument pdfDoc = new PdfDocument(writer);
+            Document document = new Document(pdfDoc);
+            byte[] logo = loadLogoBytes();
+            if (logo != null) {
+                Image img = new Image(ImageDataFactory.create(logo))
+                    .scaleToFit(100,50)
+                    .setFixedPosition(36, pdfDoc.getDefaultPageSize().getTop() - 60);
+                document.add(img);
+            }
+            Style headerFont = new Style().setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD));
+            String titulo = switch (tipo) {
+                case "productos" -> "Productos Más Vendidos";
+                case "clientes" -> "Clientes Más Frecuentes";
+                case "habitaciones" -> "Habitaciones Más Vendidas";
+                case "salones" -> "Salones Más Vendidos";
+                default -> "Métodos de Pago Más Usados";
+            };
+            document.add(new Paragraph(titulo)
+                .addStyle(headerFont).setFontSize(16).setTextAlignment(TextAlignment.CENTER));
+            document.add(new Paragraph("\n"));
+            // Gráfico
+            DefaultCategoryDataset ds = new DefaultCategoryDataset();
+            lista.stream().limit(10).forEach(d -> ds.addValue(d.getCantidad(), "Cantidad", d.getNombre()));
+            JFreeChart chart = ChartFactory.createBarChart("Top " + titulo, "", "", ds);
+            ByteArrayOutputStream chartOut = new ByteArrayOutputStream();
+            ChartUtils.writeChartAsPNG(chartOut, chart, 500,300);
+            document.add(new Image(ImageDataFactory.create(chartOut.toByteArray())).setAutoScale(true));
+            document.add(new Paragraph("\n"));
+            // Tabla
+            float[] widths = {200F,100F,100F};
+            Table table = new Table(UnitValue.createPercentArray(widths)).useAllAvailableWidth();
+            Style hs = new Style().setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
+                .setBackgroundColor(ColorConstants.LIGHT_GRAY).setTextAlignment(TextAlignment.CENTER);
+            String[] headers = {"Nombre","Cantidad","Total (S/.)"};
+            for (String h: headers) table.addHeaderCell(new Cell().add(new Paragraph(h)).addStyle(hs));
+            for (VentaResumenDTO d: lista) {
+                table.addCell(d.getNombre());
+                table.addCell(d.getCantidad().toString());
+                table.addCell(String.format("%.2f", d.getTotal()));
+            }
+            document.add(table);
+            document.close();
+            return baos.toByteArray();
+        } catch (Exception e) {
+            throw new RuntimeException("Error PDF resumen", e);
         }
     }
 
-    /**
-     * Genera un PDF en memoria (byte[]) con el reporte del 'tipo' especificado
-     * dentro del rango [desde, hasta]. El contenido se basa en VentaResumenDTO.
-     *
-     * @param tipo  "productos", "salones", "habitaciones", "clientes" o "metodoPago"
-     * @param desde Fecha de inicio en formato "YYYY-MM-DD"
-     * @param hasta Fecha de fin en formato "YYYY-MM-DD"
-     * @return Arreglo de bytes que representa el PDF generado.
-     */
-    public byte[] generarPdf(String tipo, String desde, String hasta) {
+    // Generación de Excel resumen con logo, gráfico y tabla
+    public byte[] generarExcelResumen(String tipo, String desde, String hasta) {
+        List<VentaResumenDTO> lista;
+        switch (tipo) {
+            case "productos": lista = ventasRepo.findProductosMasVendidosResumen(desde, hasta); break;
+            case "clientes": lista = ventasRepo.findClientesFrecuentesResumen(desde, hasta); break;
+            case "habitaciones": lista = ventasRepo.findHabitacionesMasVendidasResumen(desde, hasta); break;
+            case "salones": lista = ventasRepo.findSalonesMasVendidosResumen(desde, hasta); break;
+            default: lista = ventasRepo.findMetodosPagoResumen(desde, hasta); break;
+        }
+        try (Workbook wb = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sh = wb.createSheet("Reporte");
+            CreationHelper helper = wb.getCreationHelper();
+            byte[] logo = loadLogoBytes();
+            if (logo != null) {
+                int idx = wb.addPicture(logo, Workbook.PICTURE_TYPE_PNG);
+                Drawing<?> dr = sh.createDrawingPatriarch();
+                ClientAnchor anc = helper.createClientAnchor(); anc.setCol1(0); anc.setRow1(0);
+                dr.createPicture(anc, idx).resize(1.5);
+            }
+            org.apache.poi.ss.usermodel.Font f = wb.createFont(); f.setBold(true);
+            var cs = wb.createCellStyle(); cs.setFont(f);
+            cs.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            cs.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            cs.setAlignment(HorizontalAlignment.CENTER);
+            Row hr = sh.createRow(4);
+            String[] hdrs = {"Nombre","Cantidad","Total (S/.)"};
+            for (int i=0;i<hdrs.length;i++){ var c=hr.createCell(i); c.setCellValue(hdrs[i]); c.setCellStyle(cs);} 
+            int r=5;
+            for (VentaResumenDTO d:lista){ var row=sh.createRow(r++); row.createCell(0).setCellValue(d.getNombre()); row.createCell(1).setCellValue(d.getCantidad()); row.createCell(2).setCellValue(d.getTotal());}
+            for(int i=0;i<hdrs.length;i++) sh.autoSizeColumn(i);
+            DefaultCategoryDataset ds = new DefaultCategoryDataset(); lista.stream().limit(10).forEach(d->ds.addValue(d.getCantidad(),"Cantidad",d.getNombre()));
+            JFreeChart chart = ChartFactory.createBarChart("Top " + tipo, "", "", ds);
+            ByteArrayOutputStream chartOut = new ByteArrayOutputStream(); ChartUtils.writeChartAsPNG(chartOut, chart,500,300);
+            int cid = wb.addPicture(chartOut.toByteArray(), Workbook.PICTURE_TYPE_PNG);
+            var csheet = wb.createSheet("Gráfico");
+            var dr2 = csheet.createDrawingPatriarch();
+            var anc2 = helper.createClientAnchor(); anc2.setCol1(0); anc2.setRow1(1);
+            dr2.createPicture(anc2, cid).resize();
+            wb.write(out);
+            return out.toByteArray();
+        } catch (Exception e) {
+            throw new RuntimeException("Error Excel resumen", e);
+        }
+    }
+
+    // ----- Métodos detallados PDF y Excel -----
+    // ----- Generación de PDF Detallado para Salones -----
+    public ByteArrayInputStream generarPdfSalonesDetallado(List<SalonVentasDetalladoDTO> datos) {
         try {
-            // 1) Obtengo la lista de datos (DTO) para el tipo de reporte
-            List<VentaResumenDTO> lista = obtenerDatosResumen(tipo, desde, hasta);
-
-            // 2) Creo un stream en memoria para almacenar el PDF
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-            // 3) Instancio PdfWriter, PdfDocument y Documento iText
+            var baos = new ByteArrayOutputStream();
             PdfWriter writer = new PdfWriter(baos);
             PdfDocument pdfDoc = new PdfDocument(writer);
             Document document = new Document(pdfDoc);
 
-            // 4) Cargo la fuente Helvetica
-            PdfFont font = PdfFontFactory.createFont(StandardFonts.HELVETICA);
-
-            // 5) Pongo un título dinámico dependiendo del 'tipo'
-            String titulo;
-            switch (tipo) {
-                case "productos":   titulo = "Productos Más Vendidos";       break;
-                case "salones":     titulo = "Salones Más Vendidos";         break;
-                case "habitaciones":titulo = "Habitaciones Más Vendidas";    break;
-                case "clientes":    titulo = "Clientes Más Frecuentes";      break;
-                case "metodoPago":  titulo = "Métodos de Pago Más Usados";   break;
-                default:            titulo = "Reporte";                       break;
+            // Logo
+            byte[] logo = loadLogoBytes();
+            if (logo != null) {
+                Image img = new Image(ImageDataFactory.create(logo))
+                    .scaleToFit(100, 50)
+                    .setFixedPosition(36, pdfDoc.getDefaultPageSize().getTop() - 60);
+                document.add(img);
             }
 
-            Paragraph header = new Paragraph(titulo)
-                .setFont(font)
-                .setBold()
-                .setFontSize(14)
+            // Título
+            var font = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+            document.add(new Paragraph("Ventas Detalladas por Salón")
+                .setFont(font).setFontSize(16)
+                .setTextAlignment(TextAlignment.CENTER));
+            document.add(new Paragraph("\n"));
+
+            // Gráfico
+            var dataset = new DefaultCategoryDataset();
+            datos.stream().limit(10).forEach(d ->
+                dataset.addValue(d.getVecesAlquilado(), "Veces", d.getSalonNombre())
+            );
+            JFreeChart chart = ChartFactory.createBarChart(
+                "Top Salones (Veces Alquilado)", "Salón", "Veces", dataset
+            );
+            var chartOut = new ByteArrayOutputStream();
+            ChartUtils.writeChartAsPNG(chartOut, chart, 500, 300);
+            Image chartImg = new Image(ImageDataFactory.create(chartOut.toByteArray()))
+                .setAutoScale(true);
+            document.add(chartImg);
+            document.add(new Paragraph("\n"));
+
+            // Tabla
+            float[] widths = {150F, 80F, 80F, 200F};
+            Table table = new Table(UnitValue.createPercentArray(widths)).useAllAvailableWidth();
+            var headerStyle = new Style().setFont(font).setBackgroundColor(ColorConstants.LIGHT_GRAY)
                 .setTextAlignment(TextAlignment.CENTER);
-
-            document.add(header);
-            document.add(new Paragraph("\n")); // salto de línea
-
-            // 6) Creo la tabla con 3 columnas: Nombre | Cantidad | Total
-            float[] columnWidths = {200F, 100F, 100F};
-            Table table = new Table(columnWidths)
-                .setWidth(UnitValue.createPercentValue(100));
-
-            // 7) Encabezados de columna (fondo gris)
-            Cell h1 = new Cell().add(new Paragraph("Nombre").setFont(font).setBold())
-                                 .setBackgroundColor(ColorConstants.LIGHT_GRAY)
-                                 .setTextAlignment(TextAlignment.CENTER);
-            Cell h2 = new Cell().add(new Paragraph("Cantidad").setFont(font).setBold())
-                                 .setBackgroundColor(ColorConstants.LIGHT_GRAY)
-                                 .setTextAlignment(TextAlignment.CENTER);
-            Cell h3 = new Cell().add(new Paragraph("Total (S/.)").setFont(font).setBold())
-                                 .setBackgroundColor(ColorConstants.LIGHT_GRAY)
-                                 .setTextAlignment(TextAlignment.CENTER);
-
-            table.addHeaderCell(h1);
-            table.addHeaderCell(h2);
-            table.addHeaderCell(h3);
-
-            // 8) Relleno cada fila con los datos de lista
-            for (VentaResumenDTO dto : lista) {
-                Cell cNombre = new Cell().add(new Paragraph(dto.getNombre()).setFont(font))
-                                         .setTextAlignment(TextAlignment.LEFT);
-                Cell cCant   = new Cell().add(new Paragraph(dto.getCantidad().toString()).setFont(font))
-                                         .setTextAlignment(TextAlignment.CENTER);
-                Cell cTot    = new Cell().add(new Paragraph(String.format("%.2f", dto.getTotal())).setFont(font))
-                                         .setTextAlignment(TextAlignment.RIGHT);
-
-                table.addCell(cNombre);
-                table.addCell(cCant);
-                table.addCell(cTot);
+            String[] headers = {"Salón","Veces","Total (S/.)","Productos"};
+            for (String h : headers) table.addHeaderCell(new Cell().add(new Paragraph(h)).addStyle(headerStyle));
+            for (var d : datos) {
+                table.addCell(d.getSalonNombre());
+                table.addCell(String.valueOf(d.getVecesAlquilado()));
+                table.addCell(String.format("%.2f", d.getTotalRecaudado()));
+                table.addCell(d.getProductos());
             }
-
-            // 9) Agrego la tabla al documento y lo cierro
             document.add(table);
             document.close();
-
-            return baos.toByteArray();
+            return new ByteArrayInputStream(baos.toByteArray());
         } catch (Exception e) {
-            throw new RuntimeException("Error al generar PDF: " + e.getMessage(), e);
+            throw new RuntimeException("Error PDF Salones Detallado", e);
         }
     }
 
+    // ----- Generación de Excel Detallado para Salones -----
+    public byte[] generarExcelSalonesDetallado(List<SalonVentasDetalladoDTO> datos) {
+        try (Workbook wb = new XSSFWorkbook(); var out = new ByteArrayOutputStream()) {
+            Sheet sheet = wb.createSheet("Salones Detallado");
+            CreationHelper helper = wb.getCreationHelper();
 
-    // ------------------------------------------------------------
-    //   GENERAR EXCEL (con Apache POI)
-    // ------------------------------------------------------------
-
-    /**
-     * Genera un archivo Excel (.xlsx) en memoria (byte[]) con el reporte del 'tipo'
-     * especificado dentro del rango [desde, hasta]. El contenido se basa en VentaResumenDTO.
-     *
-     * @param tipo  "productos", "salones", "habitaciones", "clientes" o "metodoPago"
-     * @param desde Fecha de inicio en formato "YYYY-MM-DD"
-     * @param hasta Fecha de fin en formato "YYYY-MM-DD"
-     * @return Arreglo de bytes que representa el archivo Excel generado.
-     */
-    public byte[] generarExcel(String tipo, String desde, String hasta) {
-        try {
-            // 1) Obtengo la lista de datos (DTO) para el tipo de reporte
-            List<VentaResumenDTO> lista = obtenerDatosResumen(tipo, desde, hasta);
-
-            // 2) Creo el Workbook y la hoja
-            Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("Reporte");
-
-            // 3) Defino un estilo centrado y en negrita para los encabezados
-            CellStyle headerStyle = workbook.createCellStyle();
-            headerStyle.setAlignment(HorizontalAlignment.CENTER);
-            org.apache.poi.ss.usermodel.Font font = workbook.createFont();
-            font.setBold(true);
-            headerStyle.setFont(font);
-
-            // 4) Fila de encabezado (fila 0)
-            Row headerRow = sheet.createRow(0);
-            org.apache.poi.ss.usermodel.Cell cell0 = headerRow.createCell(0);
-            cell0.setCellValue("Nombre");
-            cell0.setCellStyle(headerStyle);
-
-            org.apache.poi.ss.usermodel.Cell cell1 = headerRow.createCell(1);
-            cell1.setCellValue("Cantidad");
-            cell1.setCellStyle(headerStyle);
-
-            org.apache.poi.ss.usermodel.Cell cell2 = headerRow.createCell(2);
-            cell2.setCellValue("Total (S/.)");
-            cell2.setCellStyle(headerStyle);
-
-            // 5) Relleno cada fila con los datos de lista
-            int rowIdx = 1;
-            for (VentaResumenDTO dto : lista) {
-                Row row = sheet.createRow(rowIdx++);
-
-                org.apache.poi.ss.usermodel.Cell c0 = row.createCell(0);
-                c0.setCellValue(dto.getNombre());
-
-                org.apache.poi.ss.usermodel.Cell c1 = row.createCell(1);
-                c1.setCellValue(dto.getCantidad());
-
-                org.apache.poi.ss.usermodel.Cell c2 = row.createCell(2);
-                c2.setCellValue(dto.getTotal());
+            // Logo
+            byte[] logo = loadLogoBytes();
+            if (logo != null) {
+                int idx = wb.addPicture(logo, Workbook.PICTURE_TYPE_PNG);
+                Drawing<?> dr = sheet.createDrawingPatriarch();
+                ClientAnchor anc = helper.createClientAnchor(); anc.setCol1(0); anc.setRow1(0);
+                dr.createPicture(anc, idx).resize(1.5);
             }
 
-            // 6) Ajusto ancho de columnas automáticamente
-            sheet.autoSizeColumn(0);
-            sheet.autoSizeColumn(1);
-            sheet.autoSizeColumn(2);
+            // Encabezados
+            int hdrRow = 4;
+            Row row = sheet.createRow(hdrRow);
+            String[] hdrs = {"Salón","Veces","Total (S/.)","Productos"};
+            var hdrFont = wb.createFont(); hdrFont.setBold(true);
+            var hdrStyle = wb.createCellStyle(); hdrStyle.setFont(hdrFont);
+            hdrStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+            hdrStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            hdrStyle.setAlignment(HorizontalAlignment.CENTER);
+            for (int i = 0; i < hdrs.length; i++) {
+                var cell = row.createCell(i);
+                cell.setCellValue(hdrs[i]); cell.setCellStyle(hdrStyle);
+            }
 
-            // 7) Escribo el contenido en un ByteArrayOutputStream y cierro el workbook
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            workbook.write(baos);
-            workbook.close();
+            // Datos
+            int r = hdrRow + 1;
+            for (var d : datos) {
+                var drw = sheet.createRow(r++);
+                drw.createCell(0).setCellValue(d.getSalonNombre());
+                drw.createCell(1).setCellValue(d.getVecesAlquilado());
+                drw.createCell(2).setCellValue(d.getTotalRecaudado());
+                drw.createCell(3).setCellValue(d.getProductos());
+            }
+            for (int i = 0; i < hdrs.length; i++) sheet.autoSizeColumn(i);
 
-            return baos.toByteArray();
+            // Gráfico en hoja aparte
+            var ds = new DefaultCategoryDataset();
+            datos.stream().limit(10).forEach(d -> ds.addValue(d.getVecesAlquilado(), "Veces", d.getSalonNombre()));
+            JFreeChart chart = ChartFactory.createBarChart("Top Salones","Salón","Veces", ds);
+            var cout = new ByteArrayOutputStream();
+            ChartUtils.writeChartAsPNG(cout, chart, 500, 300);
+            int chartIdx = wb.addPicture(cout.toByteArray(), Workbook.PICTURE_TYPE_PNG);
+            var cs = wb.createSheet("Gráfico");
+            var dr2 = cs.createDrawingPatriarch();
+            var anc2 = helper.createClientAnchor(); anc2.setCol1(0); anc2.setRow1(1);
+            dr2.createPicture(anc2, chartIdx).resize();
+
+            wb.write(out);
+            return out.toByteArray();
         } catch (Exception e) {
-            throw new RuntimeException("Error al generar Excel: " + e.getMessage(), e);
+            throw new RuntimeException("Error Excel Salones Detallado", e);
         }
     }
+
+    // ----- PDF Detallado Habitaciones -----
+    public ByteArrayInputStream generarPdfHabitacionesDetallado(List<HabitacionVentasDetalladoDTO> datos) {
+        try {
+            var baos = new ByteArrayOutputStream();
+            PdfWriter writer = new PdfWriter(baos);
+            PdfDocument pdf = new PdfDocument(writer);
+            Document doc = new Document(pdf);
+            byte[] logo = loadLogoBytes();
+            if (logo!=null) doc.add(new Image(ImageDataFactory.create(logo))
+                .scaleToFit(100,50)
+                .setFixedPosition(36, pdf.getDefaultPageSize().getTop()-60));
+
+            var font = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+            doc.add(new Paragraph("Ventas Detalladas por Habitación")
+                .setFont(font).setFontSize(16)
+                .setTextAlignment(TextAlignment.CENTER)); doc.add(new Paragraph("\n"));
+
+            // Chart
+            var ds = new DefaultCategoryDataset();
+            datos.stream().limit(10).forEach(d -> ds.addValue(d.getVecesVendida(), "Veces", d.getHabitacionNumero().toString()));
+            JFreeChart ch = ChartFactory.createBarChart("Top Habitaciones","Habitación","Veces", ds);
+            var cout = new ByteArrayOutputStream(); ChartUtils.writeChartAsPNG(cout,ch,500,300);
+            doc.add(new Image(ImageDataFactory.create(cout.toByteArray())).setAutoScale(true)); doc.add(new Paragraph("\n"));
+
+            float[] w = {100F,80F,80F,200F};
+            Table t = new Table(UnitValue.createPercentArray(w)).useAllAvailableWidth();
+            var hs = new Style().setFont(font)
+                .setBackgroundColor(ColorConstants.LIGHT_GRAY)
+                .setTextAlignment(TextAlignment.CENTER);
+            String[] h = {"Habitación","Veces","Total","Productos"};
+            for (String hd: h) t.addHeaderCell(new Cell().add(new Paragraph(hd)).addStyle(hs));
+            for (var d : datos) {
+                t.addCell(d.getHabitacionNumero().toString());
+                t.addCell(d.getVecesVendida().toString());
+                t.addCell(String.format("%.2f",d.getTotalRecaudado()));
+                t.addCell(d.getProductos());
+            }
+            doc.add(t);
+            doc.close(); return new ByteArrayInputStream(baos.toByteArray());
+        } catch(Exception e){throw new RuntimeException("Error PDF Habitaciones Detallado",e);}    }
+
+    // ----- Excel Detallado Habitaciones -----
+    public byte[] generarExcelHabitacionesDetallado(List<HabitacionVentasDetalladoDTO> datos) {
+        try (Workbook wb = new XSSFWorkbook(); var out = new ByteArrayOutputStream()) {
+            Sheet sh = wb.createSheet("Habitaciones Detallado");
+            CreationHelper ch = wb.getCreationHelper();
+            byte[] logo = loadLogoBytes();
+            if(logo!=null){int idx=wb.addPicture(logo,Workbook.PICTURE_TYPE_PNG); var dr=sh.createDrawingPatriarch(); var anc=ch.createClientAnchor(); anc.setCol1(0);anc.setRow1(0); dr.createPicture(anc,idx).resize(1.5);} 
+            Row hr=sh.createRow(4); String[] hdr={"Habitación","Veces","Total","Productos"}; var hdF=wb.createFont(); hdF.setBold(true); var hdS=wb.createCellStyle(); hdS.setFont(hdF); hdS.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index); hdS.setFillPattern(FillPatternType.SOLID_FOREGROUND); hdS.setAlignment(HorizontalAlignment.CENTER); for(int i=0;i<hdr.length;i++){var c=hr.createCell(i);c.setCellValue(hdr[i]);c.setCellStyle(hdS);} 
+            int r=5; for(var d:datos){var rw=sh.createRow(r++); rw.createCell(0).setCellValue(d.getHabitacionNumero()); rw.createCell(1).setCellValue(d.getVecesVendida()); rw.createCell(2).setCellValue(d.getTotalRecaudado()); rw.createCell(3).setCellValue(d.getProductos());} for(int i=0;i<hdr.length;i++)sh.autoSizeColumn(i);
+            var ds2=new DefaultCategoryDataset(); datos.stream().limit(10).forEach(d->ds2.addValue(d.getVecesVendida(),"Veces",d.getHabitacionNumero().toString()));
+            var ch2=ChartFactory.createBarChart("Top Habitaciones","Habitación","Veces",ds2); var cout2=new ByteArrayOutputStream(); ChartUtils.writeChartAsPNG(cout2,ch2,500,300); int cidx=wb.addPicture(cout2.toByteArray(),Workbook.PICTURE_TYPE_PNG); var cs=wb.createSheet("Gráfico"); var dr2=cs.createDrawingPatriarch(); var anc2=ch.createClientAnchor(); anc2.setCol1(0);anc2.setRow1(1); dr2.createPicture(anc2,cidx).resize(); wb.write(out); return out.toByteArray();
+        } catch(Exception e){throw new RuntimeException("Error Excel Habitaciones Detallado",e);}    }
+
+    // ----- PDF Detallado Métodos de Pago -----
+    public ByteArrayInputStream generarPdfMetodosPagoDetallado(List<PagoVentasDetalladoDTO> datos) {
+    try {
+        var baos = new ByteArrayOutputStream();
+        var writer = new PdfWriter(baos);
+        var pdf = new PdfDocument(writer);
+        var doc = new Document(pdf);
+
+        byte[] logo = loadLogoBytes();
+        if (logo != null) {
+            doc.add(new Image(ImageDataFactory.create(logo))
+                    .scaleToFit(100, 50)
+                    .setFixedPosition(36, pdf.getDefaultPageSize().getTop() - 60));
+        }
+
+        var font = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
+        doc.add(new Paragraph("Ventas Detalladas por Método de Pago")
+                .setFont(font).setFontSize(16).setTextAlignment(TextAlignment.CENTER));
+        doc.add(new Paragraph("\n"));
+
+        var ds3 = new DefaultCategoryDataset();
+        datos.stream().limit(10)
+                .forEach(d -> ds3.addValue(d.getVecesUsado(), "Veces", d.getMetodoPago()));
+
+        var ch3 = ChartFactory.createBarChart("Top Métodos de Pago", "Método", "Veces", ds3);
+        var cout3 = new ByteArrayOutputStream();
+        ChartUtils.writeChartAsPNG(cout3, ch3, 500, 300);
+        doc.add(new Image(ImageDataFactory.create(cout3.toByteArray())).setAutoScale(true));
+        doc.add(new Paragraph("\n"));
+
+        float[] w3 = {120F, 50F, 70F, 130F, 100F, 100F};
+        var table = new Table(UnitValue.createPercentArray(w3)).useAllAvailableWidth();
+        var hs3 = new Style().setFont(font).setBackgroundColor(ColorConstants.LIGHT_GRAY).setTextAlignment(TextAlignment.CENTER);
+
+        String[] headers = {"Método", "Veces", "Total", "Productos", "Salones", "Habitaciones"};
+        for (String h : headers) table.addHeaderCell(new Cell().add(new Paragraph(h)).addStyle(hs3));
+
+        for (var d : datos) {
+            table.addCell(d.getMetodoPago());
+            table.addCell(String.valueOf(d.getVecesUsado()));
+            table.addCell(String.format("%.2f", d.getTotalRecibido()));
+            table.addCell(d.getProductos() != null ? d.getProductos() : "—");
+            table.addCell(d.getSalones() != null ? d.getSalones() : "—");
+            table.addCell(d.getHabitaciones() != null ? d.getHabitaciones() : "—");
+        }
+
+        doc.add(table);
+        doc.close();
+        return new ByteArrayInputStream(baos.toByteArray());
+
+    } catch (Exception e) {
+        throw new RuntimeException("Error PDF Métodos Pago Detallado", e);
+    }
 }
+
+    // ----- Excel Detallado Métodos de Pago -----
+    public byte[] generarExcelMetodosPagoDetallado(List<PagoVentasDetalladoDTO> datos) {
+    try (Workbook wb = new XSSFWorkbook(); var out = new ByteArrayOutputStream()) {
+
+        Sheet sh = wb.createSheet("Métodos Pago Detallado");
+        CreationHelper ch = wb.getCreationHelper();
+
+        byte[] logo = loadLogoBytes();
+        if (logo != null) {
+            int idx = wb.addPicture(logo, Workbook.PICTURE_TYPE_PNG);
+            var dr = sh.createDrawingPatriarch();
+            var anc = ch.createClientAnchor();
+            anc.setCol1(0);
+            anc.setRow1(0);
+            dr.createPicture(anc, idx).resize(1.5);
+        }
+
+        Row hr = sh.createRow(4);
+        String[] hdr = {"Método", "Veces", "Total", "Productos", "Salones", "Habitaciones"};
+        var f = wb.createFont();
+        f.setBold(true);
+
+        var s = wb.createCellStyle();
+        s.setFont(f);
+        s.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+        s.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        s.setAlignment(HorizontalAlignment.CENTER);
+
+        for (int i = 0; i < hdr.length; i++) {
+            var c = hr.createCell(i);
+            c.setCellValue(hdr[i]);
+            c.setCellStyle(s);
+        }
+
+        int r = 5;
+        for (var d : datos) {
+            var rw = sh.createRow(r++);
+            rw.createCell(0).setCellValue(d.getMetodoPago());
+            rw.createCell(1).setCellValue(d.getVecesUsado());
+            rw.createCell(2).setCellValue(d.getTotalRecibido());
+            rw.createCell(3).setCellValue(d.getProductos() != null ? d.getProductos() : "—");
+            rw.createCell(4).setCellValue(d.getSalones() != null ? d.getSalones() : "—");
+            rw.createCell(5).setCellValue(d.getHabitaciones() != null ? d.getHabitaciones() : "—");
+        }
+
+        for (int i = 0; i < hdr.length; i++) sh.autoSizeColumn(i);
+
+        // Gráfico en hoja separada
+        var ds4 = new DefaultCategoryDataset();
+        datos.stream().limit(10).forEach(d -> ds4.addValue(d.getVecesUsado(), "Veces", d.getMetodoPago()));
+        var ch4 = ChartFactory.createBarChart("Top Métodos Pago", "Método", "Veces", ds4);
+        var cout4 = new ByteArrayOutputStream();
+        ChartUtils.writeChartAsPNG(cout4, ch4, 500, 300);
+
+        int cid = wb.addPicture(cout4.toByteArray(), Workbook.PICTURE_TYPE_PNG);
+        var cs = wb.createSheet("Gráfico");
+        var dr2 = cs.createDrawingPatriarch();
+        var anc2 = ch.createClientAnchor();
+        anc2.setCol1(0);
+        anc2.setRow1(1);
+        dr2.createPicture(anc2, cid).resize();
+
+        wb.write(out);
+        return out.toByteArray();
+    } catch (Exception e) {
+        throw new RuntimeException("Error Excel Métodos Pago Detallado", e);
+    }
+}
+
+
+}
+

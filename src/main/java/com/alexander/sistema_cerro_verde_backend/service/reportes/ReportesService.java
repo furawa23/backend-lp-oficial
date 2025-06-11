@@ -16,8 +16,17 @@ private final ComprasRepository compraRepository;
         this.compraRepository = compraRepository;
     }
 
-    public List<ProductoReporteDTO> obtenerProductosMasComprados(String desde, String hasta) {
-        return compraRepository.findProductosMasCompradosNative(desde, hasta);
+    // ← Ahora con stockFilter
+    public List<ProductoReporteDTO> obtenerProductosMasComprados(
+            String desde,
+            String hasta,
+            String stockFilter   // ← nuevo parámetro
+    ) {
+        return compraRepository.findProductosMasCompradosNative(
+            desde,
+            hasta,
+            stockFilter        // ← lo pasamos al repo
+        );
     }
 
     public List<ProveedorReporteDTO> obtenerProveedoresMasComprados(String desde, String hasta) {

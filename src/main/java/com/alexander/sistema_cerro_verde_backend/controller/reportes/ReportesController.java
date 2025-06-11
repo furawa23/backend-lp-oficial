@@ -1,25 +1,23 @@
 package com.alexander.sistema_cerro_verde_backend.controller.reportes;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.ProductoReporteDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.ProveedorReporteDTO;
 import com.alexander.sistema_cerro_verde_backend.service.reportes.ReportesService;
 import com.alexander.sistema_cerro_verde_backend.service.reportes.jpa.ReportesExportService;
-
 
 @RestController
 @RequestMapping("/cerro-verde/reportes")
@@ -35,13 +33,85 @@ public class ReportesController {
         this.reportesExportService = reportesExportService;
     }
 
+    // — JSON Productos con filtro de stock —
     @GetMapping("/productos")
     public List<ProductoReporteDTO> getProductosReporte(
             @RequestParam String desde,
-            @RequestParam String hasta) {
-        return reportesService.obtenerProductosMasComprados(desde, hasta);
+            @RequestParam String hasta,
+            @RequestParam(required = false) String stockFilter) {
+        return reportesService.obtenerProductosMasComprados(desde, hasta, stockFilter);
     }
 
+    // — PDF Productos —
+    @GetMapping("/productos/pdf")
+    public ResponseEntity<InputStreamResource> downloadPdfProductos(
+            @RequestParam String desde,
+            @RequestParam String hasta,
+            @RequestParam(required = false) String stockFilter) throws IOException {
+
+        List<ProductoReporteDTO> lista =
+            reportesService.obtenerProductosMasComprados(desde, hasta, stockFilter);
+
+        ByteArrayInputStream bis = reportesExportService.generarPdfProductos(lista);
+
+        String filename = String.format(
+            "productos_reporte_%s_a_%s%s.pdf",
+            desde,
+            hasta,
+            stockFilter != null
+                ? "_" + URLEncoder.encode(stockFilter, StandardCharsets.UTF_8)
+                : ""
+        );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDisposition(
+            ContentDisposition.attachment().filename(filename).build()
+        );
+        headers.setContentType(MediaType.APPLICATION_PDF);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new InputStreamResource(bis));
+    }
+
+    // — Excel Productos —
+    @GetMapping("/productos/excel")
+    public ResponseEntity<InputStreamResource> downloadExcelProductos(
+            @RequestParam String desde,
+            @RequestParam String hasta,
+            @RequestParam(required = false) String stockFilter) throws IOException {
+
+        List<ProductoReporteDTO> lista =
+            reportesService.obtenerProductosMasComprados(desde, hasta, stockFilter);
+
+        ByteArrayOutputStream baos = reportesExportService.generarExcelProductos(lista);
+        ByteArrayInputStream bis = new ByteArrayInputStream(baos.toByteArray());
+
+        String filename = String.format(
+            "productos_reporte_%s_a_%s%s.xlsx",
+            desde,
+            hasta,
+            stockFilter != null
+                ? "_" + URLEncoder.encode(stockFilter, StandardCharsets.UTF_8)
+                : ""
+        );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDisposition(
+            ContentDisposition.attachment().filename(filename).build()
+        );
+        headers.setContentType(
+            MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+        );
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new InputStreamResource(bis));
+    }
+
+    // — JSON Proveedores —
     @GetMapping("/proveedores")
     public List<ProveedorReporteDTO> getProveedoresReporte(
             @RequestParam String desde,
@@ -49,82 +119,64 @@ public class ReportesController {
         return reportesService.obtenerProveedoresMasComprados(desde, hasta);
     }
 
-    // ——— Endpoint PDF Productos ——————————————————————————————————————————
-    @GetMapping("/productos/pdf")
-    public ResponseEntity<byte[]> downloadPdfProductos(
-            @RequestParam String desde,
-            @RequestParam String hasta) {
-
-        // 1) Obtener la lista de DTOs
-        List<ProductoReporteDTO> lista = reportesService.obtenerProductosMasComprados(desde, hasta);
-
-        // 2) Generar el PDF (ByteArrayInputStream)
-        ByteArrayInputStream bis = reportesExportService.generarPdfProductos(lista);
-        byte[] pdfBytes = bis.readAllBytes();
-
-        // 3) Devolver el PDF como attachment
-        String filename = "productos_reporte_" + desde + "_a_" + hasta + ".pdf";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        // codificar el nombre para que no haya problemas de espacios o caracteres especiales
-        String encodedFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8);
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFilename + "\"");
-        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
-    }
-
-    // ——— Endpoint Excel Productos —————————————————————————————————————————
-    @GetMapping("/productos/excel")
-    public ResponseEntity<byte[]> downloadExcelProductos(
-            @RequestParam String desde,
-            @RequestParam String hasta) {
-
-        List<ProductoReporteDTO> lista = reportesService.obtenerProductosMasComprados(desde, hasta);
-        java.io.ByteArrayOutputStream baos = reportesExportService.generarExcelProductos(lista);
-        byte[] excelBytes = baos.toByteArray();
-
-        String filename = "productos_reporte_" + desde + "_a_" + hasta + ".xlsx";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        String encodedFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8);
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFilename + "\"");
-        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
-    }
-
-    // ——— Endpoint PDF Proveedores ——————————————————————————————————————————
+    // — PDF Proveedores —
     @GetMapping("/proveedores/pdf")
-    public ResponseEntity<byte[]> downloadPdfProveedores(
+    public ResponseEntity<InputStreamResource> downloadPdfProveedores(
             @RequestParam String desde,
-            @RequestParam String hasta) {
+            @RequestParam String hasta) throws IOException {
 
-        List<ProveedorReporteDTO> lista = reportesService.obtenerProveedoresMasComprados(desde, hasta);
+        List<ProveedorReporteDTO> lista =
+            reportesService.obtenerProveedoresMasComprados(desde, hasta);
+
         ByteArrayInputStream bis = reportesExportService.generarPdfProveedores(lista);
-        byte[] pdfBytes = bis.readAllBytes();
 
-        String filename = "proveedores_reporte_" + desde + "_a_" + hasta + ".pdf";
+        String filename = String.format(
+            "proveedores_reporte_%s_a_%s.pdf",
+            desde,
+            hasta
+        );
+
         HttpHeaders headers = new HttpHeaders();
+        headers.setContentDisposition(
+            ContentDisposition.attachment().filename(filename).build()
+        );
         headers.setContentType(MediaType.APPLICATION_PDF);
-        String encodedFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8);
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFilename + "\"");
-        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new InputStreamResource(bis));
     }
 
-    // ——— Endpoint Excel Proveedores —————————————————————————————————————————
+    // — Excel Proveedores —
     @GetMapping("/proveedores/excel")
-    public ResponseEntity<byte[]> downloadExcelProveedores(
+    public ResponseEntity<InputStreamResource> downloadExcelProveedores(
             @RequestParam String desde,
-            @RequestParam String hasta) {
+            @RequestParam String hasta) throws IOException {
 
-        List<ProveedorReporteDTO> lista = reportesService.obtenerProveedoresMasComprados(desde, hasta);
-        java.io.ByteArrayOutputStream baos = reportesExportService.generarExcelProveedores(lista);
-        byte[] excelBytes = baos.toByteArray();
+        List<ProveedorReporteDTO> lista =
+            reportesService.obtenerProveedoresMasComprados(desde, hasta);
 
-        String filename = "proveedores_reporte_" + desde + "_a_" + hasta + ".xlsx";
+        ByteArrayOutputStream baos = reportesExportService.generarExcelProveedores(lista);
+        ByteArrayInputStream bis = new ByteArrayInputStream(baos.toByteArray());
+
+        String filename = String.format(
+            "proveedores_reporte_%s_a_%s.xlsx",
+            desde,
+            hasta
+        );
+
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        String encodedFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8);
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFilename + "\"");
-        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
+        headers.setContentDisposition(
+            ContentDisposition.attachment().filename(filename).build()
+        );
+        headers.setContentType(
+            MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+        );
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new InputStreamResource(bis));
     }
 }

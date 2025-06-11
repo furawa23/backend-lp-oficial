@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.ClienteFrecuenteDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.HabitacionVentasDTO;
+import com.alexander.sistema_cerro_verde_backend.entity.reportes.HabitacionVentasDetalladoDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.PagoVentasDTO;
+import com.alexander.sistema_cerro_verde_backend.entity.reportes.PagoVentasDetalladoDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.ProductoVentasDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.reportes.SalonVentasDTO;
+import com.alexander.sistema_cerro_verde_backend.entity.reportes.SalonVentasDetalladoDTO;
 import com.alexander.sistema_cerro_verde_backend.service.reportes.jpa.ReportesVentasService;
 
 @RestController
@@ -25,93 +28,197 @@ import com.alexander.sistema_cerro_verde_backend.service.reportes.jpa.ReportesVe
 @CrossOrigin(origins = "http://localhost:4200")
 public class ReportesVentasController {
 
-    private final ReportesVentasService reportesVentasService;
+    private final ReportesVentasService service;
 
-    public ReportesVentasController(ReportesVentasService reportesVentasService) {
-        this.reportesVentasService = reportesVentasService;
+    public ReportesVentasController(ReportesVentasService service) {
+        this.service = service;
     }
 
+    // ----- Endpoints Resumen (JSON) -----
     @GetMapping("/productos")
-    public ResponseEntity<List<ProductoVentasDTO>> getProductosMasVendidos(
-            @RequestParam("desde") String desde,
-            @RequestParam("hasta") String hasta) {
-
-        List<ProductoVentasDTO> lista = reportesVentasService.obtenerProductosMasVendidos(desde, hasta);
-        return ResponseEntity.ok(lista);
+    public ResponseEntity<List<ProductoVentasDTO>> getProductos(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        return ResponseEntity.ok(service.obtenerProductosMasVendidos(desde, hasta));
     }
 
     @GetMapping("/clientes")
-    public ResponseEntity<List<ClienteFrecuenteDTO>> getClientesFrecuentes(
-            @RequestParam("desde") String desde,
-            @RequestParam("hasta") String hasta) {
-
-        List<ClienteFrecuenteDTO> lista = reportesVentasService.obtenerClientesFrecuentes(desde, hasta);
-        return ResponseEntity.ok(lista);
+    public ResponseEntity<List<ClienteFrecuenteDTO>> getClientes(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        return ResponseEntity.ok(service.obtenerClientesFrecuentes(desde, hasta));
     }
 
     @GetMapping("/habitaciones")
-    public ResponseEntity<List<HabitacionVentasDTO>> getHabitacionesMasVendidas(
-            @RequestParam("desde") String desde,
-            @RequestParam("hasta") String hasta) {
-
-        List<HabitacionVentasDTO> lista = reportesVentasService.obtenerHabitacionesMasVendidas(desde, hasta);
-        return ResponseEntity.ok(lista);
+    public ResponseEntity<List<HabitacionVentasDTO>> getHabitaciones(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        return ResponseEntity.ok(service.obtenerHabitacionesMasVendidas(desde, hasta));
     }
 
     @GetMapping("/salones")
-    public ResponseEntity<List<SalonVentasDTO>> getSalonesMasVendidos(
-            @RequestParam("desde") String desde,
-            @RequestParam("hasta") String hasta) {
-
-        List<SalonVentasDTO> lista = reportesVentasService.obtenerSalonesMasVendidos(desde, hasta);
-        return ResponseEntity.ok(lista);
+    public ResponseEntity<List<SalonVentasDTO>> getSalones(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        return ResponseEntity.ok(service.obtenerSalonesMasVendidos(desde, hasta));
     }
 
     @GetMapping("/metodos-pago")
     public ResponseEntity<List<PagoVentasDTO>> getMetodosPago(
-            @RequestParam("desde") String desde,
-            @RequestParam("hasta") String hasta) {
-
-        List<PagoVentasDTO> lista = reportesVentasService.obtenerMetodosPago(desde, hasta);
-        return ResponseEntity.ok(lista);
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        return ResponseEntity.ok(service.obtenerMetodosPago(desde, hasta));
     }
 
-    @GetMapping("/{tipo}/pdf")
-    public ResponseEntity<byte[]> descargarPdf(
-            @PathVariable("tipo") String tipo,
-            @RequestParam("desde") String desde,
-            @RequestParam("hasta") String hasta) {
+    // ----- Endpoints Detallado (JSON) -----
+    @GetMapping("/salones/detallado")
+    public ResponseEntity<List<SalonVentasDetalladoDTO>> getSalonesDetallado(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        return ResponseEntity.ok(service.obtenerSalonesDetallado(desde, hasta));
+    }
 
-        byte[] contenido = reportesVentasService.generarPdf(tipo, desde, hasta);
+    @GetMapping("/habitaciones/detallado")
+    public ResponseEntity<List<HabitacionVentasDetalladoDTO>> getHabitacionesDetallado(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        return ResponseEntity.ok(service.obtenerHabitacionesDetallado(desde, hasta));
+    }
 
+    @GetMapping("/metodos-pago/detallado")
+    public ResponseEntity<List<PagoVentasDetalladoDTO>> getMetodosPagoDetallado(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        return ResponseEntity.ok(service.obtenerMetodosPagoDetallado(desde, hasta));
+    }
+
+    // ----- Endpoints Resumen (PDF / Excel) -----
+    @GetMapping(path = "/{tipo}/pdf")
+    public ResponseEntity<byte[]> downloadPdfResumen(
+            @PathVariable String tipo,
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        byte[] content = service.generarPdfResumen(tipo, desde, hasta);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDispositionFormData(
-            "attachment",
-            String.format("reporte_%s_%s_a_%s.pdf", tipo, desde, hasta)
+                "attachment",
+                String.format("reporte_%s_%s_a_%s.pdf", tipo, desde, hasta)
         );
-
-        return new ResponseEntity<>(contenido, headers, HttpStatus.OK);
+        return new ResponseEntity<>(content, headers, HttpStatus.OK);
     }
 
-    @GetMapping("/{tipo}/excel")
-    public ResponseEntity<byte[]> descargarExcel(
-            @PathVariable("tipo") String tipo,
-            @RequestParam("desde") String desde,
-            @RequestParam("hasta") String hasta) {
-
-        byte[] contenido = reportesVentasService.generarExcel(tipo, desde, hasta);
-
+    @GetMapping(path = "/{tipo}/excel")
+    public ResponseEntity<byte[]> downloadExcelResumen(
+            @PathVariable String tipo,
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        byte[] content = service.generarExcelResumen(tipo, desde, hasta);
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(
-            MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        );
+        headers.setContentType(MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
         headers.setContentDispositionFormData(
-            "attachment",
-            String.format("reporte_%s_%s_a_%s.xlsx", tipo, desde, hasta)
+                "attachment",
+                String.format("reporte_%s_%s_a_%s.xlsx", tipo, desde, hasta)
         );
+        return new ResponseEntity<>(content, headers, HttpStatus.OK);
+    }
 
-        return new ResponseEntity<>(contenido, headers, HttpStatus.OK);
+    // ----- Endpoints Detallado (PDF / Excel) -----
+    @GetMapping("/salones/detallado/pdf")
+    public ResponseEntity<byte[]> downloadPdfSalonesDetallado(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        byte[] content = service.generarPdfSalonesDetallado(
+                service.obtenerSalonesDetallado(desde, hasta))
+                .readAllBytes(); // ByteArrayInputStream to bytes
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData(
+                "attachment",
+                String.format("salones_detallado_%s_a_%s.pdf", desde, hasta)
+        );
+        return new ResponseEntity<>(content, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/salones/detallado/excel")
+    public ResponseEntity<byte[]> downloadExcelSalonesDetallado(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        byte[] content = service.generarExcelSalonesDetallado(
+                service.obtenerSalonesDetallado(desde, hasta));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData(
+                "attachment",
+                String.format("salones_detallado_%s_a_%s.xlsx", desde, hasta)
+        );
+        return new ResponseEntity<>(content, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/habitaciones/detallado/pdf")
+    public ResponseEntity<byte[]> downloadPdfHabitacionesDetallado(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        byte[] content = service.generarPdfHabitacionesDetallado(
+                service.obtenerHabitacionesDetallado(desde, hasta))
+                .readAllBytes();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData(
+                "attachment",
+                String.format("habitaciones_detallado_%s_a_%s.pdf", desde, hasta)
+        );
+        return new ResponseEntity<>(content, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/habitaciones/detallado/excel")
+    public ResponseEntity<byte[]> downloadExcelHabitacionesDetallado(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        byte[] content = service.generarExcelHabitacionesDetallado(
+                service.obtenerHabitacionesDetallado(desde, hasta));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData(
+                "attachment",
+                String.format("habitaciones_detallado_%s_a_%s.xlsx", desde, hasta)
+        );
+        return new ResponseEntity<>(content, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/metodos-pago/detallado/pdf")
+    public ResponseEntity<byte[]> downloadPdfMetodosPagoDetallado(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        byte[] content = service.generarPdfMetodosPagoDetallado(
+                service.obtenerMetodosPagoDetallado(desde, hasta))
+                .readAllBytes();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData(
+                "attachment",
+                String.format("metodos_pago_detallado_%s_a_%s.pdf", desde, hasta)
+        );
+        return new ResponseEntity<>(content, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/metodos-pago/detallado/excel")
+    public ResponseEntity<byte[]> downloadExcelMetodosPagoDetallado(
+            @RequestParam String desde,
+            @RequestParam String hasta) {
+        byte[] content = service.generarExcelMetodosPagoDetallado(
+                service.obtenerMetodosPagoDetallado(desde, hasta));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData(
+                "attachment",
+                String.format("metodos_pago_detallado_%s_a_%s.xlsx", desde, hasta)
+        );
+        return new ResponseEntity<>(content, headers, HttpStatus.OK);
     }
 
 }
