@@ -21,7 +21,7 @@ import com.alexander.sistema_cerro_verde_backend.service.seguridad.jpa.PasswordR
 
 
 @RestController
-@RequestMapping("/hoteleria")
+@RequestMapping("/cerro-verde")
 @CrossOrigin("*")
 public class PasswordResetController {
 

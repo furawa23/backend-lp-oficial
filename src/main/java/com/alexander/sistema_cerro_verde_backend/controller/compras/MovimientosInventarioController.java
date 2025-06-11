@@ -18,7 +18,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.compras.MovimientosInven
 import com.alexander.sistema_cerro_verde_backend.service.compras.IMovimientosInventarioService;
 
 @RestController
-@RequestMapping("/hoteleria")
+@RequestMapping("/cerro-verde")
 @CrossOrigin("*")
 public class MovimientosInventarioController {
     @Autowired

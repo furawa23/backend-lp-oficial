@@ -26,7 +26,7 @@ import com.alexander.sistema_cerro_verde_backend.service.caja.TransaccionesCajaS
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/hoteleria/caja/transacciones")
+@RequestMapping("/cerro-verde/caja/transacciones")
 public class TransaccionesCajaController {
 
     @Autowired

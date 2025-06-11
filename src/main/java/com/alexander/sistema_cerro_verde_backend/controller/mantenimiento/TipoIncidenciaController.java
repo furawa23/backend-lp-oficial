@@ -17,7 +17,7 @@ import com.alexander.sistema_cerro_verde_backend.service.mantenimiento.jpa.TipoI
 
 
 @RestController
-@RequestMapping("/hoteleria/tipoincidencia")
+@RequestMapping("/cerro-verde/tipoincidencia")
 public class TipoIncidenciaController {
     @Autowired
     private TipoIncidenciaService serviceTipoIncidencia;

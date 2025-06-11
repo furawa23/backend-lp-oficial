@@ -23,7 +23,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.ventas.ComprobantePago;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.IComprobantePagoService;
 
 @RestController
-@RequestMapping("/hoteleria")
+@RequestMapping("/cerro-verde")
 @CrossOrigin("*")
 public class ComprobantePagoController {
 

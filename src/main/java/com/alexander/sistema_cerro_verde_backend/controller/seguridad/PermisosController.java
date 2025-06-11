@@ -18,7 +18,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Permisos;
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.IPermisosService;
 
 @RestController
-@RequestMapping("/hoteleria/")
+@RequestMapping("/cerro-verde/")
 @CrossOrigin("*")
 public class PermisosController {
 

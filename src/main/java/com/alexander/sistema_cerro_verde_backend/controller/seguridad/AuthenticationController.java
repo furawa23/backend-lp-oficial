@@ -27,7 +27,7 @@ import com.alexander.sistema_cerro_verde_backend.service.seguridad.jpa.UsuariosS
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/hoteleria")
+@RequestMapping("/cerro-verde")
 public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;

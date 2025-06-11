@@ -22,7 +22,7 @@ import com.alexander.sistema_cerro_verde_backend.service.compras.jpa.UnidadMedid
 
 
 @RestController
-@RequestMapping("/hoteleria")
+@RequestMapping("/cerro-verde")
 @CrossOrigin("*")
 public class UnidadMedidaController {
 @Autowired

@@ -12,7 +12,7 @@ public class ApiService {
 
     public ApiService(WebClient.Builder webClientBuilder) {
         this.web = webClientBuilder
-            .baseUrl("https://hoteleria.apis.net.pe/v2")
+            .baseUrl("https://cerro-verde.apis.net.pe/v2")
             .build();
     }
 

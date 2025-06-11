@@ -26,7 +26,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.IVentaService;
 
 @RestController
-@RequestMapping("/hoteleria")
+@RequestMapping("/cerro-verde")
 @CrossOrigin("*")
 public class VentaController {
 
