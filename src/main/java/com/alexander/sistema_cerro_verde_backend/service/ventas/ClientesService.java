@@ -9,8 +9,6 @@ public interface ClientesService {
 
     List<Clientes> buscarTodos(); //Listar todos los clientes
 
-    List<Clientes> buscarActivos(); //Listar categorias activos
-
     Optional<Clientes> buscarPorId(Integer id); //Buscar cliente por Id
 
     void guardar(Clientes cliente); //Guarda cliente

@@ -21,7 +21,6 @@ public class DetalleVenta {
     private Double precioUnit;
     private Double subTotal;
     private Integer estado = 1;
-    
     //Relación de muchos a uno con Productos
     @ManyToOne
     @JoinColumn(name="id_producto")

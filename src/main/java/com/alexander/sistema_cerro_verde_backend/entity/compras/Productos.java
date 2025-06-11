@@ -3,12 +3,15 @@ package com.alexander.sistema_cerro_verde_backend.entity.compras;
 import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
+import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.DetalleVenta;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,6 +23,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "productos")
 @SQLDelete(sql = "UPDATE productos SET estado = 0 WHERE id_producto=?")
+@SQLRestriction("estado=1")
 public class Productos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +33,10 @@ public class Productos {
     private Integer stock;
     private Double precioVenta;
     private Integer estado = 1;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_sucursal")
+    private Sucursales sucursal;
     @ManyToOne
     @JoinColumn(name = "id_categoria")
     private CategoriasProductos categoriaproducto;
@@ -144,5 +152,12 @@ public class Productos {
 
     public void setDetalleVenta(List<DetalleVenta> detalleVenta) {
         this.detalleVenta = detalleVenta;
+    }
+    public Sucursales getSucursal() {
+        return sucursal;
+    }
+
+    public void setSucursal(Sucursales sucursal) {
+        this.sucursal = sucursal;
     }
 }

@@ -3,6 +3,7 @@ package com.alexander.sistema_cerro_verde_backend.entity.recepcion;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Clientes;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentasXReservas;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,7 +30,12 @@ public class Reservas {
     private LocalDateTime fecha_fin;
     private String estado_reserva;
     private String comentarios;
-    private Integer estado;
+    private Integer nro_persona;
+    private Integer estado = 1;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_sucursal")
+    private Sucursales sucursal;;
     private String tipo;
 
     @ManyToOne
@@ -36,6 +43,7 @@ public class Reservas {
     private Clientes cliente;
 
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<HabitacionesXReserva> habitacionesXReserva;
 
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL)
@@ -134,7 +142,20 @@ public class Reservas {
     public void setVentaXReserva(List<VentasXReservas> ventaXReserva) {
         this.ventaXReserva = ventaXReserva;
     }
-    
+
+    public Integer getNro_persona() {
+        return nro_persona;
+    }
+
+    public void setNro_persona(Integer nro_persona) {
+        this.nro_persona = nro_persona;
+    }
+    public Sucursales getSucursal() {
+        return sucursal;
+    }
+    public void setSucursal(Sucursales sucursal) {
+        this.sucursal = sucursal;
+    }
     
     
     

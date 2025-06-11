@@ -3,23 +3,33 @@ package com.alexander.sistema_cerro_verde_backend.entity.compras;
 import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
+import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "proveedores")
 @SQLDelete(sql = "UPDATE proveedores SET estado = 0 WHERE ruc_proveedor=?")
+@SQLRestriction("estado=1")
 public class Proveedores {
     @Id
     private String ruc_proveedor;
     private String razon_social;
     private String direccion;
     private Integer estado = 1;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_sucursal")
+    private Sucursales sucursal;
     @OneToMany(mappedBy = "proveedor")
     @JsonIgnore
     private List<Compras> compra;
@@ -63,6 +73,7 @@ public class Proveedores {
     public void setCompra(List<Compras> compra) {
         this.compra = compra;
     }
+    
 
     @Override
     public String toString() {
@@ -73,5 +84,13 @@ public class Proveedores {
             ", estado='" + getEstado() + "'" +
             ", compra='" + getCompra() + "'" +
             "}";
+    }
+
+    public Sucursales getSucursal() {
+        return sucursal;
+    }
+
+    public void setSucursal(Sucursales sucursal) {
+        this.sucursal = sucursal;
     }
 }

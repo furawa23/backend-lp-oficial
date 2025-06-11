@@ -3,6 +3,7 @@ package com.alexander.sistema_cerro_verde_backend.entity.recepcion;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,16 +19,16 @@ public class HabitacionesXReserva {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_hab_reserv;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_habitacion")
     private Habitaciones habitacion;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_reserva")
     @JsonBackReference
     private Reservas reserva;
 
-    private Integer estado;
+    private Integer estado = 1;
 
     public Integer getId_hab_reserv() {
         return id_hab_reserv;
@@ -61,6 +62,5 @@ public class HabitacionesXReserva {
         this.estado = estado;
     }
 
-    
     
 }

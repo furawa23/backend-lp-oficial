@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alexander.sistema_cerro_verde_backend.entity.recepcion.SalonesXReserva;
-import com.alexander.sistema_cerro_verde_backend.service.recepcion.jpa.SalonesReservaServiceImpl;
+import com.alexander.sistema_cerro_verde_backend.entity.recepcion.CheckinCheckout;
+import com.alexander.sistema_cerro_verde_backend.service.recepcion.CheckinCheckoutService;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -24,31 +24,31 @@ import jakarta.persistence.EntityNotFoundException;
 @CrossOrigin("*") 
 @RestController
 @RequestMapping("/cerro-verde/recepcion")
-public class SalonesReservaController {
+public class CheckController {
 
     @Autowired
-    private SalonesReservaServiceImpl salreservaService;
+    private CheckinCheckoutService checkService;
 
-    @GetMapping("/salonreservas")
-    public List<SalonesXReserva> buscarTodos() {
-        return salreservaService.buscarTodos();
+    @GetMapping("/checks")
+    public List<CheckinCheckout> buscarTodos() {
+        return checkService.buscarTodos();
     }
 
-    @PostMapping("/salonreservas")
-    public SalonesXReserva guardar(@RequestBody SalonesXReserva salreserva) {   
-        salreservaService.guardar(salreserva);     
-        return salreserva;
+    @PostMapping("/checks")
+    public CheckinCheckout guardar(@RequestBody CheckinCheckout check) {   
+        checkService.guardar(check);     
+        return check;
     }
 
     
-    @PutMapping("/salonreservas/{id}")
+    @PutMapping("/checks/{id}")
     public ResponseEntity<?> modificar(
         @PathVariable Integer id,
-        @RequestBody SalonesXReserva salreserva) {
+        @RequestBody CheckinCheckout check) {
     
     try {
-        salreserva.getId_salon_reserv(); // Asegura que use el ID de la URL
-        SalonesXReserva actualizada = salreservaService.modificar(salreserva);
+        check.setId_check(id); // Asegura que use el ID de la URL
+        CheckinCheckout actualizada = checkService.modificar(check);
         return ResponseEntity.ok(actualizada);
         
     } catch (IllegalArgumentException e) {
@@ -60,15 +60,16 @@ public class SalonesReservaController {
     }
     }
 
-    @GetMapping("/salonreservas/{id}")
-    public Optional<SalonesXReserva> buscarId(@PathVariable("id") Integer id) {
-        return salreservaService.buscarId(id);
+    @GetMapping("/checks/{id}")
+    public Optional<CheckinCheckout> buscarId(@PathVariable("id") Integer id) {
+        return checkService.buscarId(id);
     }
 
-    @DeleteMapping("/salonreservas/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id){
-        salreservaService.eliminar(id);
-        return "Salón relacionado a la reserva eliminada";
+    @DeleteMapping("/checks/eliminar/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        checkService.eliminar(id);
+        return ResponseEntity.noContent().build(); // 204 No Content
     }
+
     
 }

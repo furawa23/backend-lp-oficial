@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.HabitacionesXReserva;
@@ -70,22 +69,6 @@ public class HabitacionesReservaController {
     public String eliminar(@PathVariable Integer id){
         habreservaService.eliminar(id);
         return "Habitación relacionada a la reserva eliminada";
-    }
-
-    @DeleteMapping("/reserva/{id_reserva}")
-    public ResponseEntity<Void> deleteByReserva(@PathVariable Integer id_reserva) {
-    habreservaService.deleteByReservaId(id_reserva);
-    return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/habitacionreservas/estado")
-    public ResponseEntity<Void> actualizarEstado(
-        @RequestParam Integer id_habitacion,
-        @RequestParam Integer id_reserva,
-        @RequestParam Integer estado) {
-
-        habreservaService.actualizarEstado(id_habitacion, id_reserva, estado);
-        return ResponseEntity.noContent().build();
     }
 
         

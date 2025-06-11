@@ -17,8 +17,4 @@ public interface HabitacionesReservaService {
     
     void eliminar(Integer id);
 
-    void deleteByReservaId(Integer idReserva);
-
-    void actualizarEstado(Integer idHabitacion, Integer idReserva, Integer estado);
-
 }

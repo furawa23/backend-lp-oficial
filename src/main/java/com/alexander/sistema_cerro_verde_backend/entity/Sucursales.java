@@ -4,9 +4,11 @@ import java.util.List;
 
 import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.AreasHotel;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Empresas;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,11 +29,12 @@ public class Sucursales {
     private String ciudad;
     private String direccion;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_empresa")
     private Empresas empresa;
 
     @OneToMany(mappedBy = "sucursal")
+    @JsonIgnore
     private List<AreasHotel> areasHotel;
     
     public Integer getId() {
