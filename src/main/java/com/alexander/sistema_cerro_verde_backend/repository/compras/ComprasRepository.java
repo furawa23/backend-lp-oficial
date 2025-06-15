@@ -18,43 +18,56 @@ public interface ComprasRepository extends JpaRepository<Compras, Integer> {
 
     @Query(value = """
         SELECT 
-            p.nombre                   AS productoNombre,
-            SUM(dc.cantidad)           AS cantidadComprada,
-            SUM(dc.subtotal)           AS totalGastado
+        p.nombre                   AS productoNombre,
+        SUM(dc.cantidad)           AS cantidadComprada,
+        SUM(dc.subtotal)           AS totalGastado
         FROM compras c
-        JOIN detalles_compra dc     ON c.id_compra = dc.id_compra
-        JOIN productos p            ON dc.id_producto = p.id_producto
+        JOIN detalles_compra dc ON c.id_compra = dc.id_compra
+        JOIN productos p      ON dc.id_producto = p.id_producto
         WHERE 
-            STR_TO_DATE(c.fecha_compra, '%Y-%m-%d') BETWEEN STR_TO_DATE(:desde, '%Y-%m-%d')
-                                                        AND STR_TO_DATE(:hasta, '%Y-%m-%d')
-            AND c.estado = 1              -- sólo compras “activas”
-            AND dc.estado = 1             -- sólo detalles “activos”
+        STR_TO_DATE(c.fecha_compra, '%Y-%m-%d') BETWEEN STR_TO_DATE(:desde, '%Y-%m-%d')
+                                                    AND STR_TO_DATE(:hasta, '%Y-%m-%d')
+        AND c.estado = 1
+        AND dc.estado = 1
+        AND (
+            :stockFilter IS NULL
+            OR (:stockFilter = 'CON_STOCK' AND p.stock > 0)
+            OR (:stockFilter = 'SIN_STOCK' AND p.stock = 0)
+        )
         GROUP BY p.nombre
         ORDER BY cantidadComprada DESC
         """,
         nativeQuery = true)
-        List<ProductoReporteDTO> findProductosMasCompradosNative(
-            @Param("desde") String desde,
-            @Param("hasta") String hasta
-        );
+    List<ProductoReporteDTO> findProductosMasCompradosNative(
+        @Param("desde") String desde,
+        @Param("hasta") String hasta,
+        @Param("stockFilter") String stockFilter
+    );
+
 
     @Query(value = """
         SELECT
-        prov.razon_social       AS proveedorNombre,
-        COUNT(*)                AS cantidadFacturas,
-        SUM(c.total)            AS totalGastado
+        prov.razon_social             AS proveedorNombre,
+        COUNT(*)                      AS cantidadFacturas,
+        SUM(c.total)                  AS totalGastado,
+        GROUP_CONCAT(DISTINCT p.nombre SEPARATOR ', ') AS productosComprados
         FROM compras c
-        JOIN proveedores prov 
-        ON c.ruc_proveedor = prov.ruc_proveedor
-        WHERE STR_TO_DATE(c.fecha_compra, '%Y-%m-%d')
-            BETWEEN STR_TO_DATE(:desde, '%Y-%m-%d')
-                AND STR_TO_DATE(:hasta, '%Y-%m-%d')
+        JOIN proveedores prov  ON c.ruc_proveedor = prov.ruc_proveedor
+        JOIN detalles_compra dc ON c.id_compra     = dc.id_compra
+        JOIN productos p       ON dc.id_producto   = p.id_producto
+        WHERE 
+        STR_TO_DATE(c.fecha_compra, '%Y-%m-%d') BETWEEN STR_TO_DATE(:desde, '%Y-%m-%d')
+                                                    AND STR_TO_DATE(:hasta, '%Y-%m-%d')
+        AND c.estado = 1
+        AND dc.estado = 1
         GROUP BY prov.razon_social
         ORDER BY cantidadFacturas DESC
-        """, nativeQuery = true)
+        """,
+        nativeQuery = true)
     List<ProveedorReporteDTO> findProveedoresMasCompradosNative(
         @Param("desde") String desde,
         @Param("hasta") String hasta
     );
+
 
 }

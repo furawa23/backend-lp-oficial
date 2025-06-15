@@ -6,6 +6,7 @@ import org.hibernate.annotations.Where;
 
 import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,6 +32,7 @@ public class MovimientosInventario {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_sucursal")
+    @JsonIgnore
     private Sucursales sucursal;
     @ManyToOne
     @JoinColumn(name = "id_compra")
