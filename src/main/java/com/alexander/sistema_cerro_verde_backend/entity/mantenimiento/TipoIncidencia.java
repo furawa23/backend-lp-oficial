@@ -1,5 +1,6 @@
 package com.alexander.sistema_cerro_verde_backend.entity.mantenimiento;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -16,6 +17,9 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "tipo_incidencia")
@@ -32,38 +36,42 @@ public class TipoIncidencia {
     @JoinColumn(name = "id_sucursal")
     private Sucursales sucursal;
 
-    @OneToMany(mappedBy = "tipoIncidencia")
-    private List<Incidencias> incidencias;
-
-    
     public Integer getId_tipo_incidencia() {
         return id_tipo_incidencia;
     }
+
     public void setId_tipo_incidencia(Integer id_tipo_incidencia) {
         this.id_tipo_incidencia = id_tipo_incidencia;
     }
+
     public String getNombre() {
         return nombre;
     }
+
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
     public Integer getEstado() {
         return estado;
     }
+
     public void setEstado(Integer estado) {
         this.estado = estado;
     }
+
+    public Sucursales getSucursal() {
+        return sucursal;
+    }
+
+    public void setSucursal(Sucursales sucursal) {
+        this.sucursal = sucursal;
+    }
+
     @Override
     public String toString() {
         return "TipoIncidencia [id_tipo_incidencia=" + id_tipo_incidencia + ", nombre=" + nombre + ", estado=" + estado
-                + "]";
-    }
-    public List<Incidencias> getIncidencias() {
-        return incidencias;
-    }
-    public void setIncidencias(List<Incidencias> incidencias) {
-        this.incidencias = incidencias;
+                + ", sucursal=" + sucursal + "]";
     }
     
 }
