@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,11 +35,6 @@ public class MetodoPagoController {
         return metodoService.buscarTodos();
     }
 
-    @GetMapping("/metodopagoactivo")
-    public List<MetodosPago> buscarActivos() { //Listar los métodos de pago activos
-        return metodoService.buscarActivos();
-    }
-
     @GetMapping("/metodopago/{id}")
     public Optional<MetodosPago> buscarPorId(@PathVariable Integer id) { //Buscar método de pago por el ID
         return metodoService.buscarPorId(id);
@@ -63,9 +59,14 @@ public class MetodoPagoController {
             Map<String, String> response = new HashMap<>();
             response.put("mensaje", "Método de Pago eliminado correctamente");
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
+        } catch (DataIntegrityViolationException e) {
             Map<String, String> response = new HashMap<>();
-            response.put("mensaje", "El método de pago está relacionado con una o muchas ventas");
+            response.put("mensaje", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        } 
+        catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("mensaje", "Ocurrió un problema. Vuelva a intentarlo");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

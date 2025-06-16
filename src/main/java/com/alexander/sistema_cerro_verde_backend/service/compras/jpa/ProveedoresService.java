@@ -10,14 +10,8 @@ import com.alexander.sistema_cerro_verde_backend.entity.compras.Proveedores;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.ProveedoresRepository;
 import com.alexander.sistema_cerro_verde_backend.service.compras.IProveedoresService;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
-
 @Service
 public class ProveedoresService implements IProveedoresService {
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Autowired
     private ProveedoresRepository repoProveedores;
@@ -28,28 +22,8 @@ public class ProveedoresService implements IProveedoresService {
     }
 
     @Override
-    public List<Proveedores> buscarActivos() { //Buscar los proveedores activos
-        return repoProveedores.findActive();
-    }
-
-    @Override
-    @Transactional
     public void guardar(Proveedores proveedor) {
-        Optional<Proveedores> existente = repoProveedores.findByRucIncludingInactives(proveedor.getRuc_proveedor());
-        if (existente.isPresent()) {
-            Proveedores prov = existente.get();
-            if (prov.getEstado() == 0) {
-                prov.setEstado(1);
-                prov.setRazon_social(proveedor.getRazon_social());
-                prov.setDireccion(proveedor.getDireccion());
-                entityManager.merge(prov);
-            } else {
-                repoProveedores.save(proveedor);
-            }
-        } else {
-            proveedor.setEstado(1);
-            repoProveedores.save(proveedor);
-        }
+        repoProveedores.save(proveedor);
     }
 
     @Override

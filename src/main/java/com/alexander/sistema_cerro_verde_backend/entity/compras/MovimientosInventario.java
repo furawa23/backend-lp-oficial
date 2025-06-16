@@ -1,11 +1,14 @@
 package com.alexander.sistema_cerro_verde_backend.entity.compras;
 
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.Where;
 
+import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +19,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "movimientos_inventario")
 @SQLDelete(sql = "UPDATE movimientos_inventario SET estado = 0 WHERE id_movimiento_inventario=?")
-@Where(clause = "estado = 1")
+@SQLRestriction("estado=1")
 public class MovimientosInventario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +28,10 @@ public class MovimientosInventario {
     private Integer cantidad;
     private String tipo_movimiento;
     private Integer estado = 1;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_sucursal")
+    private Sucursales sucursal;
     @ManyToOne
     @JoinColumn(name = "id_compra")
     private Compras compra;
@@ -97,6 +104,14 @@ public class MovimientosInventario {
 
     public void setVenta(Ventas venta) {
         this.venta = venta;
+    }
+
+    public Sucursales getSucursal() {
+        return sucursal;
+    }
+
+    public void setSucursal(Sucursales sucursal) {
+        this.sucursal = sucursal;
     }
 
     @Override

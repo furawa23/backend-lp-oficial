@@ -12,7 +12,7 @@ public class ApiCliente {
 
     public ApiCliente(WebClient.Builder webClientBuilder) {
         this.web = webClientBuilder
-            .baseUrl("https://api.apis.net.pe/v2")
+            .baseUrl("https://cerro-verde.apis.net.pe/v2")
             .build();
     }
 

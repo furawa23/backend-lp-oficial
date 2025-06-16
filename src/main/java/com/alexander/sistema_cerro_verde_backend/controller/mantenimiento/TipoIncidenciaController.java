@@ -16,9 +16,10 @@ import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.TipoIncide
 import com.alexander.sistema_cerro_verde_backend.service.mantenimiento.jpa.TipoIncidenciaService;
 
 
-@CrossOrigin("*")
+
 @RestController
 @RequestMapping("/cerro-verde/tipoincidencia")
+@CrossOrigin("*")
 public class TipoIncidenciaController {
     @Autowired
     private TipoIncidenciaService serviceTipoIncidencia;

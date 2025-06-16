@@ -9,8 +9,6 @@ public interface ICategoriasProductosService {
 
     List<CategoriasProductos> buscarTodos(); //Listar categorias
 
-    List<CategoriasProductos> buscarActivos(); //Listar categorias activos
-
     void guardar(CategoriasProductos categoriaProducto); //Guardar categoria
 
     void modificar(CategoriasProductos categoriaProducto); //Modificar categoria

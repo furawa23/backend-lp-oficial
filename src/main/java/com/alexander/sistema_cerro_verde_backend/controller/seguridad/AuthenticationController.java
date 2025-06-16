@@ -23,6 +23,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
 import com.alexander.sistema_cerro_verde_backend.excepciones.UsuarioDeshabilitadoException;
 import com.alexander.sistema_cerro_verde_backend.excepciones.UsuarioFoundException;
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.UserDetailsServiceImpl;
+import com.alexander.sistema_cerro_verde_backend.service.seguridad.jpa.UsuariosService;
 
 @RestController
 @CrossOrigin("*")
@@ -32,7 +33,8 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserDetailsServiceImpl userxDetailsServiceImpl; 
-
+    @Autowired
+    private UsuariosService serviceUsuario;
 
     @Autowired
     private JwtUtils jwtUtils; 
@@ -52,6 +54,11 @@ public class AuthenticationController {
         System.out.println("Usuario autenticado correctamente: " + userDetails.getUsername());
         String token = this.jwtUtils.generateToken(userDetails);
         System.out.println("Token generado: " + token); // <-- Esto te dirá si el token realmente se generó
+
+        Usuarios usuario = serviceUsuario.obtenerUsuario(jwtRequest.getUsername());
+        usuario.setToken(token);
+        serviceUsuario.actualizarUsuario(usuario);
+        
         return ResponseEntity.ok(new JwtResponse(token));
     }
     

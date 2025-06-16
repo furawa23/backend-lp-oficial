@@ -16,9 +16,10 @@ import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.Limpiezas;
 import com.alexander.sistema_cerro_verde_backend.service.mantenimiento.jpa.LimpiezasService;
 
 
-@CrossOrigin("*")
+
 @RestController
 @RequestMapping("/cerro-verde/limpiezas")
+@CrossOrigin("*")
 public class LimpiezasController {
     @Autowired
     private LimpiezasService serviceLimpiezas;

@@ -21,7 +21,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.compras.Productos;
 import com.alexander.sistema_cerro_verde_backend.service.compras.IProductosService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/cerro-verde")
 @CrossOrigin("*")
 public class ProductosController {
     @Autowired
@@ -30,11 +30,6 @@ public class ProductosController {
     @GetMapping("/productos")
     public List<Productos> buscarTodos(){
         return serviceProductos.buscarTodos();
-    }
-
-    @GetMapping("/productosactivos")
-    public List<Productos> buscarActivos(){
-        return serviceProductos.buscarActivos();
     }
 
     @PostMapping("/productos")
