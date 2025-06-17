@@ -8,10 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
+import java.util.Date;
+
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
 
@@ -26,10 +28,6 @@ public class Limpiezas {
     private String fecha_hora_limpieza;
     private String observaciones;
     private Integer estado = 1;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_sucursal")
-    private Sucursales sucursal; 
 
     @ManyToOne
     @JoinColumn(name ="id_usuario")

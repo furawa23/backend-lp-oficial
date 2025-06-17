@@ -45,8 +45,9 @@ public class UsuariosService implements IUsuariosService {
     }
 
     @Override
-    public Usuarios obtenerUsuarioPorId(Integer id) throws Exception {
-        return usuariosRepository.findById(id).orElse(null);
+    public Usuarios obtenerUsuarioPorId(Integer id) {
+        return usuariosRepository.findById(id) // ✅ CORREGIDO AQUI
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 
     @Override
@@ -56,7 +57,8 @@ public class UsuariosService implements IUsuariosService {
 
     @Override
     public Usuarios actualizarUsuario(Usuarios usuario) throws Exception {
-        Usuarios usuarioExistente = usuariosRepository.findById(usuario.getIdUsuario()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Usuarios usuarioExistente = usuariosRepository.findById(usuario.getIdUsuario())
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         if (usuario.getEmail() != null && !usuario.getEmail().equals(usuarioExistente.getEmail())
                 && usuariosRepository.existsByEmail(usuario.getEmail())) {
@@ -141,7 +143,6 @@ public class UsuariosService implements IUsuariosService {
         Usuarios usuarioGuardado = usuariosRepository.save(usuario);
         if (usuario.getRol().getRolesPermisos() != null) {
             for (RolesPermisos permiso : usuario.getRol().getRolesPermisos()) {
-                // Asignamos el rol al permiso para asegurarnos
                 permiso.setRoles(rol);
                 rolesPermisosRepository.save(permiso);
             }
@@ -156,7 +157,7 @@ public class UsuariosService implements IUsuariosService {
         }
 
         if (usuariosRepository.existsByUsername(usuario.getUsername())) {
-            throw new UsuarioYaRegistradoException();  // 🚨 Aquí validas el username
+            throw new UsuarioYaRegistradoException();
         }
 
         Set<RolesPermisos> permisosDelJson = usuario.getRol().getRolesPermisos();
@@ -197,5 +198,6 @@ public class UsuariosService implements IUsuariosService {
     public UsuariosRepository getUsuariosRepository() {
         return this.usuariosRepository;
     }
-
 }
+
+

@@ -17,7 +17,6 @@ import org.hibernate.annotations.Where;
 import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "incidencias")
@@ -27,10 +26,15 @@ public class Incidencias {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_incidencia;
+
     private Date fecha_registro;
     private Date fecha_solucion;
     private String estado_incidencia;
     private String descripcion;
+
+    // NUEVO CAMPO: Observaciones cuando se completa la incidencia ✅
+    private String observaciones_solucion;
+
     private Integer estado = 1;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -52,6 +56,8 @@ public class Incidencias {
     @ManyToOne
     @JoinColumn(name = "id_area")
     private AreasHotel area;
+
+    // === GETTERS & SETTERS ===
 
     public Integer getId_incidencia() {
         return id_incidencia;
@@ -91,6 +97,14 @@ public class Incidencias {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getObservaciones_solucion() {
+        return observaciones_solucion;
+    }
+
+    public void setObservaciones_solucion(String observaciones_solucion) {
+        this.observaciones_solucion = observaciones_solucion;
     }
 
     public Integer getEstado() {
@@ -143,12 +157,17 @@ public class Incidencias {
 
     @Override
     public String toString() {
-        return "Incidencias [id_incidencia=" + id_incidencia + ", fecha_registro=" + fecha_registro
-                + ", fecha_solucion=" + fecha_solucion + ", estado_incidencia=" + estado_incidencia + ", descripcion="
-                + descripcion + ", estado=" + estado + ", sucursal=" + sucursal + ", habitacion=" + habitacion
-                + ", tipoIncidencia=" + tipoIncidencia + ", usuario=" + usuario + ", area=" + area + "]";
+        return "Incidencias [id_incidencia=" + id_incidencia + 
+                ", fecha_registro=" + fecha_registro +
+                ", fecha_solucion=" + fecha_solucion + 
+                ", estado_incidencia=" + estado_incidencia +
+                ", descripcion=" + descripcion + 
+                ", observaciones_solucion=" + observaciones_solucion + 
+                ", estado=" + estado + 
+                ", sucursal=" + sucursal + 
+                ", habitacion=" + habitacion +
+                ", tipoIncidencia=" + tipoIncidencia + 
+                ", usuario=" + usuario + 
+                ", area=" + area + "]";
     }
-
-
-    
 }
