@@ -9,8 +9,6 @@ public interface IProveedoresService {
 
     List<Proveedores> buscarTodos(); //Listar proveedores
 
-    List<Proveedores> buscarActivos(); //Listar proveedores activos
-
     void guardar(Proveedores proveedor); //Guardar proveedores
 
     void modificar(Proveedores proveedor); //Modificar proveedores

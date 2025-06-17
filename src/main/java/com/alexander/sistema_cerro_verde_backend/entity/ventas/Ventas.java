@@ -213,4 +213,12 @@ public class Ventas {
     public void setSucursal(Sucursales sucursal) {
         this.sucursal = sucursal;
     }
+
+    public List<MovimientosInventario> getMovimientoInventario() {
+        return movimientoInventario;
+    }
+
+    public void setMovimientoInventario(List<MovimientosInventario> movimientoInventario) {
+        this.movimientoInventario = movimientoInventario;
+    }
 }

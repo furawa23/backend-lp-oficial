@@ -23,7 +23,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
 import com.alexander.sistema_cerro_verde_backend.excepciones.UsuarioDeshabilitadoException;
 import com.alexander.sistema_cerro_verde_backend.excepciones.UsuarioFoundException;
 import com.alexander.sistema_cerro_verde_backend.service.seguridad.UserDetailsServiceImpl;
-import com.alexander.sistema_cerro_verde_backend.service.seguridad.IUsuariosService;
+import com.alexander.sistema_cerro_verde_backend.service.seguridad.jpa.UsuariosService;
 
 @RestController
 @CrossOrigin("*")
@@ -34,8 +34,7 @@ public class AuthenticationController {
     @Autowired
     private UserDetailsServiceImpl userxDetailsServiceImpl; 
     @Autowired
-    private IUsuariosService usuarioServiceImpl;
-
+    private UsuariosService serviceUsuario;
 
     @Autowired
     private JwtUtils jwtUtils; 
@@ -53,14 +52,12 @@ public class AuthenticationController {
     
         UserDetails userDetails = this.userxDetailsServiceImpl.loadUserByUsername(jwtRequest.getUsername());
         String token = this.jwtUtils.generateToken(userDetails);
-    
-        // Obtener usuario real para guardar el token en su campo
-        Usuarios usuario = this.usuarioServiceImpl.obtenerUsuario(jwtRequest.getUsername()); // <-- Usa tu método propio
-        usuario.setJwtToken(token);
-        usuarioServiceImpl.actualizarUsuario(usuario); // <-- Guarda el cambio
-    
-        System.out.println("Token generado y guardado en usuario: " + token);
-    
+        System.out.println("Token generado: " + token); // <-- Esto te dirá si el token realmente se generó
+
+        Usuarios usuario = serviceUsuario.obtenerUsuario(jwtRequest.getUsername());
+        usuario.setToken(token);
+        serviceUsuario.actualizarUsuario(usuario);
+        
         return ResponseEntity.ok(new JwtResponse(token));
     }
     

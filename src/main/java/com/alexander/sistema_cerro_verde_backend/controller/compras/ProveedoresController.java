@@ -23,7 +23,7 @@ import com.alexander.sistema_cerro_verde_backend.service.compras.ApiService;
 import com.alexander.sistema_cerro_verde_backend.service.compras.jpa.ProveedoresService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/cerro-verde")
 @CrossOrigin("*")
 public class ProveedoresController {
 
@@ -35,11 +35,6 @@ public class ProveedoresController {
     @GetMapping("/proveedores")
     public List<Proveedores> buscarTodos() { //Listar todos los proveedores
         return serviceProveedores.buscarTodos(); 
-    }
-
-    @GetMapping("/proveedoresActivos")
-    public List<Proveedores> buscarActivos() {
-        return serviceProveedores.buscarActivos();
     }
 
     @PostMapping("/proveedores")

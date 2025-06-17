@@ -1,10 +1,12 @@
 package com.alexander.sistema_cerro_verde_backend.entity.compras;
 
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.Where;
 
 import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,7 +20,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "movimientos_inventario")
 @SQLDelete(sql = "UPDATE movimientos_inventario SET estado = 0 WHERE id_movimiento_inventario=?")
-@Where(clause = "estado = 1")
+@SQLRestriction("estado=1")
 public class MovimientosInventario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +32,7 @@ public class MovimientosInventario {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_sucursal")
+    @JsonIgnore
     private Sucursales sucursal;
     @ManyToOne
     @JoinColumn(name = "id_compra")

@@ -38,6 +38,7 @@ public class Usuarios implements UserDetails {
     private String telefono;
     private boolean enable = true; 
     private String perfil;
+    private String token;
 
     // Relación con Roles, ahora es una relación uno a muchos
     @ManyToOne(fetch = FetchType.EAGER)
@@ -50,9 +51,11 @@ public class Usuarios implements UserDetails {
     private List<Ventas> venta;
 
     @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
     private List<Incidencias> incidencias;
 
     @OneToMany(mappedBy ="usuario")
+    @JsonIgnore
     private List<Limpiezas> limpiezas;
 
     @Override
@@ -203,4 +206,13 @@ public class Usuarios implements UserDetails {
         this.limpiezas = limpiezas;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
 }
+
