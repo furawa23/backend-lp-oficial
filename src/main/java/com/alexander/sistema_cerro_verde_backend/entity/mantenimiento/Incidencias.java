@@ -16,6 +16,7 @@ import org.hibernate.annotations.Where;
 
 import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
+import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Salones;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
 
 @Entity
@@ -56,6 +57,10 @@ public class Incidencias {
     @ManyToOne
     @JoinColumn(name = "id_area")
     private AreasHotel area;
+
+    @ManyToOne
+    @JoinColumn(name = "id_salon")
+    private Salones salon;
 
     // === GETTERS & SETTERS ===
 
@@ -155,19 +160,22 @@ public class Incidencias {
         this.area = area;
     }
 
+    public Salones getSalon() {
+        return salon;
+    }
+
+    public void setSalon(Salones salon) {
+        this.salon = salon;
+    }
+
     @Override
     public String toString() {
-        return "Incidencias [id_incidencia=" + id_incidencia + 
-                ", fecha_registro=" + fecha_registro +
-                ", fecha_solucion=" + fecha_solucion + 
-                ", estado_incidencia=" + estado_incidencia +
-                ", descripcion=" + descripcion + 
-                ", observaciones_solucion=" + observaciones_solucion + 
-                ", estado=" + estado + 
-                ", sucursal=" + sucursal + 
-                ", habitacion=" + habitacion +
-                ", tipoIncidencia=" + tipoIncidencia + 
-                ", usuario=" + usuario + 
-                ", area=" + area + "]";
+        return "Incidencias [id_incidencia=" + id_incidencia + ", fecha_registro=" + fecha_registro
+                + ", fecha_solucion=" + fecha_solucion + ", estado_incidencia=" + estado_incidencia + ", descripcion="
+                + descripcion + ", observaciones_solucion=" + observaciones_solucion + ", estado=" + estado
+                + ", sucursal=" + sucursal + ", habitacion=" + habitacion + ", tipoIncidencia=" + tipoIncidencia
+                + ", usuario=" + usuario + ", area=" + area + ", salon=" + salon + "]";
     }
+
+
 }

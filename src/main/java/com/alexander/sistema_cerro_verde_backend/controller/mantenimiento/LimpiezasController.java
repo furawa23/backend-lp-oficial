@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,7 +41,7 @@ public class LimpiezasController {
         return limpiezas;
     }
 
-    @GetMapping("/actualizar/{id}") //Actualizar
+    @PutMapping("/actualizar/{id}") //Actualizar
     public void actualizar (@PathVariable Integer id, @RequestBody Limpiezas limpiezas){
         serviceLimpiezas.actualizar(id, limpiezas);
     }

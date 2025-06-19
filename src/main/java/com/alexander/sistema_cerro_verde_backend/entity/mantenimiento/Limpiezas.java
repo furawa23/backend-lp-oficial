@@ -8,6 +8,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import java.util.Date;
+
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -22,8 +24,10 @@ public class Limpiezas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_limpieza;
-    private String fecha_hora_limpieza;
+    private Date fecha_registro;
+    private Date fecha_solucion;
     private String observaciones;
+    private String estado_limpieza;
     private Integer estado = 1;
 
     @ManyToOne
@@ -46,12 +50,20 @@ public class Limpiezas {
         this.id_limpieza = id_limpieza;
     }
 
-    public String getFecha_hora_limpieza() {
-        return fecha_hora_limpieza;
+    public Date getFecha_registro() {
+        return fecha_registro;
     }
 
-    public void setFecha_hora_limpieza(String fecha_hora_limpieza) {
-        this.fecha_hora_limpieza = fecha_hora_limpieza;
+    public void setFecha_registro(Date fecha_registro) {
+        this.fecha_registro = fecha_registro;
+    }
+
+    public Date getFecha_solucion() {
+        return fecha_solucion;
+    }
+
+    public void setFecha_solucion(Date fecha_solucion) {
+        this.fecha_solucion = fecha_solucion;
     }
 
     public String getObservaciones() {
@@ -60,6 +72,14 @@ public class Limpiezas {
 
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
+    }
+
+    public String getEstado_limpieza() {
+        return estado_limpieza;
+    }
+
+    public void setEstado_limpieza(String estado_limpieza) {
+        this.estado_limpieza = estado_limpieza;
     }
 
     public Integer getEstado() {
@@ -96,9 +116,10 @@ public class Limpiezas {
 
     @Override
     public String toString() {
-        return "Limpiezas [id_limpieza=" + id_limpieza + ", fecha_hora_limpieza=" + fecha_hora_limpieza
-                + ", observaciones=" + observaciones + ", estado=" + estado + ", personal=" + personal + ", habitacion="
-                + habitacion + ", salon=" + salon + "]";
+        return "Limpiezas [id_limpieza=" + id_limpieza + ", fecha_registro=" + fecha_registro + ", fecha_solucion="
+                + fecha_solucion + ", observaciones=" + observaciones + ", estado_limpieza=" + estado_limpieza
+                + ", estado=" + estado + ", personal=" + personal + ", habitacion=" + habitacion + ", salon=" + salon
+                + "]";
     }
     
 }
