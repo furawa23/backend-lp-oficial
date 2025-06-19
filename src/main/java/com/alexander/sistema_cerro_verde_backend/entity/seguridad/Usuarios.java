@@ -8,7 +8,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.Incidencias;
-import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.Limpiezas;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -53,10 +52,6 @@ public class Usuarios implements UserDetails {
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
     private List<Incidencias> incidencias;
-
-    @OneToMany(mappedBy ="usuario")
-    @JsonIgnore
-    private List<Limpiezas> limpiezas;
 
     @Override
     @JsonIgnore
@@ -187,15 +182,6 @@ public class Usuarios implements UserDetails {
         this.incidencias = incidencias;
     }
 
-
-    public List<Limpiezas> getLimpiezas() {
-        return limpiezas;
-    }
-
-
-    public void setLimpiezas(List<Limpiezas> limpiezas) {
-        this.limpiezas = limpiezas;
-    }
 
     public String getToken() {
         return token;
