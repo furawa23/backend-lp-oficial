@@ -196,7 +196,7 @@ public class VentaService implements IVentaService {
                     .append(" Piso ").append(h.getHabitacion().getPiso())
                     .append(" ").append(h.getHabitacion().getTipo_habitacion().getNombre())
                     .append(" X ").append(h.getDias()).append(" dias").append("</td>")
-                    .append("<td>S/ ").append(h.getHabitacion().getTipo_habitacion().getPrecio_publico()).append("</td>")
+                    .append("<td>S/ ").append(h.getHabitacion().getTipo_habitacion().getPrecio()).append("</td>")
                     .append("<td>S/ ").append(h.getSubTotal()).append("</td>")
                     .append("</tr>");
         }

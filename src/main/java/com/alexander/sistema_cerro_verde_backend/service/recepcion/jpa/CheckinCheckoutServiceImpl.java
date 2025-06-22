@@ -102,7 +102,7 @@ public class CheckinCheckoutServiceImpl implements CheckinCheckoutService {
                     // Liberar habitaciones
                     List<HabitacionesXReserva> habsReservas = habitacionesReservasRepository.findByReservaId(reserva.getId_reserva());
                     for (HabitacionesXReserva hr : habsReservas) {
-                        hr.getHabitacion().setEstado_habitacion("Disponible");
+                        hr.getHabitacion().setEstado_habitacion("Limpieza");
                         habitacionRepository.save(hr.getHabitacion());
                     }
 
