@@ -1,27 +1,40 @@
 package com.alexander.sistema_cerro_verde_backend.service.recepcion.jpa;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
+import com.alexander.sistema_cerro_verde_backend.entity.caja.Cajas;
+import com.alexander.sistema_cerro_verde_backend.entity.caja.TipoTransacciones;
+import com.alexander.sistema_cerro_verde_backend.entity.caja.TransaccionesCaja;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.HabitacionesXReserva;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Reservas;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Salones;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.SalonesXReserva;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Clientes;
+import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
+import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentasXReservas;
+import com.alexander.sistema_cerro_verde_backend.repository.caja.CajasRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesReservaRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ReservasRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.SalonesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.SalonesReservaRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.seguridad.UsuariosRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.ClientesRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.ventas.VentasRepository;
 import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
+import com.alexander.sistema_cerro_verde_backend.service.caja.CajasService;
+import com.alexander.sistema_cerro_verde_backend.service.caja.TransaccionesCajaService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.ReservasService;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.ClientesService;
 
@@ -54,6 +67,18 @@ public class ReservaServiceImpl implements ReservasService {
 
     @Autowired
     private SucursalesService sucursalService;
+
+    @Autowired
+    private CajasRepository cajaRepository;
+
+    @Autowired
+    private TransaccionesCajaService transaccionesCajaService;
+
+    @Autowired
+    private CajasService cajasService;
+
+    @Autowired
+    private UsuariosRepository usuarioRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -194,6 +219,64 @@ public class ReservaServiceImpl implements ReservasService {
         .orElseThrow(() -> new EntityNotFoundException(
             "Reserva no encontrada con ID: " + reserva.getId_reserva()
         ));
+    }
+
+    @Override
+    @Transactional
+    public void cancelar(Integer idReserva) {
+        Reservas reserva = repository.findById(idReserva)
+            .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+        if (!reserva.getEstado_reserva().equalsIgnoreCase("Pagada")) {
+            throw new RuntimeException("Solo se puede cancelar una reserva ya pagada");
+        }
+
+        reserva.setEstado_reserva("Cancelada");
+        repository.save(reserva);
+
+        List<HabitacionesXReserva> habitaciones = habitacionesReservaRepository.findByReservaId(idReserva);
+            for (HabitacionesXReserva hr : habitaciones) {
+                Habitaciones habitacion = hr.getHabitacion();
+                habitacion.setEstado_habitacion("Disponible");  // Disponible
+                habitacionesRepository.save(habitacion);
+            }
+        
+            List<SalonesXReserva> salones = salonesReservaRepository.findByReservaId(idReserva);
+            for (SalonesXReserva sr : salones) {
+                Salones salon = sr.getSalon();
+                salon.setEstado_salon("Disponible"); // Disponible
+                salonesRepository.save(salon);
+            }
+
+            // Eliminar relaciones después de actualizar estados
+            habitacionesReservaRepository.deleteByReservaId(idReserva);
+            salonesReservaRepository.deleteByReservaId(idReserva);
+
+        VentasXReservas rel = reserva.getVentaXReserva().get(0); 
+        Ventas venta = rel.getVenta();
+        double monto = venta.getTotal();
+
+        Usuarios usuario = usuarioRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Cajas caja = cajasService.buscarCajaAperturadaPorUsuario(usuario)
+            .orElseThrow(() -> new RuntimeException("No hay una caja aperturada para este usuario"));
+
+        // Crear la transacción
+        TransaccionesCaja egreso = new TransaccionesCaja();
+        egreso.setMontoTransaccion(monto);
+        egreso.setCaja(caja); // 🔹 este campo es obligatorio
+
+        TipoTransacciones tipoEgreso = new TipoTransacciones();
+        tipoEgreso.setId(2); // 2 = egreso
+        egreso.setTipo(tipoEgreso);
+
+        egreso.setFechaHoraTransaccion(new Date());
+
+        // Actualizar saldos de caja
+        caja.setSaldoFisico(caja.getSaldoFisico() - monto);
+        caja.setSaldoTotal(caja.getSaldoTotal() - monto);
+        cajaRepository.save(caja);
+
+        transaccionesCajaService.guardar(egreso);
     }
 
     
