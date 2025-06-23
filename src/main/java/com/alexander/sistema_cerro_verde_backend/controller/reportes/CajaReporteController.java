@@ -32,9 +32,6 @@ public class CajaReporteController {
         this.service = service;
     }
 
-    // ----------------------------------------------------
-    // — JSON: Resumen Global (Ingreso vs Egreso)
-    // ----------------------------------------------------
     @GetMapping(path = "/resumen", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<CajaResumenDTO> getResumen(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
@@ -47,9 +44,6 @@ public class CajaReporteController {
         return service.obtenerResumenCaja(from, to, tipos);
     }
 
-    // ----------------------------------------------------
-    // — PDF: Resumen Global
-    // ----------------------------------------------------
     @GetMapping("/resumen/pdf")
     public ResponseEntity<byte[]> getResumenPdf(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
@@ -69,9 +63,6 @@ public class CajaReporteController {
             .body(pdf);
     }
 
-    // ----------------------------------------------------
-    // — EXCEL: Resumen Global
-    // ----------------------------------------------------
     @GetMapping("/resumen/excel")
     public ResponseEntity<byte[]> getResumenExcel(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
