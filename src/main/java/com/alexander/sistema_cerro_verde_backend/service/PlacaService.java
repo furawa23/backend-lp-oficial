@@ -14,7 +14,7 @@ public class PlacaService {
         String url = "https://api.factiliza.com/v1/placa/info/" + placa;
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzODc0MSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6ImNvbnN1bHRvciJ9.NkXKkNpdVLscBuukfmjQLR0uEUUMq2Rye2ScKxZqO_4");
+        headers.set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzODk0NiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6ImNvbnN1bHRvciJ9.erQ3ystqa2lTPYd5-BSUzEAHtRoXWlF6UOh2MWEHk0E");
 
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
