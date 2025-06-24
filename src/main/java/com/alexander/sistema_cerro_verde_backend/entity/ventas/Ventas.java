@@ -37,6 +37,7 @@ public class Ventas {
     private Double cargo;
     private Double igv;
     private Integer estado = 1;
+    private String estadoVenta;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_sucursal")
@@ -220,5 +221,13 @@ public class Ventas {
 
     public void setMovimientoInventario(List<MovimientosInventario> movimientoInventario) {
         this.movimientoInventario = movimientoInventario;
+    }
+
+    public String getEstadoVenta() {
+        return estadoVenta;
+    }
+
+    public void setEstadoVenta(String estadoVenta) {
+        this.estadoVenta = estadoVenta;
     }
 }

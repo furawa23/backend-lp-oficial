@@ -16,9 +16,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 import com.alexander.sistema_cerro_verde_backend.repository.caja.CajasRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.MovimientosInventarioRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.ProductosRepository;
-import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ReservasRepository;
-import com.alexander.sistema_cerro_verde_backend.repository.ventas.ClientesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.DetalleVentaRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.MetodoPagoRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.VentaHabitacionRepository;
@@ -34,13 +32,7 @@ public class VentaService implements IVentaService {
 
     @Autowired
     private VentasRepository repoVenta;
-
-    @Autowired
-    private HabitacionesRepository repoHabitacion;
-
-    @Autowired
-    private ClientesRepository clienteRepository;
-
+    
     @Autowired
     private ProductosRepository repoProductos;
 
@@ -364,6 +356,7 @@ public class VentaService implements IVentaService {
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             PdfRendererBuilder builder = new PdfRendererBuilder();
             builder.withHtmlContent(html, null);
+            builder.useFastMode();
             builder.toStream(os);
             builder.run();
             return os.toByteArray();
