@@ -6,22 +6,24 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alexander.sistema_cerro_verde_backend.dto.ventas.VentaDTO;
 import com.alexander.sistema_cerro_verde_backend.entity.compras.MovimientosInventario;
+import com.alexander.sistema_cerro_verde_backend.entity.compras.Productos;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.DetalleVenta;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentaHabitacion;
+import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentaMetodoPago;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentaSalon;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 import com.alexander.sistema_cerro_verde_backend.repository.caja.CajasRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.MovimientosInventarioRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.ProductosRepository;
-import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ReservasRepository;
-import com.alexander.sistema_cerro_verde_backend.repository.ventas.ClientesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.DetalleVentaRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.MetodoPagoRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.VentaHabitacionRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.ventas.VentaMetodoPagoRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.VentaSalonRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.VentasRepository;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.IVentaService;
@@ -34,12 +36,6 @@ public class VentaService implements IVentaService {
 
     @Autowired
     private VentasRepository repoVenta;
-
-    @Autowired
-    private HabitacionesRepository repoHabitacion;
-
-    @Autowired
-    private ClientesRepository clienteRepository;
 
     @Autowired
     private ProductosRepository repoProductos;
@@ -65,18 +61,21 @@ public class VentaService implements IVentaService {
     @Autowired
     private VentaSalonRepository repoVentaSalon;
 
+    @Autowired
+    private VentaMetodoPagoRepository repoVentaMetodoPago;
+
     @Override
-    public List<VentaDTO> buscarTodos() {
-        return repoVenta.findAll().stream().map(this::convertirDTO).toList();
+    public List<Ventas> buscarTodos() {
+        return repoVenta.findAll();
     }
 
     @Override
-    public Optional<VentaDTO> buscarPorId(Integer id) {
-        return repoVenta.findById(id).map(venta -> convertirDTO(venta));
+    public Optional<Ventas> buscarPorId(Integer id) {
+        return repoVenta.findById(id);
     }
 
     @Override
-    public VentaDTO convertirDTO(Ventas venta){
+    public VentaDTO convertirDTO(Ventas venta) {
         VentaDTO dto = new VentaDTO();
         dto.setIdVenta(venta.getIdVenta());
         dto.setNumComprobante(venta.getComprobantePago().getNumComprobante());
@@ -93,6 +92,7 @@ public class VentaService implements IVentaService {
         dto.setDetalleHabitacion(venta.getVentaHabitacion());
         dto.setDetalleSalon(venta.getVentaSalon());
         dto.setMetodosPago(venta.getVentaMetodoPago());
+        dto.setEstadoVenta(venta.getEstadoVenta());
 
         return dto;
     }
@@ -123,26 +123,90 @@ public class VentaService implements IVentaService {
 
         ventaGuardada.getVentaXReserva().forEach(r -> {
             Integer idReserva = r.getReserva().getId_reserva();
-            var reserva = repoReservas.findById(idReserva).orElseThrow(() -> new EntityNotFoundException("RESERVAAAAAAASDASDASDASDASDAS: " + idReserva));
+            var reserva = repoReservas.findById(idReserva).orElseThrow(() -> new EntityNotFoundException("Reserva: " + idReserva));
             reserva.setEstado_reserva("Pagada");
             repoReservas.save(reserva);
         });
 
-        var caja = repoCaja.findByEstadoCaja("abierta").orElseThrow(() -> new RuntimeException("Caja no encontrada"));;
+        var caja = repoCaja.findByEstadoCaja("abierta").orElseThrow(() -> new RuntimeException("Caja no encontrada"));
 
-        ventaGuardada.getVentaMetodoPago().forEach(m -> {
-            Integer idMetodoPago = m.getMetodoPago().getIdMetodoPago();
-            var metodoPago = repoMetodo.findById(idMetodoPago).orElseThrow(() -> new EntityNotFoundException("METODO DE PAGO: " + idMetodoPago));
-            if (!metodoPago.getNombre().equals("Efectivo")) {
-                caja.setSaldoTotal(caja.getSaldoTotal() + m.getPago());
-                repoCaja.save(caja);
-            }
-        });
+        // ventaGuardada.getVentaMetodoPago().forEach(m -> {
+        //     Integer idMetodoPago = m.getMetodoPago().getIdMetodoPago();
+        //     var metodoPago = repoMetodo.findById(idMetodoPago).orElseThrow(() -> new EntityNotFoundException("METODO DE PAGO: " + idMetodoPago));
+        //     if (!metodoPago.getNombre().equals("Efectivo")) {
+        //         caja.setSaldoTotal(caja.getSaldoTotal() + m.getPago());
+        //         repoCaja.save(caja);
+        //     }
+        // });
     }
 
+    // ---------- SPRING BOOT ----------
     @Override
+    @Transactional
     public void modificar(Ventas venta) {
-        repoVenta.save(venta);
+
+        // 1. Obtener venta existente
+        Ventas ventaExistente = repoVenta.findById(venta.getIdVenta())
+                .orElseThrow(() -> new EntityNotFoundException("Venta no encontrada con ID: " + venta.getIdVenta()));
+
+        // 2. Revertir stock anterior
+        for (DetalleVenta detalle : ventaExistente.getDetalleVenta()) {
+            Integer idProd = detalle.getProducto().getId_producto();
+            Productos producto = repoProductos.findById(idProd)
+                    .orElseThrow(() -> new EntityNotFoundException("Producto no existe: " + idProd));
+
+            producto.setStock(producto.getStock() + detalle.getCantidad());
+            repoProductos.save(producto);
+        }
+
+        // 3. Limpiar detalles anteriores
+        ventaExistente.getDetalleVenta().clear();
+        ventaExistente.getVentaMetodoPago().clear();
+
+        // 4. Agregar nuevos detalles y ajustar stock
+        for (DetalleVenta nuevoDetalle : venta.getDetalleVenta()) {
+            Integer idProd = nuevoDetalle.getProducto().getId_producto();
+            Productos producto = repoProductos.findById(idProd)
+                    .orElseThrow(() -> new EntityNotFoundException("Producto no existe: " + idProd));
+
+            int cantidadVendida = nuevoDetalle.getCantidad();
+            if (producto.getStock() < cantidadVendida) {
+                throw new RuntimeException("Stock insuficiente para el producto: " + producto.getNombre());
+            }
+
+            producto.setStock(producto.getStock() - cantidadVendida);
+            repoProductos.save(producto);
+
+            nuevoDetalle.setVenta(ventaExistente);
+            ventaExistente.getDetalleVenta().add(nuevoDetalle);
+
+            // Registrar movimiento inventario
+            MovimientosInventario mov = new MovimientosInventario();
+            mov.setProducto(producto);
+            mov.setTipo_movimiento("Salida");
+            mov.setCantidad(cantidadVendida);
+            mov.setFecha(venta.getFecha());
+            mov.setVenta(ventaExistente);
+            repoMovimientosInventario.save(mov);
+        }
+
+        // 5. Agregar nuevos métodos de pago
+        for (VentaMetodoPago metodo : venta.getVentaMetodoPago()) {
+            metodo.setVenta(ventaExistente);
+            ventaExistente.getVentaMetodoPago().add(metodo);
+        }
+
+        // 6. Actualizar campos generales
+        ventaExistente.setFecha(venta.getFecha());
+        ventaExistente.setEstadoVenta(venta.getEstadoVenta());
+        ventaExistente.setTotal(venta.getTotal());
+        ventaExistente.setDescuento(venta.getDescuento());
+        ventaExistente.setCargo(venta.getCargo());
+        ventaExistente.setIgv(venta.getIgv());
+        ventaExistente.setComprobantePago(venta.getComprobantePago());
+
+        // 7. Guardar cambios
+        repoVenta.save(ventaExistente);
     }
 
     @Override
@@ -196,7 +260,7 @@ public class VentaService implements IVentaService {
                     .append(" Piso ").append(h.getHabitacion().getPiso())
                     .append(" ").append(h.getHabitacion().getTipo_habitacion().getNombre())
                     .append(" X ").append(h.getDias()).append(" dias").append("</td>")
-                    .append("<td>S/ ").append(h.getHabitacion().getTipo_habitacion().getPrecio_publico()).append("</td>")
+                    .append("<td>S/ ").append(h.getHabitacion().getTipo_habitacion().getPrecio()).append("</td>")
                     .append("<td>S/ ").append(h.getSubTotal()).append("</td>")
                     .append("</tr>");
         }
@@ -364,6 +428,7 @@ public class VentaService implements IVentaService {
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             PdfRendererBuilder builder = new PdfRendererBuilder();
             builder.withHtmlContent(html, null);
+            builder.useFastMode();
             builder.toStream(os);
             builder.run();
             return os.toByteArray();

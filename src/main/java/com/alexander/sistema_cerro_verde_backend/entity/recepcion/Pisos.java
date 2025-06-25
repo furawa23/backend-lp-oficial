@@ -12,36 +12,29 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="tipo_habitacion")
-public class TipoHabitacion {
+@Table
+public class Pisos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_tipo_habitacion;
-    private String nombre;
-    private Double precio;
+    private Integer id_piso;
+    private Integer numero;
     private Integer estado = 1;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_sucursal")
     private Sucursales sucursal;
-    
-    public Integer getId_tipo_habitacion() {
-        return id_tipo_habitacion;
+
+    public Integer getId_piso() {
+        return id_piso;
     }
-    public void setId_tipo_habitacion(Integer id_tipo_habitacion) {
-        this.id_tipo_habitacion = id_tipo_habitacion;
+    public void setId_piso(Integer id_piso) {
+        this.id_piso = id_piso;
     }
-    public String getNombre() {
-        return nombre;
+    public Integer getNumero() {
+        return numero;
     }
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-    public Double getPrecio() {
-        return precio;
-    }
-    public void setPrecio(Double precio) {
-        this.precio = precio;
+    public void setNumero(Integer numero) {
+        this.numero = numero;
     }
     public Integer getEstado() {
         return estado;
@@ -49,7 +42,6 @@ public class TipoHabitacion {
     public void setEstado(Integer estado) {
         this.estado = estado;
     }
-
     public Sucursales getSucursal() {
         return sucursal;
     }
@@ -57,4 +49,9 @@ public class TipoHabitacion {
         this.sucursal = sucursal;
     }
 
+    @Override
+    public String toString() {
+        return "Pisos [id_piso=" + id_piso + ", numero=" + numero + ", estado=" + estado + "]";
+    }
+    
 }
