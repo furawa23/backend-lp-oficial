@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.Incidencias;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -48,10 +47,6 @@ public class Usuarios implements UserDetails {
     @OneToMany(mappedBy="usuario")
     @JsonIgnore
     private List<Ventas> venta;
-
-    @OneToMany(mappedBy = "usuario")
-    @JsonIgnore
-    private List<Incidencias> incidencias;
 
     @Override
     @JsonIgnore
@@ -173,15 +168,6 @@ public class Usuarios implements UserDetails {
     public void setVenta(List<Ventas> venta) {
         this.venta = venta;
     }
-
-    public List<Incidencias> getIncidencias() {
-        return incidencias;
-    }
-
-    public void setIncidencias(List<Incidencias> incidencias) {
-        this.incidencias = incidencias;
-    }
-
 
     public String getToken() {
         return token;

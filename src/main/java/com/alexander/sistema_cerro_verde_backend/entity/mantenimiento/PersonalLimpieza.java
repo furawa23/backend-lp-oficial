@@ -14,34 +14,34 @@ import org.hibernate.annotations.Where;
 import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 
 @Entity
-@Table(name = "areas_hotel")
+@Table(name = "personal_limpieza")
 @SQLDelete(sql = "UPDATE areas_hotel SET estado = 0 WHERE id_area = ?")
 @Where(clause = "estado = 1")
-public class AreasHotel {
+public class PersonalLimpieza {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_area;
-    private String nombre;
+    private Integer id_personal_limpieza;
+    private String nombres;
     private Integer estado = 1;// Estado activo por defecto
 
     @ManyToOne
     @JoinColumn(name = "id_sucursal")
     private Sucursales sucursal;
 
-    public Integer getId_area() {
-        return id_area;
+    public Integer getId_personal_limpieza() {
+        return id_personal_limpieza;
     }
 
-    public void setId_area(Integer id_area) {
-        this.id_area = id_area;
+    public void setId_personal_limpieza(Integer id_personal_limpieza) {
+        this.id_personal_limpieza = id_personal_limpieza;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombres() {
+        return nombres;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
     }
 
     public Integer getEstado() {
@@ -62,8 +62,8 @@ public class AreasHotel {
 
     @Override
     public String toString() {
-        return "AreasHotel [id_area=" + id_area + ", nombre=" + nombre + ", estado=" + estado + ", sucursal=" + sucursal
-                + "]";
+        return "PersonalLimpieza [id_personal_limpieza=" + id_personal_limpieza + ", nombres=" + nombres + ", estado="
+                + estado + ", sucursal=" + sucursal + "]";
     }
     
 }
