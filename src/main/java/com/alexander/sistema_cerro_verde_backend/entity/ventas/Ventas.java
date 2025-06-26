@@ -6,6 +6,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
+import com.alexander.sistema_cerro_verde_backend.entity.caja.TransaccionesCaja;
 import com.alexander.sistema_cerro_verde_backend.entity.compras.MovimientosInventario;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -85,6 +86,11 @@ public class Ventas {
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference(value="venta")
     private List<VentaMetodoPago> ventaMetodoPago;
+
+    //Relación de Uno a Muchos con TransaccionesCaja
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference(value="venta")
+    private List<TransaccionesCaja> transaccionCaja;
 
     public String getFecha() {
         return fecha;
@@ -229,5 +235,13 @@ public class Ventas {
 
     public void setEstadoVenta(String estadoVenta) {
         this.estadoVenta = estadoVenta;
+    }
+
+    public List<TransaccionesCaja> getTransaccionCaja() {
+        return transaccionCaja;
+    }
+
+    public void setTransaccionCaja(List<TransaccionesCaja> transaccionCaja) {
+        this.transaccionCaja = transaccionCaja;
     }
 }
