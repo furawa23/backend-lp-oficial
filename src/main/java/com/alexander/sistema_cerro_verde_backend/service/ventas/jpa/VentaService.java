@@ -1,6 +1,7 @@
 package com.alexander.sistema_cerro_verde_backend.service.ventas.jpa;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alexander.sistema_cerro_verde_backend.dto.ventas.VentaDTO;
+import com.alexander.sistema_cerro_verde_backend.entity.caja.TipoTransacciones;
+import com.alexander.sistema_cerro_verde_backend.entity.caja.TransaccionesCaja;
 import com.alexander.sistema_cerro_verde_backend.entity.compras.MovimientosInventario;
 import com.alexander.sistema_cerro_verde_backend.entity.compras.Productos;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.DetalleVenta;
@@ -17,6 +20,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentaMetodoPago;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentaSalon;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 import com.alexander.sistema_cerro_verde_backend.repository.caja.CajasRepository;
+import com.alexander.sistema_cerro_verde_backend.repository.caja.TransaccionesCajaRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.MovimientosInventarioRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.compras.ProductosRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ReservasRepository;
@@ -64,6 +68,9 @@ public class VentaService implements IVentaService {
     @Autowired
     private VentaMetodoPagoRepository repoVentaMetodoPago;
 
+    @Autowired
+    private TransaccionesCajaRepository repoTransacciones;
+
     @Override
     public List<Ventas> buscarTodos() {
         return repoVenta.findAll();
@@ -99,52 +106,81 @@ public class VentaService implements IVentaService {
 
     @Override
     public void guardar(Ventas venta) {
+        // 1. Guardar la venta
         Ventas ventaGuardada = repoVenta.save(venta);
-        // 2) Recorres cada detalle y ajustas el stock
+
+        // 2. Ajustar stock de productos
         ventaGuardada.getDetalleVenta().forEach(det -> {
             Integer prodId = det.getProducto().getId_producto();
             var producto = repoProductos.findById(prodId)
                     .orElseThrow(() -> new EntityNotFoundException("Producto no existe: " + prodId));
+
             MovimientosInventario movimiento = new MovimientosInventario();
             movimiento.setProducto(producto);
             movimiento.setTipo_movimiento("Salida");
             movimiento.setFecha(venta.getFecha());
             movimiento.setVenta(ventaGuardada);
 
+            int cantidad = (int) det.getCantidad();
+            movimiento.setCantidad(cantidad);
             repoMovimientosInventario.save(movimiento);
 
-            // si tu unidad tiene equivalencia:
-            int incremento = (int) (det.getCantidad());
-            movimiento.setCantidad(incremento);
-
-            producto.setStock(producto.getStock() - incremento);
+            producto.setStock(producto.getStock() - cantidad);
             repoProductos.save(producto);
         });
 
+        // 3. Actualizar estado de reserva
         ventaGuardada.getVentaXReserva().forEach(r -> {
             Integer idReserva = r.getReserva().getId_reserva();
-            var reserva = repoReservas.findById(idReserva).orElseThrow(() -> new EntityNotFoundException("Reserva: " + idReserva));
+            var reserva = repoReservas.findById(idReserva)
+                    .orElseThrow(() -> new EntityNotFoundException("Reserva: " + idReserva));
             reserva.setEstado_reserva("Pagada");
             repoReservas.save(reserva);
         });
 
-        var caja = repoCaja.findByEstadoCaja("abierta").orElseThrow(() -> new RuntimeException("Caja no encontrada"));
+        // 4. Registrar transacciones en caja si hay métodos de pago
+        var caja = repoCaja.findByEstadoCaja("abierta")
+                .orElseThrow(() -> new RuntimeException("Caja no encontrada"));
 
-        // ventaGuardada.getVentaMetodoPago().forEach(m -> {
-        //     Integer idMetodoPago = m.getMetodoPago().getIdMetodoPago();
-        //     var metodoPago = repoMetodo.findById(idMetodoPago).orElseThrow(() -> new EntityNotFoundException("METODO DE PAGO: " + idMetodoPago));
-        //     if (!metodoPago.getNombre().equals("Efectivo")) {
-        //         caja.setSaldoTotal(caja.getSaldoTotal() + m.getPago());
-        //         repoCaja.save(caja);
-        //     }
-        // });
+        for (VentaMetodoPago m : ventaGuardada.getVentaMetodoPago()) {
+            Integer idMetodoPago = m.getMetodoPago().getIdMetodoPago();
+            var metodoPago = repoMetodo.findById(idMetodoPago)
+                    .orElseThrow(() -> new EntityNotFoundException("Método de Pago: " + idMetodoPago));
+
+            double monto = m.getPago();
+            if (monto > 0) {
+                // Actualizar saldo total
+                caja.setSaldoTotal(caja.getSaldoTotal() + monto);
+
+                // Actualizar saldo físico si es efectivo
+                if ("Efectivo".equalsIgnoreCase(metodoPago.getNombre())) {
+                    caja.setSaldoFisico(caja.getSaldoFisico() + monto);
+                }
+
+                // 🔽 Transacción para cualquier método de pago
+                TransaccionesCaja transaccion = new TransaccionesCaja();
+                transaccion.setMontoTransaccion(monto);
+                transaccion.setFechaHoraTransaccion(new Date());
+                transaccion.setCaja(caja);
+                transaccion.setVenta(ventaGuardada); // ✅ Relación con venta
+                transaccion.setMetodoPago(metodoPago); // ✅ Relación con método de pago
+
+                TipoTransacciones tipoIngreso = new TipoTransacciones();
+                tipoIngreso.setId(1); // 1 = ingreso
+                transaccion.setTipo(tipoIngreso);
+
+                repoTransacciones.save(transaccion);
+
+                // Guardar caja después de registrar la transacción
+                repoCaja.save(caja);
+            }
+        }
     }
 
     // ---------- SPRING BOOT ----------
     @Override
     @Transactional
     public void modificar(Ventas venta) {
-
         // 1. Obtener venta existente
         Ventas ventaExistente = repoVenta.findById(venta.getIdVenta())
                 .orElseThrow(() -> new EntityNotFoundException("Venta no encontrada con ID: " + venta.getIdVenta()));
@@ -154,13 +190,13 @@ public class VentaService implements IVentaService {
             Integer idProd = detalle.getProducto().getId_producto();
             Productos producto = repoProductos.findById(idProd)
                     .orElseThrow(() -> new EntityNotFoundException("Producto no existe: " + idProd));
-
             producto.setStock(producto.getStock() + detalle.getCantidad());
             repoProductos.save(producto);
         }
 
-        // 3. Limpiar detalles anteriores
+        // 3. Eliminar detalles y métodos de pago antiguos
         ventaExistente.getDetalleVenta().clear();
+        ventaExistente.getVentaMetodoPago().forEach(vmp -> repoVentaMetodoPago.delete(vmp));
         ventaExistente.getVentaMetodoPago().clear();
 
         // 4. Agregar nuevos detalles y ajustar stock
@@ -192,8 +228,11 @@ public class VentaService implements IVentaService {
 
         // 5. Agregar nuevos métodos de pago
         for (VentaMetodoPago metodo : venta.getVentaMetodoPago()) {
-            metodo.setVenta(ventaExistente);
-            ventaExistente.getVentaMetodoPago().add(metodo);
+            VentaMetodoPago nuevoMetodo = new VentaMetodoPago();
+            nuevoMetodo.setPago(metodo.getPago());
+            nuevoMetodo.setMetodoPago(metodo.getMetodoPago());
+            nuevoMetodo.setVenta(ventaExistente);
+            ventaExistente.getVentaMetodoPago().add(nuevoMetodo);
         }
 
         // 6. Actualizar campos generales

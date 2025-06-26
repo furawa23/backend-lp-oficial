@@ -120,43 +120,58 @@ public class CheckinCheckoutServiceImpl implements CheckinCheckoutService {
                         var reserva = existente.getReserva();
                         reserva.setEstado_reserva("Completada");
 
-                        //La venta pasa a completado y se guarda sus respectivas transacciones.
+                        // 1. Obtener venta y marcar como completada
                         var venta = reserva.getVentaXReserva().get(0).getVenta();
                         venta.setEstadoVenta("Completado");
                         repoVenta.save(venta);
-                        double monto = venta.getTotal();
-                        // 3. Obtener caja activa
+
+                        // 2. Obtener caja abierta
                         var caja = repoCaja.findByEstadoCaja("abierta")
                                 .orElseThrow(() -> new RuntimeException("No hay caja abierta"));
-                        // 4. Buscar método de pago "Efectivo"
-                        Optional<VentaMetodoPago> efectivoOpt = venta.getVentaMetodoPago().stream()
-                                .filter(m -> m.getMetodoPago().getNombre().equalsIgnoreCase("Efectivo"))
-                                .findFirst();
-                        // 5. Registrar transacción si existe "Efectivo"
-                        if (efectivoOpt.isPresent()) {
-                            VentaMetodoPago efectivo = efectivoOpt.get();
 
-                            // Crear nueva transacción
-                            TransaccionesCaja transaccion = new TransaccionesCaja();
-                            transaccion.setMontoTransaccion(efectivo.getPago());
-                            TipoTransacciones tipoEgreso = new TipoTransacciones();
-                            tipoEgreso.setId(1);
-                            transaccion.setTipo(tipoEgreso);
-                            transaccion.setFechaHoraTransaccion(new Date());
-                            transaccion.setCaja(caja);
-                            repoTransacciones.save(transaccion);
+                        // 3. Obtener tipo de transacción ingreso
+                        TipoTransacciones tipoIngreso = new TipoTransacciones();
+                        tipoIngreso.setId(1); // 1 = ingreso
 
-                            // Actualizar caja
-                            caja.setSaldoTotal(caja.getSaldoTotal() + venta.getTotal());
-                            
-                            
+                        // 4. Por cada método de pago, registrar la diferencia como nueva transacción
+                        for (VentaMetodoPago metodo : venta.getVentaMetodoPago()) {
+                            double pagoActual = metodo.getPago();
+                            int idMetodo = metodo.getMetodoPago().getIdMetodoPago();
+
+                            List<TransaccionesCaja> transaccionesPrevias = repoTransacciones
+                                    .findByVentaIdAndMetodoPagoIdAndTipoId(venta.getIdVenta(), 1, idMetodo);
+
+                            double yaRegistrado = transaccionesPrevias.stream()
+                                    .mapToDouble(TransaccionesCaja::getMontoTransaccion)
+                                    .sum();
+
+                            double diferencia = pagoActual - yaRegistrado;
+
+                            if (diferencia > 0) {
+                                TransaccionesCaja nueva = new TransaccionesCaja();
+                                nueva.setMontoTransaccion(diferencia);
+                                nueva.setFechaHoraTransaccion(new Date());
+                                nueva.setCaja(caja);
+                                nueva.setTipo(tipoIngreso);
+                                nueva.setVenta(venta);
+                                nueva.setMetodoPago(metodo.getMetodoPago());
+
+                                repoTransacciones.save(nueva);
+
+                                // Actualizar saldos en caja
+                                caja.setSaldoTotal(caja.getSaldoTotal() + diferencia);
+
+                                if ("Efectivo".equalsIgnoreCase(metodo.getMetodoPago().getNombre())) {
+                                    caja.setSaldoFisico(caja.getSaldoFisico() + diferencia);
+                                }
+
+                                repoCaja.save(caja);
+                            }
                         }
-                        caja.setSaldoFisico(caja.getSaldoFisico() + monto);
-                        repoCaja.save(caja);
 
-                        // Liberar habitaciones
-                        List<HabitacionesXReserva> habsReservas = habitacionesReservasRepository.findByReservaId(reserva.getId_reserva());
-                        for (HabitacionesXReserva hr : habsReservas) {
+                        // 5. Cambiar estado de habitaciones
+                        List<HabitacionesXReserva> habitaciones = habitacionesReservasRepository.findByReservaId(reserva.getId_reserva());
+                        for (HabitacionesXReserva hr : habitaciones) {
                             hr.getHabitacion().setEstado_habitacion("Limpieza");
                             
                             Limpiezas limpieza = new Limpiezas();
@@ -168,9 +183,9 @@ public class CheckinCheckoutServiceImpl implements CheckinCheckoutService {
                             habitacionRepository.save(hr.getHabitacion());
                         }
 
-                        // Liberar salones
-                        List<SalonesXReserva> salonesReservas = salonesReservasRepository.findByReservaId(reserva.getId_reserva());
-                        for (SalonesXReserva sr : salonesReservas) {
+                        // 6. Cambiar estado de salones
+                        List<SalonesXReserva> salones = salonesReservasRepository.findByReservaId(reserva.getId_reserva());
+                        for (SalonesXReserva sr : salones) {
                             sr.getSalon().setEstado_salon("Disponible");
 
                             Limpiezas limpieza = new Limpiezas();
@@ -182,12 +197,14 @@ public class CheckinCheckoutServiceImpl implements CheckinCheckoutService {
                             salonesRepository.save(sr.getSalon());
                         }
 
+                        // 7. Guardar cambios finales
                         reservaRepository.save(reserva);
                     }
 
                     return repository.save(existente);
                 })
-                .orElseThrow(() -> new EntityNotFoundException("CheckinCheckout no encontrado con ID: " + check.getId_check()));
+                .orElseThrow(() -> new EntityNotFoundException(
+                "CheckinCheckout no encontrado con ID: " + check.getId_check()));
     }
 
     @Override
