@@ -19,6 +19,7 @@ public class TipoHabitacion {
     private Integer id_tipo_habitacion;
     private String nombre;
     private Double precio;
+    private Integer cantidadtipo;
     private Integer estado = 1;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -50,11 +51,24 @@ public class TipoHabitacion {
         this.estado = estado;
     }
 
+    
     public Sucursales getSucursal() {
         return sucursal;
     }
     public void setSucursal(Sucursales sucursal) {
         this.sucursal = sucursal;
     }
+    public Integer getCantidadtipo() {
+        return cantidadtipo;
+    }
+    public void setCantidadtipo(Integer cantidadtipo) {
+        this.cantidadtipo = cantidadtipo;
+    }
+    @Override
+    public String toString() {
+        return "TipoHabitacion [id_tipo_habitacion=" + id_tipo_habitacion + ", nombre=" + nombre + ", precio=" + precio
+                + ", cantidadtipo=" + cantidadtipo + ", estado=" + estado + ", sucursal=" + sucursal + "]";
+    }
 
+    
 }
