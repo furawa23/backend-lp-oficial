@@ -72,6 +72,7 @@ public class TipoHabitacionServiceImpl implements TipoHabitacionService {
         .map(existente -> {
             existente.setNombre(tipo.getNombre());
             existente.setPrecio(tipo.getPrecio());
+            existente.setCantidadtipo(tipo.getCantidadtipo());
             return repository.save(existente);
         })
         .orElseThrow(() -> new EntityNotFoundException(
