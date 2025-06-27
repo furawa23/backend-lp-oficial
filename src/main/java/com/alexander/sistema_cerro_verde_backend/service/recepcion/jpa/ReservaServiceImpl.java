@@ -1,5 +1,6 @@
 package com.alexander.sistema_cerro_verde_backend.service.recepcion.jpa;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alexander.sistema_cerro_verde_backend.entity.caja.Cajas;
+import com.alexander.sistema_cerro_verde_backend.entity.caja.TipoTransacciones;
+import com.alexander.sistema_cerro_verde_backend.entity.caja.TransaccionesCaja;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.HabitacionesXReserva;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Reservas;
@@ -18,6 +21,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.recepcion.SalonesXReserv
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Clientes;
+import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentaMetodoPago;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentasXReservas;
 import com.alexander.sistema_cerro_verde_backend.repository.caja.CajasRepository;
@@ -231,57 +235,66 @@ public class ReservaServiceImpl implements ReservasService {
         reserva.setEstado_reserva("Cancelada");
         repository.save(reserva);
 
+        // Liberar habitaciones
         List<HabitacionesXReserva> habitaciones = habitacionesReservaRepository.findByReservaId(idReserva);
         for (HabitacionesXReserva hr : habitaciones) {
             Habitaciones habitacion = hr.getHabitacion();
-            habitacion.setEstado_habitacion("Disponible");  // Disponible
+            habitacion.setEstado_habitacion("Disponible");
             habitacionesRepository.save(habitacion);
         }
 
+        // Liberar salones
         List<SalonesXReserva> salones = salonesReservaRepository.findByReservaId(idReserva);
         for (SalonesXReserva sr : salones) {
             Salones salon = sr.getSalon();
-            salon.setEstado_salon("Disponible"); // Disponible
+            salon.setEstado_salon("Disponible");
             salonesRepository.save(salon);
         }
 
-        // Eliminar relaciones después de actualizar estados
+        // Eliminar relaciones
         habitacionesReservaRepository.deleteByReservaId(idReserva);
         salonesReservaRepository.deleteByReservaId(idReserva);
 
+        // Obtener la venta asociada
         VentasXReservas rel = reserva.getVentaXReserva().get(0);
         Ventas venta = rel.getVenta();
 
-        double monto = venta.getTotal();
+        double montoTotalVenta = venta.getTotal(); // total a restar del saldo total
 
+        // Buscar caja activa del usuario
         Usuarios usuario = usuarioRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
         Cajas caja = cajasService.buscarCajaAperturadaPorUsuario(usuario)
                 .orElseThrow(() -> new RuntimeException("No hay una caja aperturada para este usuario"));
 
-        // Verifica si la venta tuvo un método de pago, en caso de que haya, se genera una transacción de egreso
-        // Optional<VentaMetodoPago> metodoPago = venta.getVentaMetodoPago().stream()
-        //         .filter(vmp -> "Efectivo".equalsIgnoreCase(vmp.getMetodoPago().getNombre()))
-        //         .findFirst();
-        // if (metodoPago.isPresent()) {
-        //     monto = metodoPago.get().getPago();
-        //     TransaccionesCaja egreso = new TransaccionesCaja();
-        //     egreso.setMontoTransaccion(monto);
-        //     egreso.setCaja(caja); // 🔹 este campo es obligatorio
+        // Buscar si hubo método de pago en efectivo
+        Optional<VentaMetodoPago> metodoPago = venta.getVentaMetodoPago().stream()
+                .filter(vmp -> "Efectivo".equalsIgnoreCase(vmp.getMetodoPago().getNombre()))
+                .findFirst();
 
-        //     TipoTransacciones tipoEgreso = new TipoTransacciones();
-        //     tipoEgreso.setId(2); // 2 = egreso
-        //     egreso.setTipo(tipoEgreso);
+        if (metodoPago.isPresent()) {
+            double montoEfectivo = metodoPago.get().getPago();
 
-        //     egreso.setFechaHoraTransaccion(new Date());
-        //     transaccionesCajaService.guardar(egreso);
-        // }
+            // Crear transacción de egreso
+            TransaccionesCaja egreso = new TransaccionesCaja();
+            egreso.setMontoTransaccion(montoEfectivo);
+            egreso.setCaja(caja);
 
-        // // Actualizar saldos de caja
-        // caja.setSaldoFisico(caja.getSaldoFisico() - monto);
-        // caja.setSaldoTotal(caja.getSaldoTotal() - monto);
-        // cajaRepository.save(caja);
+            TipoTransacciones tipoEgreso = new TipoTransacciones();
+            tipoEgreso.setId(2); // 2 = egreso
+            egreso.setTipo(tipoEgreso);
+            egreso.setFechaHoraTransaccion(new Date());
 
-        //Pasar el estado de la venta a cancelada
+            transaccionesCajaService.guardar(egreso);
+
+            // Actualizar saldo físico
+            caja.setSaldoFisico(caja.getSaldoFisico() - montoEfectivo);
+        }
+
+        // Siempre restar el total de la venta del saldo total
+        caja.setSaldoTotal(caja.getSaldoTotal() - montoTotalVenta);
+        cajaRepository.save(caja);
+
+        // Pasar venta a estado cancelado
         venta.setEstadoVenta("Cancelado");
         repoVenta.save(venta);
     }
