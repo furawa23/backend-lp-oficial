@@ -24,7 +24,7 @@ import com.alexander.sistema_cerro_verde_backend.service.ventas.ApiCliente;
 import com.alexander.sistema_cerro_verde_backend.service.ventas.ClientesService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class ClientesController {
 

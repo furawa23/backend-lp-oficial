@@ -14,9 +14,9 @@ import java.util.Date;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Habitaciones;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Salones;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 
 @Entity
 @Table(name = "incidencias")

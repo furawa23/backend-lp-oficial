@@ -18,7 +18,7 @@ import com.alexander.sistema_cerro_verde_backend.service.mantenimiento.jpa.TipoI
 
 
 @RestController
-@RequestMapping("/cerro-verde/tipoincidencia")
+@RequestMapping("/hoteleria/tipoincidencia")
 @CrossOrigin("*")
 public class TipoIncidenciaController {
     @Autowired

@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 
 
 @Entity

@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.caja.TipoTransacciones;
 import com.alexander.sistema_cerro_verde_backend.entity.caja.TransaccionesCaja;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.CheckinCheckout;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.HabitacionesXReserva;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.SalonesXReserva;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentaMetodoPago;
 import com.alexander.sistema_cerro_verde_backend.repository.caja.CajasRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.caja.TransaccionesCajaRepository;
@@ -24,8 +24,8 @@ import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ReservasRe
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.SalonesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.SalonesReservaRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.ventas.VentasRepository;
-import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.CheckinCheckoutService;
+import com.alexander.sistema_cerro_verde_backend.service.seguridad.administrable.SucursalesService;
 
 import jakarta.persistence.EntityNotFoundException;
 

@@ -3,7 +3,7 @@ package com.alexander.sistema_cerro_verde_backend.entity.compras;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Ventas;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

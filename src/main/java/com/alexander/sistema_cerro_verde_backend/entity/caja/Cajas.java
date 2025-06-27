@@ -2,7 +2,7 @@ package com.alexander.sistema_cerro_verde_backend.entity.caja;
 
 import java.util.Date;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Usuarios;
 
 import jakarta.persistence.Column;

@@ -20,7 +20,7 @@ import com.alexander.sistema_cerro_verde_backend.service.mantenimiento.jpa.Perso
 
 
 @RestController
-@RequestMapping("/cerro-verde/personallimpieza")
+@RequestMapping("/hoteleria/personallimpieza")
 @CrossOrigin("*")
 public class PersonalLimpiezaController {
     @Autowired

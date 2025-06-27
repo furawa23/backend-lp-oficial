@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.alexander</groupId>
-    <artifactId>sistema-cerro-verde-backend</artifactId>
+    <artifactId>sistema-hoteleria-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>sistema-cerro-verde-backend</name>
+    <name>sistema-hoteleria-backend</name>
     <description>Demo project for Spring Boot</description>
     <url/>
     <licenses>

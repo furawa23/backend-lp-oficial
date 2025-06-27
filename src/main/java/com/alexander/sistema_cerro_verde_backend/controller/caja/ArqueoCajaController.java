@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/cerro-verde/caja/arqueo")
+@RequestMapping("/hoteleria/caja/arqueo")
 public class ArqueoCajaController {
 
     @Autowired

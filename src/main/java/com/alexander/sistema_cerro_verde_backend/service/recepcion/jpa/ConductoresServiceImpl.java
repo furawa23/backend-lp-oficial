@@ -1,14 +1,14 @@
 package com.alexander.sistema_cerro_verde_backend.service.recepcion.jpa;
 
-import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.ConductoresService;
+import com.alexander.sistema_cerro_verde_backend.service.seguridad.administrable.SucursalesService;
 
 import jakarta.persistence.EntityNotFoundException;
 
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.ConductoresRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.RecojoRepository;
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Conductores;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 
 import java.util.List;
 import java.util.Optional;

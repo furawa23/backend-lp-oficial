@@ -23,7 +23,7 @@ import com.alexander.sistema_cerro_verde_backend.service.compras.ApiService;
 import com.alexander.sistema_cerro_verde_backend.service.compras.jpa.ProveedoresService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class ProveedoresController {
 

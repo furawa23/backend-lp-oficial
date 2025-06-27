@@ -5,7 +5,7 @@ import java.util.List;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.DetalleVenta;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -1,6 +1,6 @@
 package com.alexander.sistema_cerro_verde_backend.entity.recepcion;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

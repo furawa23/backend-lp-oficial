@@ -26,7 +26,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.reportes.SalonVentasDeta
 import com.alexander.sistema_cerro_verde_backend.service.reportes.jpa.ReportesVentasService;
 
 @RestController
-@RequestMapping("/cerro-verde/reportes/ventas")
+@RequestMapping("/hoteleria/reportes/ventas")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ReportesVentasController {
 

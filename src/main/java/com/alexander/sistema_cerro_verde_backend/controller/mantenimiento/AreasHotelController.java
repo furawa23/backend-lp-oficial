@@ -18,7 +18,7 @@ import com.alexander.sistema_cerro_verde_backend.service.mantenimiento.jpa.Areas
 
 
 @RestController
-@RequestMapping("/cerro-verde/areashotel")
+@RequestMapping("/hoteleria/areashotel")
 @CrossOrigin("*")
 public class AreasHotelController {
     @Autowired

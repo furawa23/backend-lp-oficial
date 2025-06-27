@@ -3,7 +3,7 @@ package com.alexander.sistema_cerro_verde_backend.entity.recepcion;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.Clientes;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentasXReservas;
 import com.fasterxml.jackson.annotation.JsonIgnore;

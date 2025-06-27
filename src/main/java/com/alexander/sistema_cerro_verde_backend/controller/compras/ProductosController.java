@@ -21,7 +21,7 @@ import com.alexander.sistema_cerro_verde_backend.entity.compras.Productos;
 import com.alexander.sistema_cerro_verde_backend.service.compras.IProductosService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class ProductosController {
     @Autowired

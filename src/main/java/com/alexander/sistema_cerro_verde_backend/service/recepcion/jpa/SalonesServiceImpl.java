@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Salones;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.SalonesRepository;
-import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.SalonesService;
+import com.alexander.sistema_cerro_verde_backend.service.seguridad.administrable.SucursalesService;
 
 import jakarta.persistence.EntityNotFoundException;
 

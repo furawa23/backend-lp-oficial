@@ -21,7 +21,7 @@ import com.alexander.sistema_cerro_verde_backend.service.mantenimiento.jpa.Incid
 
 
 @RestController
-@RequestMapping("/cerro-verde/incidencias")
+@RequestMapping("/hoteleria/incidencias")
 @CrossOrigin("*")
 public class IncidenciasController {
     @Autowired

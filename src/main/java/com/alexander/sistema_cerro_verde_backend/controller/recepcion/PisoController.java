@@ -20,7 +20,7 @@ import com.alexander.sistema_cerro_verde_backend.service.recepcion.PisosService;
 
 @CrossOrigin("*") 
 @RestController
-@RequestMapping("/cerro-verde/recepcion")
+@RequestMapping("/hoteleria/recepcion")
 public class PisoController {
 
     @Autowired

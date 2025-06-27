@@ -22,7 +22,7 @@ import com.alexander.sistema_cerro_verde_backend.service.compras.jpa.CategoriasP
 
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class CategoriasProductosController {
 

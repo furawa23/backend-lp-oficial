@@ -1,9 +1,8 @@
-package com.alexander.sistema_cerro_verde_backend.entity;
+package com.alexander.sistema_cerro_verde_backend.entity.seguridad;
 
 import java.util.List;
 
 import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.AreasHotel;
-import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Empresas;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -25,9 +24,13 @@ public class Sucursales {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sucursal")
     private Integer id;
-
+    private String nombre;
     private String ciudad;
+    private String provincia;
+    private String departamento;
     private String direccion;
+    private String telefono;
+    private Integer estado=1;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_empresa")
@@ -69,12 +72,6 @@ public class Sucursales {
         this.empresa = empresa;
     }
 
-    @Override
-    public String toString() {
-        return "Sucursales [id=" + id + ", ciudad=" + ciudad + ", direccion=" + direccion + ", empresa=" + empresa
-                + "]";
-    }
-
     public List<AreasHotel> getAreasHotel() {
         return areasHotel;
     }
@@ -83,5 +80,53 @@ public class Sucursales {
         this.areasHotel = areasHotel;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getDepartamento() {
+        return departamento;
+    }
+
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public Integer getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Integer estado) {
+        this.estado = estado;
+    }
+
+    public String getProvincia() {
+        return provincia;
+    }
+
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
+    }
+
+    @Override
+    public String toString() {
+        return "Sucursales [id=" + id + ", nombre=" + nombre + ", ciudad=" + ciudad + ", provincia=" + provincia
+                + ", departamento=" + departamento + ", direccion=" + direccion + ", telefono=" + telefono + ", estado="
+                + estado + ", empresa=" + empresa + "]";
+    }
+
+   
     
 }

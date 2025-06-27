@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.recepcion.Pisos;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.HabitacionesRepository;
 import com.alexander.sistema_cerro_verde_backend.repository.recepcion.PisosRepository;
-import com.alexander.sistema_cerro_verde_backend.service.administrable.SucursalesService;
 import com.alexander.sistema_cerro_verde_backend.service.recepcion.PisosService;
+import com.alexander.sistema_cerro_verde_backend.service.seguridad.administrable.SucursalesService;
 
 
 @Service

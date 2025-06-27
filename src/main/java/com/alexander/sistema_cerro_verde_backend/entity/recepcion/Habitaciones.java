@@ -2,9 +2,9 @@ package com.alexander.sistema_cerro_verde_backend.entity.recepcion;
 
 import java.util.List;
 
-import com.alexander.sistema_cerro_verde_backend.entity.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.Incidencias;
 import com.alexander.sistema_cerro_verde_backend.entity.mantenimiento.Limpiezas;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
 import com.alexander.sistema_cerro_verde_backend.entity.ventas.VentaHabitacion;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

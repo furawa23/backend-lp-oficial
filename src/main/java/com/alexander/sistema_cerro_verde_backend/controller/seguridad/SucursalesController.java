@@ -1,4 +1,5 @@
-package com.alexander.sistema_cerro_verde_backend.controller.recepcion;
+
+package com.alexander.sistema_cerro_verde_backend.controller.seguridad;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,39 +16,38 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alexander.sistema_cerro_verde_backend.entity.recepcion.TipoHabitacion;
-import com.alexander.sistema_cerro_verde_backend.service.recepcion.TipoHabitacionService;
+import com.alexander.sistema_cerro_verde_backend.entity.seguridad.Sucursales;
+import com.alexander.sistema_cerro_verde_backend.service.seguridad.administrable.SucursalesService;
 
 import jakarta.persistence.EntityNotFoundException;
 
-
 @CrossOrigin("*") 
 @RestController
-@RequestMapping("/hoteleria/recepcion")
-public class TipoHabitacionController {
-
+@RequestMapping("/hoteleria")
+public class SucursalesController {
+    
     @Autowired
-    private TipoHabitacionService tipoHabitacionService;
+    private SucursalesService sucursalService;
 
-    @GetMapping("/habitaciones/tipo")
-    public List<TipoHabitacion> buscarTodos() {
-        return tipoHabitacionService.buscarTodos();
+    @GetMapping("/sucursales")
+    public List<Sucursales> buscarTodos() {
+        return sucursalService.buscarTodos();
     }
 
-    @PostMapping("/habitaciones/tipo")
-    public TipoHabitacion guardar(@RequestBody TipoHabitacion tipo) {   
-        tipoHabitacionService.guardar(tipo);     
-        return tipo;
+    @PostMapping("/sucursales")
+    public Sucursales guardar(@RequestBody Sucursales sucursal) {   
+        sucursalService.guardar(sucursal);     
+        return sucursal;
     }
     
-    @PutMapping("/habitaciones/tipo/{id}")
+    @PutMapping("/sucursales/{id}")
     public ResponseEntity<?> modificar(
         @PathVariable Integer id,
-        @RequestBody TipoHabitacion tipo) {
+        @RequestBody Sucursales sucursal) {
     
     try {
-        tipo.setId_tipo_habitacion(id); // Asegura que use el ID de la URL
-        TipoHabitacion actualizada = tipoHabitacionService.modificar(tipo);
+        sucursal.setId(id); // Asegura que use el ID de la URL
+        Sucursales actualizada = sucursalService.modificar(sucursal);
         return ResponseEntity.ok(actualizada);
         
     } catch (IllegalArgumentException e) {
@@ -59,14 +59,20 @@ public class TipoHabitacionController {
     }
     }
 
-    @GetMapping("/habitaciones/tipo/{id}")
-    public Optional<TipoHabitacion> buscarId(@PathVariable("id") Integer id) {
-        return tipoHabitacionService.buscarId(id);
+    @GetMapping("/sucursales/{id}")
+    public Optional<Sucursales> buscarId(@PathVariable("id") Integer id) {
+        return sucursalService.buscarId(id);
     }
 
-    @DeleteMapping("/habitaciones/tipo/{id}")
+    @DeleteMapping("/sucursales/{id}")
     public String eliminar(@PathVariable Integer id){
-        tipoHabitacionService.eliminar(id);
+        sucursalService.eliminar(id);
         return "Tipo de habitacion eliminada";
     }
 }
+
+
+
+
+
+
