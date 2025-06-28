@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import com.nube.sistema_hoteles.config.JwtClienteApi;
 import com.nube.sistema_hoteles.entity.seguridad.ApiClient;
 import com.nube.sistema_hoteles.service.seguridad.ApiClientService;
 
@@ -24,26 +25,35 @@ public class ApiClientController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtClienteApi jwtApi;
+
     // 1. Registrar nuevo cliente
     @PostMapping("/registrar")
     public ResponseEntity<?> registrar(@RequestBody ApiClient apiClientRequest) {
         Optional<ApiClient> existing = apiClientService.findByEmail(apiClientRequest.getEmail());
         if (existing.isPresent()) {
-            return ResponseEntity.badRequest().body("El email ya está registrado.");
+            return ResponseEntity.badRequest().body(Map.of("error", "El email ya está registrado."));
         }
     
-        apiClientRequest.setClienteId(null); // se recalcula automáticamente
+        // Generar clienteId automáticamente
+        apiClientRequest.setClienteId(null);
     
-        // AQUÍ se codifica la clave una sola vez
-        String hashedPassword = passwordEncoder.encode(apiClientRequest.getLlave_secreta());
-        apiClientRequest.setLlave_secreta(hashedPassword);
+        // Generar llave secreta en texto plano
+        String rawSecretKey = UUID.randomUUID().toString().replace("-", "").substring(0, 16); // más simple, 16 chars
     
+        // Codificar con BCrypt y guardar
+        apiClientRequest.setLlave_secreta(passwordEncoder.encode(rawSecretKey));
         apiClientRequest.setAccessToken(null);
     
         ApiClient saved = apiClientService.save(apiClientRequest);
-        return ResponseEntity.ok(saved);
-    }
     
+        // Responder con los datos del cliente + la llave secreta sin codificar (solo una vez)
+        return ResponseEntity.ok(Map.of(
+            "cliente_id", saved.getClienteId(),
+            "llave_secreta", rawSecretKey
+        ));
+    }
 
     // 2. Generar token (access_token) si cliente_id y clave coinciden
     @PostMapping("/token")
@@ -67,11 +77,11 @@ public class ApiClientController {
         }
     
         // Generar nuevo token (puedes usar UUID o JWT, según prefieras)
-        String newToken = UUID.randomUUID().toString();
-        client.setAccessToken(newToken);
+        String jwt = this.jwtApi.generarJwt(client);
+        client.setAccessToken(jwt);        
         apiClientService.save(client);
     
-        return ResponseEntity.ok(Map.of("access_token", newToken));
+        return ResponseEntity.ok(Map.of("access_token", jwt));
     }    
     
     // 3. Consultar perfil del cliente autenticado
@@ -86,4 +96,5 @@ public class ApiClientController {
         return client.<ResponseEntity<?>>map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(404).body("Cliente no encontrado."));
     }
+    
 }

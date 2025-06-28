@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,7 +27,10 @@ public class ApiClient {
     private String email;
     private String clienteId;
     private String llave_secreta;
+
+    @Column(length = 512)
     private String accessToken;
+    
     private Integer estado = 1;
     
     public Integer getId() {
