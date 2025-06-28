@@ -23,7 +23,7 @@ import com.nube.sistema_hoteles.service.mantenimiento.jpa.AreasHotelService;
 
 
 @RestController
-@RequestMapping("/cerro-verde/areashotel")
+@RequestMapping("/hoteleria/areashotel")
 @CrossOrigin("*")
 public class AreasHotelController {
     @Autowired

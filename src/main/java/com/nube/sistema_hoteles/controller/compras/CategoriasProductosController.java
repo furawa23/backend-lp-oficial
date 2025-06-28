@@ -22,7 +22,7 @@ import com.nube.sistema_hoteles.service.compras.jpa.CategoriasProductosService;
 
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class CategoriasProductosController {
 

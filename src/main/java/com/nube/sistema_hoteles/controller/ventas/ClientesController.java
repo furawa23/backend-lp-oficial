@@ -24,7 +24,7 @@ import com.nube.sistema_hoteles.service.ventas.ApiCliente;
 import com.nube.sistema_hoteles.service.ventas.ClientesService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class ClientesController {
 

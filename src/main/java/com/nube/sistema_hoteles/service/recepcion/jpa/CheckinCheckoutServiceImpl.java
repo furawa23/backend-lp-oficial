@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nube.sistema_hoteles.entity.Sucursales;
 import com.nube.sistema_hoteles.entity.caja.TipoTransacciones;
 import com.nube.sistema_hoteles.entity.caja.TransaccionesCaja;
 import com.nube.sistema_hoteles.entity.mantenimiento.Limpiezas;
 import com.nube.sistema_hoteles.entity.recepcion.CheckinCheckout;
 import com.nube.sistema_hoteles.entity.recepcion.HabitacionesXReserva;
 import com.nube.sistema_hoteles.entity.recepcion.SalonesXReserva;
+import com.nube.sistema_hoteles.entity.seguridad.Sucursales;
 import com.nube.sistema_hoteles.entity.ventas.VentaMetodoPago;
 import com.nube.sistema_hoteles.repository.caja.CajasRepository;
 import com.nube.sistema_hoteles.repository.caja.TransaccionesCajaRepository;
@@ -26,8 +26,8 @@ import com.nube.sistema_hoteles.repository.recepcion.ReservasRepository;
 import com.nube.sistema_hoteles.repository.recepcion.SalonesRepository;
 import com.nube.sistema_hoteles.repository.recepcion.SalonesReservaRepository;
 import com.nube.sistema_hoteles.repository.ventas.VentasRepository;
-import com.nube.sistema_hoteles.service.administrable.SucursalesService;
 import com.nube.sistema_hoteles.service.recepcion.CheckinCheckoutService;
+import com.nube.sistema_hoteles.service.seguridad.administrable.SucursalesService;
 
 import jakarta.persistence.EntityNotFoundException;
 

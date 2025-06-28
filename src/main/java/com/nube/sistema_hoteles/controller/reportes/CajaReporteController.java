@@ -22,7 +22,7 @@ import com.nube.sistema_hoteles.entity.reportes.CajaResumenDTO;
 import com.nube.sistema_hoteles.service.reportes.jpa.CajaReporteService;
 
 @RestController
-@RequestMapping("/cerro-verde/reportes/caja")
+@RequestMapping("/hoteleria/reportes/caja")
 @CrossOrigin(origins = "http://localhost:4200")
 public class CajaReporteController {
 

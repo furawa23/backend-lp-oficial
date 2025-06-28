@@ -26,7 +26,7 @@ import com.nube.sistema_hoteles.service.caja.TransaccionesCajaService;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/cerro-verde/caja/transacciones")
+@RequestMapping("/hoteleria/caja/transacciones")
 public class TransaccionesCajaController {
 
     @Autowired

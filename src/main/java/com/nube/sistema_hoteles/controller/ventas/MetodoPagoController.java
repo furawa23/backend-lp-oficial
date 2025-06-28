@@ -23,7 +23,7 @@ import com.nube.sistema_hoteles.entity.ventas.MetodosPago;
 import com.nube.sistema_hoteles.service.ventas.IMetodoPagoService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class MetodoPagoController {
 

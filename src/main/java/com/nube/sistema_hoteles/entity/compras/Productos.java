@@ -6,7 +6,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nube.sistema_hoteles.entity.Sucursales;
+import com.nube.sistema_hoteles.entity.seguridad.Sucursales;
 import com.nube.sistema_hoteles.entity.ventas.DetalleVenta;
 
 import jakarta.persistence.CascadeType;

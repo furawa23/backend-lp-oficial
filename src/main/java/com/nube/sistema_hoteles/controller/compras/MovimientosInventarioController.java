@@ -19,7 +19,7 @@ import com.nube.sistema_hoteles.entity.compras.MovimientosInventario;
 import com.nube.sistema_hoteles.service.compras.IMovimientosInventarioService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class MovimientosInventarioController {
     @Autowired

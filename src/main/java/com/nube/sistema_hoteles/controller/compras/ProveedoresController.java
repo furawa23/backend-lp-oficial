@@ -23,7 +23,7 @@ import com.nube.sistema_hoteles.service.compras.ApiService;
 import com.nube.sistema_hoteles.service.compras.jpa.ProveedoresService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class ProveedoresController {
 

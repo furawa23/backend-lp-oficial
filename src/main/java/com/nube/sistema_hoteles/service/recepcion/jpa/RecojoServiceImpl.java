@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nube.sistema_hoteles.entity.Sucursales;
 import com.nube.sistema_hoteles.entity.recepcion.Conductores;
 import com.nube.sistema_hoteles.entity.recepcion.Recojo;
 import com.nube.sistema_hoteles.entity.recepcion.Reservas;
+import com.nube.sistema_hoteles.entity.seguridad.Sucursales;
 import com.nube.sistema_hoteles.repository.recepcion.RecojoRepository;
-import com.nube.sistema_hoteles.service.administrable.SucursalesService;
 import com.nube.sistema_hoteles.service.recepcion.ConductoresService;
 import com.nube.sistema_hoteles.service.recepcion.RecojoService;
 import com.nube.sistema_hoteles.service.recepcion.ReservasService;
+import com.nube.sistema_hoteles.service.seguridad.administrable.SucursalesService;
 
 import jakarta.persistence.EntityNotFoundException;
 

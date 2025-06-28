@@ -7,7 +7,7 @@ import org.hibernate.annotations.SQLRestriction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.nube.sistema_hoteles.entity.Sucursales;
+import com.nube.sistema_hoteles.entity.seguridad.Sucursales;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

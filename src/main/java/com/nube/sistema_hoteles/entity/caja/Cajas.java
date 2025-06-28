@@ -2,7 +2,7 @@ package com.nube.sistema_hoteles.entity.caja;
 
 import java.util.Date;
 
-import com.nube.sistema_hoteles.entity.Sucursales;
+import com.nube.sistema_hoteles.entity.seguridad.Sucursales;
 import com.nube.sistema_hoteles.entity.seguridad.Usuarios;
 
 import jakarta.persistence.Column;

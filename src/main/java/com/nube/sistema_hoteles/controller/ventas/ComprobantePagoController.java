@@ -23,7 +23,7 @@ import com.nube.sistema_hoteles.entity.ventas.ComprobantePago;
 import com.nube.sistema_hoteles.service.ventas.IComprobantePagoService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class ComprobantePagoController {
 

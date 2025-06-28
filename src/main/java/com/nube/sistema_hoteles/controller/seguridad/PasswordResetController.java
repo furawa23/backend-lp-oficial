@@ -21,7 +21,7 @@ import com.nube.sistema_hoteles.service.seguridad.jpa.PasswordResetService;
 
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class PasswordResetController {
 

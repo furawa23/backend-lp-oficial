@@ -23,7 +23,7 @@ import com.nube.sistema_hoteles.service.mantenimiento.jpa.PersonalLimpiezaServic
 
 
 @RestController
-@RequestMapping("/cerro-verde/personallimpieza")
+@RequestMapping("/hoteleria/personallimpieza")
 @CrossOrigin("*")
 public class PersonalLimpiezaController {
     @Autowired

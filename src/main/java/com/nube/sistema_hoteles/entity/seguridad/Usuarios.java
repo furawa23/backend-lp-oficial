@@ -47,6 +47,10 @@ public class Usuarios implements UserDetails {
     @JsonIgnore
     private List<Ventas> venta;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_sucursal")
+    private Sucursales sucursal;
+
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {

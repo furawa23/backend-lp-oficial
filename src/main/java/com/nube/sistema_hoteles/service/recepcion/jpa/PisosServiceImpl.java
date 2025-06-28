@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.nube.sistema_hoteles.entity.Sucursales;
 import com.nube.sistema_hoteles.entity.recepcion.Pisos;
+import com.nube.sistema_hoteles.entity.seguridad.Sucursales;
 import com.nube.sistema_hoteles.repository.recepcion.HabitacionesRepository;
 import com.nube.sistema_hoteles.repository.recepcion.PisosRepository;
-import com.nube.sistema_hoteles.service.administrable.SucursalesService;
 import com.nube.sistema_hoteles.service.recepcion.PisosService;
+import com.nube.sistema_hoteles.service.seguridad.administrable.SucursalesService;
 
 
 @Service

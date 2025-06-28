@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import com.nube.sistema_hoteles.entity.Sucursales;
+import com.nube.sistema_hoteles.entity.seguridad.Sucursales;
 
 
 @Entity

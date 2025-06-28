@@ -24,7 +24,7 @@ import com.nube.sistema_hoteles.service.seguridad.IUsuariosService;
 import com.nube.sistema_hoteles.service.seguridad.jpa.UsuariosService;
 
 @RestController
-@RequestMapping("/cerro-verde/usuarios")
+@RequestMapping("/hoteleria/usuarios")
 @CrossOrigin("*")
 public class UsuarioController {
 

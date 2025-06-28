@@ -21,7 +21,7 @@ import com.nube.sistema_hoteles.service.mantenimiento.jpa.IncidenciasService;
 
 
 @RestController
-@RequestMapping("/cerro-verde/incidencias")
+@RequestMapping("/hoteleria/incidencias")
 @CrossOrigin("*")
 public class IncidenciasController {
     @Autowired

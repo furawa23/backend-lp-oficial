@@ -20,7 +20,7 @@ import com.nube.sistema_hoteles.service.reportes.ReportesService;
 import com.nube.sistema_hoteles.service.reportes.jpa.ReportesExportService;
 
 @RestController
-@RequestMapping("/cerro-verde/reportes")
+@RequestMapping("/hoteleria/reportes")
 @CrossOrigin("*")
 public class ReportesController {
 

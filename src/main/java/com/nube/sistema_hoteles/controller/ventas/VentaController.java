@@ -25,7 +25,7 @@ import com.nube.sistema_hoteles.entity.ventas.Ventas;
 import com.nube.sistema_hoteles.service.ventas.IVentaService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class VentaController {
 

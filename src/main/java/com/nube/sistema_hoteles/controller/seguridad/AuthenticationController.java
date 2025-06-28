@@ -26,7 +26,7 @@ import com.nube.sistema_hoteles.service.seguridad.UserDetailsServiceImpl;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;

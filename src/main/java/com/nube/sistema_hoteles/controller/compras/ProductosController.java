@@ -21,7 +21,7 @@ import com.nube.sistema_hoteles.entity.compras.Productos;
 import com.nube.sistema_hoteles.service.compras.IProductosService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class ProductosController {
     @Autowired

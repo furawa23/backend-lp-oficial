@@ -20,7 +20,7 @@ import com.nube.sistema_hoteles.service.recepcion.PisosService;
 
 @CrossOrigin("*") 
 @RestController
-@RequestMapping("/cerro-verde/recepcion")
+@RequestMapping("/hoteleria/recepcion")
 public class PisoController {
 
     @Autowired

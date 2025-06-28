@@ -22,7 +22,7 @@ import com.nube.sistema_hoteles.entity.compras.Compras;
 import com.nube.sistema_hoteles.service.compras.IComprasService;
 
 @RestController
-@RequestMapping("/cerro-verde")
+@RequestMapping("/hoteleria")
 @CrossOrigin("*")
 public class ComprasController {
 

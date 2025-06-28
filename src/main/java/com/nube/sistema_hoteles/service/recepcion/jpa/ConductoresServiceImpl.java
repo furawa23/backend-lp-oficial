@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.nube.sistema_hoteles.entity.Sucursales;
 import com.nube.sistema_hoteles.entity.recepcion.Conductores;
+import com.nube.sistema_hoteles.entity.seguridad.Sucursales;
 import com.nube.sistema_hoteles.repository.recepcion.ConductoresRepository;
 import com.nube.sistema_hoteles.repository.recepcion.RecojoRepository;
-import com.nube.sistema_hoteles.service.administrable.SucursalesService;
 import com.nube.sistema_hoteles.service.recepcion.ConductoresService;
+import com.nube.sistema_hoteles.service.seguridad.administrable.SucursalesService;
 
 @Service
 public class ConductoresServiceImpl implements ConductoresService {

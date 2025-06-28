@@ -15,10 +15,12 @@ public class Empresas {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_empresa")
     private Integer id;
-
+    private String logo;
     private String nombre;
+    private String encargado;
     private String ruc;
     private String direccion;
+    private Integer estado=1;
     
     public Integer getId() {
         return id;
@@ -44,10 +46,30 @@ public class Empresas {
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
-
+    public Integer getEstado() {
+        return estado;
+    }
+    public void setEstado(Integer estado) {
+        this.estado = estado;
+    }
+    public String getLogo() {
+        return logo;
+    }
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+    public String getEncargado() {
+        return encargado;
+    }
+    public void setEncargado(String encargado) {
+        this.encargado = encargado;
+    }
     @Override
     public String toString() {
-        return "Empresas [id=" + id + ", nombre=" + nombre + ", ruc=" + ruc + ", direccion=" + direccion + "]";
+        return "Empresas [id=" + id + ", logo=" + logo + ", nombre=" + nombre + ", encargado=" + encargado + ", ruc="
+                + ruc + ", direccion=" + direccion + ", estado=" + estado + "]";
     }
+    
+    
  
 }

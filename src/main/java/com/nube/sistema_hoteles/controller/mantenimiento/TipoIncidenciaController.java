@@ -23,7 +23,7 @@ import com.nube.sistema_hoteles.service.mantenimiento.jpa.TipoIncidenciaService;
 
 
 @RestController
-@RequestMapping("/cerro-verde/tipoincidencia")
+@RequestMapping("/hoteleria/tipoincidencia")
 @CrossOrigin("*")
 public class TipoIncidenciaController {
     @Autowired

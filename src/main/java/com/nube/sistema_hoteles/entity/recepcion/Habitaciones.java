@@ -3,9 +3,9 @@ package com.nube.sistema_hoteles.entity.recepcion;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nube.sistema_hoteles.entity.Sucursales;
 import com.nube.sistema_hoteles.entity.mantenimiento.Incidencias;
 import com.nube.sistema_hoteles.entity.mantenimiento.Limpiezas;
+import com.nube.sistema_hoteles.entity.seguridad.Sucursales;
 import com.nube.sistema_hoteles.entity.ventas.VentaHabitacion;
 
 import jakarta.persistence.CascadeType;

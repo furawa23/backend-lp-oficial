@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nube.sistema_hoteles.entity.Sucursales;
 import com.nube.sistema_hoteles.entity.caja.Cajas;
 import com.nube.sistema_hoteles.entity.caja.TipoTransacciones;
 import com.nube.sistema_hoteles.entity.caja.TransaccionesCaja;
@@ -19,6 +18,7 @@ import com.nube.sistema_hoteles.entity.recepcion.HabitacionesXReserva;
 import com.nube.sistema_hoteles.entity.recepcion.Reservas;
 import com.nube.sistema_hoteles.entity.recepcion.Salones;
 import com.nube.sistema_hoteles.entity.recepcion.SalonesXReserva;
+import com.nube.sistema_hoteles.entity.seguridad.Sucursales;
 import com.nube.sistema_hoteles.entity.seguridad.Usuarios;
 import com.nube.sistema_hoteles.entity.ventas.Clientes;
 import com.nube.sistema_hoteles.entity.ventas.VentaMetodoPago;
@@ -33,10 +33,10 @@ import com.nube.sistema_hoteles.repository.recepcion.SalonesReservaRepository;
 import com.nube.sistema_hoteles.repository.seguridad.UsuariosRepository;
 import com.nube.sistema_hoteles.repository.ventas.ClientesRepository;
 import com.nube.sistema_hoteles.repository.ventas.VentasRepository;
-import com.nube.sistema_hoteles.service.administrable.SucursalesService;
 import com.nube.sistema_hoteles.service.caja.CajasService;
 import com.nube.sistema_hoteles.service.caja.TransaccionesCajaService;
 import com.nube.sistema_hoteles.service.recepcion.ReservasService;
+import com.nube.sistema_hoteles.service.seguridad.administrable.SucursalesService;
 import com.nube.sistema_hoteles.service.ventas.ClientesService;
 
 import jakarta.persistence.EntityNotFoundException;

@@ -18,7 +18,7 @@ import com.nube.sistema_hoteles.entity.seguridad.Permisos;
 import com.nube.sistema_hoteles.service.seguridad.IPermisosService;
 
 @RestController
-@RequestMapping("/cerro-verde/")
+@RequestMapping("/hoteleria/")
 @CrossOrigin("*")
 public class PermisosController {
 

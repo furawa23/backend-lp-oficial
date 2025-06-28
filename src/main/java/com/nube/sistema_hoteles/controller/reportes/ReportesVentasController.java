@@ -26,7 +26,7 @@ import com.nube.sistema_hoteles.entity.reportes.SalonVentasDetalladoDTO;
 import com.nube.sistema_hoteles.service.reportes.jpa.ReportesVentasService;
 
 @RestController
-@RequestMapping("/cerro-verde/reportes/ventas")
+@RequestMapping("/hoteleria/reportes/ventas")
 @CrossOrigin(origins = "http://localhost:4200")
 public class ReportesVentasController {
 

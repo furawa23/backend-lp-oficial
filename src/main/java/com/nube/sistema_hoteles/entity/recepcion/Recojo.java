@@ -2,7 +2,7 @@ package com.nube.sistema_hoteles.entity.recepcion;
 
 import java.time.LocalDateTime;
 
-import com.nube.sistema_hoteles.entity.Sucursales;
+import com.nube.sistema_hoteles.entity.seguridad.Sucursales;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

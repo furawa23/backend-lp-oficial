@@ -1,9 +1,11 @@
-package com.nube.sistema_hoteles.service.administrable;
+
+package com.nube.sistema_hoteles.service.seguridad.administrable;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.nube.sistema_hoteles.entity.Sucursales;
+
+import com.nube.sistema_hoteles.entity.seguridad.Sucursales;
 
 public interface SucursalesService {
 
@@ -13,7 +15,7 @@ public interface SucursalesService {
 
     Optional<Sucursales> buscarId(Integer id);
 
-    void modificar(Sucursales sucursal);
+    Sucursales modificar(Sucursales sucursal);
 
     void eliminar(Integer id);
 }
